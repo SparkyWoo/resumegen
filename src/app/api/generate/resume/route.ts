@@ -6,8 +6,12 @@ export async function POST(req: Request) {
     const { githubUsername, jobUrl } = await req.json();
     console.log('Received request:', { githubUsername, jobUrl });
 
+    const baseUrl = process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}` 
+      : 'http://localhost:3000';
+
     // Fetch GitHub data
-    const githubResponse = await fetch('/api/scrape/github', {
+    const githubResponse = await fetch(`${baseUrl}/api/scrape/github`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ githubUsername }),
@@ -16,7 +20,7 @@ export async function POST(req: Request) {
     console.log('GitHub data:', githubData);
 
     // Fetch job data
-    const jobResponse = await fetch('/api/scrape/job', {
+    const jobResponse = await fetch(`${baseUrl}/api/scrape/job`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ jobUrl }),
