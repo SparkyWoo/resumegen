@@ -1,0 +1,33 @@
+{
+  "name": "instant-resume",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@auth/core": "^0.34.2",
+    "@supabase/supabase-js": "^2.47.6",
+    "@tailwindcss/forms": "^0.5.9",
+    "cheerio": "^1.0.0",
+    "marked": "^15.0.3",
+    "next": "^14.0.0",
+    "next-auth": "^4.24.11",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-pdf": "^9.1.1"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.35",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.0.0",
+    "postcss": "^8.0.0",
+    "tailwindcss": "^3.4.16",
+    "typescript": "^5.0.0"
+  }
+}
