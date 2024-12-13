@@ -42,7 +42,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(resume);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Detailed error:', error);
     return NextResponse.json(
       { error: 'Failed to generate resume', details: error.message },

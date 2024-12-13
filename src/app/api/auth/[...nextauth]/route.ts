@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import LinkedInProvider from "next-auth/providers/linkedin";
+import type { JWT } from "next-auth/jwt";
 
 const handler = NextAuth({
   providers: [
@@ -9,19 +10,17 @@ const handler = NextAuth({
       authorization: {
         params: { scope: "r_liteprofile r_emailaddress" },
       },
-      issuer: "https://www.linkedin.com",
-      jwks_endpoint: "https://www.linkedin.com/oauth/openid/jwks",
     }),
   ],
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt({ token, account }): Promise<JWT> {
       if (account) {
         token.accessToken = account.access_token;
       }
       return token;
     },
     async session({ session, token }) {
-      session.accessToken = token.accessToken;
+      session.accessToken = token.accessToken as string | undefined;
       return session;
     },
   },

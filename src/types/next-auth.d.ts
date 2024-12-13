@@ -3,13 +3,13 @@ import 'next-auth';
 declare module 'next-auth' {
   interface Session {
     accessToken?: string;
-    user: {
-      id: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
+    user?: {
+      id?: string;
+      name?: string;
+      email?: string;
     };
   }
+
   interface JWT {
     accessToken?: string;
   }
