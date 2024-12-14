@@ -1,5 +1,6 @@
 import React from 'react';
 import { Providers } from '@/lib/redux/provider';
+import '@/app/globals.css';
 
 export default function RootLayout({
   children,
