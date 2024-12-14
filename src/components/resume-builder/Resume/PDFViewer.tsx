@@ -5,8 +5,16 @@ import { ResumeState } from '@/lib/redux/resumeSlice';
 Font.register({
   family: 'Liberation Serif',
   fonts: [
-    { src: '/fonts/LiberationSerif-Regular.ttf' },
-    { src: '/fonts/LiberationSerif-Bold.ttf', fontWeight: 'bold' },
+    { 
+      src: '/fonts/LiberationSerif-Regular.ttf',
+      fontWeight: 'normal',
+      fontStyle: 'normal'
+    },
+    { 
+      src: '/fonts/LiberationSerif-Bold.ttf',
+      fontWeight: 'bold',
+      fontStyle: 'normal'
+    },
   ]
 });
 
@@ -135,15 +143,17 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
                 <Text style={styles.name}>{data.basics.name}</Text>
               </View>
               <View style={styles.headerRight}>
-                <Text style={styles.contact}>
-                  {data.basics.email}\n
-                  {data.basics.phone}\n
-                  {data.basics.location}\n
-                  {data.basics.url && `${data.basics.url}\n`}
-                  {data.basics.profiles?.map(profile => 
-                    profile.network === 'LinkedIn' ? `linkedin.com/in/${profile.username}` : ''
-                  )}
-                </Text>
+                <Text style={styles.contact}>{data.basics.email}</Text>
+                {data.basics.phone && <Text style={styles.contact}>{data.basics.phone}</Text>}
+                {data.basics.location && <Text style={styles.contact}>{data.basics.location}</Text>}
+                {data.basics.url && <Text style={styles.contact}>{data.basics.url}</Text>}
+                {data.basics.profiles?.map((profile, index) => 
+                  profile.network === 'LinkedIn' ? (
+                    <Text key={index} style={styles.contact}>
+                      linkedin.com/in/{profile.username}
+                    </Text>
+                  ) : null
+                )}
               </View>
             </View>
 
