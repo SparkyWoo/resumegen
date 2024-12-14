@@ -9,9 +9,18 @@ import { ResumeState } from '@/lib/redux/resumeSlice';
 
 interface Props {
   initialData: ResumeState;
+  githubData?: {
+    repositories: Array<{
+      name: string;
+      description: string | null;
+      language: string;
+      stars: number;
+      url: string;
+    }>;
+  };
 }
 
-export const ResumeBuilder = ({ initialData }: Props) => {
+export const ResumeBuilder = ({ initialData, githubData }: Props) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -25,7 +34,7 @@ export const ResumeBuilder = ({ initialData }: Props) => {
         <div className="h-full overflow-y-auto border-r border-zinc-200 bg-white px-6 scrollbar-thin scrollbar-track-zinc-100 scrollbar-thumb-zinc-300">
           <div className="mx-auto w-full max-w-3xl py-8">
             <h1 className="mb-8 text-3xl font-bold">Resume Builder</h1>
-            <Form />
+            <Form githubData={githubData} />
           </div>
         </div>
 

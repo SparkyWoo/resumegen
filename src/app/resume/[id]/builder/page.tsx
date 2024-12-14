@@ -43,7 +43,10 @@ export default async function ResumeBuilderPage({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <ResumeBuilder initialData={mapDatabaseToResumeState(resume)} />
+      <ResumeBuilder 
+        initialData={mapDatabaseToResumeState(resume)} 
+        githubData={resume.github_data}
+      />
     </main>
   );
 } 

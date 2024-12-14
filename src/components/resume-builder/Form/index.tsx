@@ -6,7 +6,7 @@ import { EducationForm } from './EducationForm';
 import { ProjectsForm } from './ProjectsForm';
 import { SkillsForm } from './SkillsForm';
 
-export const Form = ({ jobData }: { jobData?: any }) => {
+export const Form = ({ githubData }: { githubData?: any }) => {
   const dispatch = useAppDispatch();
   const resume = useAppSelector(state => state.resume);
 
@@ -52,7 +52,8 @@ export const Form = ({ jobData }: { jobData?: any }) => {
         </div>
         <ProjectsForm 
           data={resume.projects} 
-          onChange={data => dispatch(updateProjects(data))} 
+          onChange={data => dispatch(updateProjects(data))}
+          githubData={githubData}
         />
       </section>
 
@@ -64,7 +65,6 @@ export const Form = ({ jobData }: { jobData?: any }) => {
         <SkillsForm 
           data={resume.skills} 
           onChange={data => dispatch(updateSkills(data))}
-          jobData={jobData}
         />
       </section>
     </div>
