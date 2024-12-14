@@ -85,9 +85,9 @@ export const Form = ({ githubData, activeSection, onSectionChange }: FormProps) 
             activeSection === section.id ? 'ring-2 ring-blue-500' : ''
           }`}
         >
-          <div>
-            <h2 className="text-xl font-semibold">{section.title}</h2>
-            <p className="text-sm text-zinc-500">{section.description}</p>
+          <div className="space-y-1">
+            <h2 className="text-lg font-medium text-gray-900">{section.title}</h2>
+            <p className="text-sm text-gray-500">{section.description}</p>
           </div>
           {section.component}
         </section>

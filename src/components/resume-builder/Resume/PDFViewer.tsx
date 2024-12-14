@@ -122,7 +122,6 @@ const styles = StyleSheet.create({
   skillRow: {
     display: 'flex',
     flexDirection: 'row',
-    gap: spacing[2],
     marginBottom: spacing[1]
   },
   skillCategoryTitle: {
@@ -135,6 +134,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 10.5,
     color: '#404040',  // neutral-700
+    lineHeight: 1.4
   },
   summary: {
     marginBottom: spacing[3],
@@ -270,13 +270,11 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
                   <Text style={styles.sectionTitle}>Skills</Text>
                   <View style={styles.skillsContainer}>
                     {data.skills.map((skill, i) => {
-                      const [category, items] = skill.split(':').map(s => s.trim());
-                      if (!items) return null;
+                      if (!skill.trim()) return null;
                       
                       return (
                         <View key={i} style={styles.skillRow}>
-                          <Text style={styles.skillCategoryTitle}>{category}:</Text>
-                          <Text style={styles.skillList}>{items}</Text>
+                          <Text style={styles.skillList}>{skill}</Text>
                         </View>
                       );
                     })}
