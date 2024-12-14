@@ -1,5 +1,14 @@
-import { Document, Page, Text, View, StyleSheet, PDFViewer as ReactPDFViewer, Font } from '@react-pdf/renderer';
+'use client';
+
+import dynamic from 'next/dynamic';
+import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
 import { ResumeState } from '@/lib/redux/resumeSlice';
+
+// Dynamically import PDFViewer with SSR disabled
+const ReactPDFViewer = dynamic(
+  () => import('@react-pdf/renderer').then(mod => mod.PDFViewer),
+  { ssr: false }
+);
 
 // Register fonts
 Font.register({
@@ -134,6 +143,11 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
       <ReactPDFViewer 
         style={{ width: '100%', height: '100vh' }}
         showToolbar={false}
+        loading={
+          <div className="flex items-center justify-center h-full w-full">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+          </div>
+        }
       >
         <Document>
           <Page size="A4" style={styles.page}>
