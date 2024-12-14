@@ -2,7 +2,7 @@
 
 import React from 'react';
 import dynamic from 'next/dynamic';
-import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import { ResumeState } from '@/lib/redux/resumeSlice';
 
 // Dynamically import PDFViewer with SSR disabled
@@ -11,25 +11,10 @@ const ReactPDFViewer = dynamic(
   { ssr: false }
 );
 
-// Register fonts
-Font.register({
-  family: 'Source Serif Pro',
-  fonts: [
-    { 
-      src: 'https://fonts.gstatic.com/s/sourceserifpro/v15/neIQzD-0qpwxpaWvjeD0X88SAOeauXQ-pQ.ttf',
-      fontWeight: 'normal'
-    },
-    { 
-      src: 'https://fonts.gstatic.com/s/sourceserifpro/v15/neIXzD-0qpwxpaWvjeD0X88SAOeasc8btSyqxA.ttf',
-      fontWeight: 'bold'
-    }
-  ]
-});
-
 const styles = StyleSheet.create({
   page: {
     padding: '40 60',
-    fontFamily: 'Source Serif Pro',
+    fontFamily: 'Times-Roman',
     fontSize: 11,
     lineHeight: 1.6,
     color: '#1a1a1a'
@@ -50,7 +35,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontFamily: 'Times-Bold',
     marginBottom: 4,
     color: '#000000'
   },
@@ -68,7 +53,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontFamily: 'Times-Bold',
     marginBottom: 12,
     color: '#000000',
     textTransform: 'uppercase',
@@ -77,7 +62,7 @@ const styles = StyleSheet.create({
   },
   jobTitle: {
     fontSize: 12,
-    fontWeight: 'bold',
+    fontFamily: 'Times-Bold',
     color: '#000000'
   },
   company: {
@@ -88,7 +73,7 @@ const styles = StyleSheet.create({
   },
   companyName: {
     fontSize: 11,
-    fontWeight: 'bold',
+    fontFamily: 'Times-Bold',
     color: '#1a1a1a'
   },
   date: {
@@ -119,7 +104,7 @@ const styles = StyleSheet.create({
   },
   skillCategoryTitle: {
     fontSize: 11,
-    fontWeight: 'bold',
+    fontFamily: 'Times-Bold',
     marginBottom: 4,
     color: '#000000'
   },
