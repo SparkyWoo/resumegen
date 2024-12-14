@@ -92,7 +92,10 @@ const styles = StyleSheet.create({
 export const PDFViewer = ({ data }: { data: ResumeState }) => {
   return (
     <div className="h-full w-full">
-      <ReactPDFViewer width="100%" height="100%" showToolbar={false}>
+      <ReactPDFViewer 
+        style={{ width: '100%', height: '100vh' }}
+        showToolbar={false}
+      >
         <Document>
           <Page size="A4" style={styles.page}>
             {/* Header */}
