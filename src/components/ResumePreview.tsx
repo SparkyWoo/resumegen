@@ -2,44 +2,28 @@
 
 import React from 'react';
 import { Resume } from '@/types';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   resume: Resume;
-  onEdit: () => void;
 }
 
-export function ResumePreview({ resume, onEdit }: Props) {
+export function ResumePreview({ resume }: Props) {
+  const router = useRouter();
   const { linkedin_data, github_data, job_data } = resume;
-  const profile = linkedin_data.profile;
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-8">
       {/* Header */}
       <div className="mb-8 text-center">
         <h2 className="text-2xl font-bold">
-          {profile.localizedFirstName} {profile.localizedLastName}
+          Resume Preview
         </h2>
-        <p className="text-gray-600">{linkedin_data.email}</p>
       </div>
 
-      {/* Experience */}
+      {/* GitHub Section */}
       <section className="mb-8">
-        <h3 className="text-lg font-semibold mb-4">Experience</h3>
-        {linkedin_data.experience?.elements?.map((exp: any, i: number) => (
-          <div key={i} className="mb-4">
-            <h4 className="font-medium">{exp.title}</h4>
-            <p className="text-gray-600">{exp.companyName}</p>
-            <p className="text-sm text-gray-500">
-              {exp.startDate.year} - {exp.endDate?.year || 'Present'}
-            </p>
-            <p className="mt-2">{exp.description}</p>
-          </div>
-        ))}
-      </section>
-
-      {/* GitHub Projects */}
-      <section className="mb-8">
-        <h3 className="text-lg font-semibold mb-4">Projects</h3>
+        <h3 className="text-lg font-semibold mb-4">GitHub Projects</h3>
         {github_data.repositories.map((repo: any, i: number) => (
           <div key={i} className="mb-4">
             <h4 className="font-medium">{repo.name}</h4>
@@ -52,24 +36,31 @@ export function ResumePreview({ resume, onEdit }: Props) {
         ))}
       </section>
 
-      {/* Skills (from job requirements) */}
+      {/* Job Details */}
       <section>
-        <h3 className="text-lg font-semibold mb-4">Relevant Skills</h3>
-        <div className="flex flex-wrap gap-2">
-          {job_data.skills.map((skill: string, i: number) => (
-            <span
-              key={i}
-              className="px-3 py-1 bg-gray-100 rounded-full text-sm"
-            >
-              {skill}
-            </span>
-          ))}
+        <h3 className="text-lg font-semibold mb-4">Job Match</h3>
+        <div className="mb-4">
+          <h4 className="font-medium">Position</h4>
+          <p>{job_data.title}</p>
+        </div>
+        <div className="mb-4">
+          <h4 className="font-medium">Skills</h4>
+          <div className="flex flex-wrap gap-2">
+            {job_data.skills.map((skill: string, i: number) => (
+              <span
+                key={i}
+                className="px-3 py-1 bg-gray-100 rounded-full text-sm"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
       <div className="mt-8 flex justify-end">
         <button
-          onClick={onEdit}
+          onClick={() => router.push(`/resume/${resume.id}/edit`)}
           className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
         >
           Edit Resume

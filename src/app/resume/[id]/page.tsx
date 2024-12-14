@@ -27,10 +27,7 @@ export default async function ResumePage({ params }: Props) {
     <main className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-4">
         <h1 className="text-3xl font-bold mb-8">Your Generated Resume</h1>
-        <ResumePreview 
-          resume={resume} 
-          onEdit={() => window.location.href = `/resume/${params.id}/edit`} 
-        />
+        <ResumePreview resume={resume} />
       </div>
     </main>
   );
