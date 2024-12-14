@@ -244,20 +244,15 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Projects</Text>
                   {data.projects.map((project, i) => (
-                    <View key={i} style={{ marginBottom: i < data.projects.length - 1 ? spacing[4] : 0 }}>
-                      <View style={styles.company}>
+                    <View key={i} style={[
+                      styles.company,
+                      i < data.projects.length - 1 ? { marginBottom: spacing[2] } : {}
+                    ]}>
+                      <View style={styles.companyHeader}>
                         <Text style={styles.jobTitle}>{project.name}</Text>
                         {project.url && <Text style={styles.date}>{project.url}</Text>}
                       </View>
                       <Text style={styles.bulletText}>{project.description}</Text>
-                      {project.highlights.flatMap(highlight => 
-                        splitHighlights(highlight).map((line, j) => (
-                          <View key={`${i}-${j}`} style={styles.bullet}>
-                            <Text style={styles.bulletPoint}>•</Text>
-                            <Text style={styles.bulletText}>{line}</Text>
-                          </View>
-                        ))
-                      )}
                     </View>
                   ))}
                 </View>
