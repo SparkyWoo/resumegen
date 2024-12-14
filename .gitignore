@@ -2,3 +2,8 @@
 .next
 node_modules
 .DS_Store
+.vercel
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
