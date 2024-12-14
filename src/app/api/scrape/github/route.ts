@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 export async function POST(req: Request) {
   try {
     const { githubUsername } = await req.json();
+    console.log('Scraping GitHub for:', githubUsername);
     
     // Fetch user's repositories
     const reposResponse = await fetch(
@@ -10,6 +11,7 @@ export async function POST(req: Request) {
       {
         headers: {
           'Accept': 'application/vnd.github.v3+json',
+          'User-Agent': 'InstantResume',
           ...(process.env.GITHUB_TOKEN && {
             'Authorization': `token ${process.env.GITHUB_TOKEN}`
           })
@@ -18,7 +20,13 @@ export async function POST(req: Request) {
     );
 
     if (!reposResponse.ok) {
-      throw new Error('Failed to fetch GitHub repositories');
+      const errorText = await reposResponse.text();
+      console.error('GitHub API error:', {
+        status: reposResponse.status,
+        statusText: reposResponse.statusText,
+        body: errorText
+      });
+      throw new Error(`GitHub API error: ${reposResponse.status}`);
     }
 
     const repos = await reposResponse.json();
@@ -37,10 +45,10 @@ export async function POST(req: Request) {
     };
 
     return NextResponse.json(githubData);
-  } catch (error) {
+  } catch (error: any) {
     console.error('GitHub scraping error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch GitHub data' },
+      { error: 'Failed to fetch GitHub data', details: error.message },
       { status: 500 }
     );
   }
