@@ -41,13 +41,20 @@ const styles = StyleSheet.create({
     borderBottom: '0.5 solid #404040'  // neutral-700
   },
   headerLeft: {
-    flex: 1
+    flex: 1,
+    marginBottom: spacing[1]
   },
   name: {
     fontSize: 20,
     fontFamily: 'Times-Bold',
     marginBottom: spacing[1],
     color: '#171717'  // neutral-900
+  },
+  contactContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: spacing[4],
+    flexWrap: 'wrap'
   },
   contact: {
     color: '#404040',  // neutral-700
@@ -135,6 +142,8 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
   // Helper function to check if a section is empty
   const isSectionEmpty = (section: string) => {
     switch (section) {
+      case 'contact':
+        return !data.basics.email && !data.basics.phone && !data.basics.location;
       case 'summary':
         return !data.basics.summary?.trim();
       case 'work':
@@ -172,18 +181,25 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
               <View style={styles.header}>
                 <View style={styles.headerLeft}>
                   <Text style={styles.name}>{data.basics.name}</Text>
-                  {!isSectionEmpty('contact') && (
-                    <Text style={styles.contact}>
-                      {[
-                        data.basics.location,
-                        data.basics.phone,
-                        data.basics.email,
-                        data.basics.url,
-                        data.basics.profiles?.find(p => p.network === 'LinkedIn')?.username && 
-                          `linkedin.com/in/${data.basics.profiles.find(p => p.network === 'LinkedIn')?.username}`
-                      ].filter(Boolean).join(' • ')}
-                    </Text>
-                  )}
+                  <View style={styles.contactContainer}>
+                    {data.basics.email && (
+                      <Text style={styles.contact}>{data.basics.email}</Text>
+                    )}
+                    {data.basics.phone && (
+                      <Text style={styles.contact}>{data.basics.phone}</Text>
+                    )}
+                    {data.basics.location && (
+                      <Text style={styles.contact}>{data.basics.location}</Text>
+                    )}
+                    {data.basics.url && (
+                      <Text style={styles.contact}>{data.basics.url}</Text>
+                    )}
+                    {data.basics.profiles?.find(p => p.network === 'LinkedIn')?.username && (
+                      <Text style={styles.contact}>
+                        linkedin.com/in/{data.basics.profiles.find(p => p.network === 'LinkedIn')?.username}
+                      </Text>
+                    )}
+                  </View>
                 </View>
               </View>
 
