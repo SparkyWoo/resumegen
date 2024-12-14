@@ -214,7 +214,7 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
                   {data.work.map((job, i) => (
                     <View key={i} style={[
                       styles.company,
-                      i < data.work.length - 1 ? { marginBottom: spacing[4] } : null
+                      i < data.work.length - 1 ? { marginBottom: spacing[4] } : {}
                     ]}>
                       <View style={styles.companyHeader}>
                         <View style={styles.companyInfo}>
