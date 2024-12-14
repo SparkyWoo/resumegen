@@ -115,22 +115,26 @@ const styles = StyleSheet.create({
     color: '#404040'  // neutral-700
   },
   skillsContainer: {
-    marginTop: spacing[1]
+    display: 'flex',
+    flexDirection: 'column',
+    gap: spacing[1]
   },
-  skillCategory: {
+  skillRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: spacing[2],
     marginBottom: spacing[1]
   },
   skillCategoryTitle: {
-    fontSize: 10,
+    fontSize: 10.5,
     fontFamily: 'Times-Bold',
     color: '#171717',  // neutral-900
-    marginRight: spacing[1]
+    width: '100pt'
   },
   skillList: {
     flex: 1,
-    fontSize: 10,
+    fontSize: 10.5,
     color: '#404040',  // neutral-700
-    lineHeight: 1.3
   },
   summary: {
     marginBottom: spacing[3],
@@ -265,23 +269,14 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Skills</Text>
                   <View style={styles.skillsContainer}>
-                    {[
-                      { title: 'Languages', filter: (s: string) => s.includes('Languages:') },
-                      { title: 'Frameworks', filter: (s: string) => s.includes('Frameworks:') },
-                      { title: 'Tools', filter: (s: string) => s.includes('Tools:') },
-                      { title: 'Platforms', filter: (s: string) => s.includes('Platforms:') }
-                    ].map((category, i) => {
-                      const categorySkills = data.skills.filter(category.filter);
-                      if (categorySkills.length === 0) return null;
-                      
-                      const skillLines = categorySkills
-                        .flatMap(skill => splitHighlights(skill.replace(/^[^:]+:\s*/, '')))
-                        .join(', ');
+                    {data.skills.map((skill, i) => {
+                      const [category, items] = skill.split(':').map(s => s.trim());
+                      if (!items) return null;
                       
                       return (
-                        <View key={i} style={styles.bullet}>
-                          <Text style={styles.skillCategoryTitle}>{category.title}: </Text>
-                          <Text style={styles.skillList}>{skillLines}</Text>
+                        <View key={i} style={styles.skillRow}>
+                          <Text style={styles.skillCategoryTitle}>{category}:</Text>
+                          <Text style={styles.skillList}>{items}</Text>
                         </View>
                       );
                     })}
