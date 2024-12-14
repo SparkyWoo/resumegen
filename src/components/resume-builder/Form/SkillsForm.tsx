@@ -18,24 +18,25 @@ export const SkillsForm = ({ data, onChange, jobData }: Props) => {
   }, [jobData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const skills = e.target.value.split('\n').filter(Boolean);
+    const skills = e.target.value.split('\n');
     onChange(skills);
   };
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Skills</h2>
-      
       <div>
         <label className="block text-sm font-medium text-gray-700">
           Skills (one per line)
         </label>
+        <div className="mt-1 text-sm text-gray-500">
+          Format: Category: Skill1, Skill2, Skill3
+        </div>
         <textarea
           value={data.join('\n')}
           onChange={handleChange}
-          rows={6}
-          placeholder="Enter your skills..."
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
+          rows={10}
+          placeholder="Programming: Python, JavaScript, TypeScript&#10;Frameworks: React, Next.js, Django&#10;Cloud: AWS, GCP, Azure"
+          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm"
         />
       </div>
     </div>

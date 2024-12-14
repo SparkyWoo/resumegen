@@ -40,7 +40,7 @@ export const WorkForm = ({ data, onChange }: Props) => {
     const newData = [...data];
     newData[index] = {
       ...newData[index],
-      highlights: e.target.value.split('\n').filter(Boolean)
+      highlights: e.target.value.split('\n')
     };
     onChange(newData);
   };
@@ -105,11 +105,15 @@ export const WorkForm = ({ data, onChange }: Props) => {
             <label className="block text-sm font-medium text-gray-700">
               Highlights (one per line)
             </label>
+            <div className="mt-1 text-sm text-gray-500">
+              Start each bullet point on a new line. Empty lines will be preserved.
+            </div>
             <textarea
               value={work.highlights.join('\n')}
               onChange={handleHighlightChange(index)}
-              rows={4}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
+              rows={6}
+              placeholder="• Led a team of 5 engineers&#10;• Increased performance by 50%&#10;• Implemented new features"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm"
             />
           </div>
 
