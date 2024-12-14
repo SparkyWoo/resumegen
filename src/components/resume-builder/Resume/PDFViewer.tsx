@@ -27,119 +27,120 @@ const spacing = {
 
 const styles = StyleSheet.create({
   page: {
-    padding: `${spacing[8]} ${spacing[10]}`,
+    padding: `${spacing[6]} ${spacing[8]}`,
     fontFamily: 'Times-Roman',
     fontSize: 10,
-    lineHeight: 1.3,
-    color: '#171717'  // neutral-900
+    lineHeight: 1.2,
+    color: '#171717'
   },
   header: {
-    marginBottom: spacing[6],
-    paddingBottom: spacing[2],
-    borderBottom: '0.5 solid #404040'  // neutral-700
+    marginBottom: spacing[4],
+    paddingBottom: spacing[1],
+    borderBottom: '0.5 solid #404040'
   },
   name: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: 'Times-Bold',
-    marginBottom: spacing[2],
+    marginBottom: spacing[1],
     textAlign: 'center',
-    color: '#171717'  // neutral-900
+    color: '#171717'
   },
   contactInfo: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: spacing[2],
-    fontSize: 10,
-    color: '#404040',  // neutral-700
+    gap: spacing[1],
+    fontSize: 9,
+    color: '#404040'
   },
   contactDivider: {
-    color: '#404040'  // neutral-700
+    color: '#404040'
   },
   section: {
-    marginBottom: spacing[4]
+    marginBottom: spacing[3]
   },
   sectionTitle: {
-    fontSize: 12,
-    fontFamily: 'Times-Bold',
-    marginBottom: spacing[2],
-    color: '#171717',  // neutral-900
-    textTransform: 'uppercase',
-    paddingBottom: spacing[0.5],
-    borderBottom: '0.5 solid #404040'  // neutral-700
-  },
-  jobTitle: {
     fontSize: 11,
     fontFamily: 'Times-Bold',
-    color: '#171717'  // neutral-900
+    marginBottom: spacing[1],
+    color: '#171717',
+    textTransform: 'uppercase',
+    paddingBottom: spacing[0.5],
+    borderBottom: '0.5 solid #404040'
+  },
+  jobTitle: {
+    fontSize: 10,
+    fontFamily: 'Times-Bold',
+    color: '#171717'
   },
   company: {
-    marginBottom: spacing[1]
+    marginBottom: spacing[2]
   },
   companyHeader: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: spacing[0.5]
   },
   companyInfo: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing[2]
+    gap: spacing[1]
   },
   companyName: {
-    fontSize: 11,
-    color: '#404040'  // neutral-700
+    fontSize: 10,
+    color: '#404040'
   },
   date: {
-    fontSize: 10,
-    color: '#525252',  // neutral-600
+    fontSize: 9,
+    color: '#525252',
     fontStyle: 'italic'
   },
   bullet: {
     display: 'flex',
     flexDirection: 'row',
-    marginBottom: spacing[1],
-    paddingLeft: spacing[4]
+    marginBottom: spacing[0.5],
+    paddingLeft: spacing[3]
   },
   bulletPoint: {
     width: spacing[1],
-    fontSize: 9,
+    fontSize: 8,
     marginRight: spacing[1]
   },
   bulletText: {
     flex: 1,
-    fontSize: 10.5,
-    lineHeight: 1.4,
-    color: '#404040'  // neutral-700
+    fontSize: 10,
+    lineHeight: 1.3,
+    color: '#404040'
   },
   skillsContainer: {
     display: 'flex',
     flexDirection: 'column',
-    gap: spacing[1]
+    gap: spacing[0.5]
   },
   skillRow: {
     display: 'flex',
     flexDirection: 'row',
-    marginBottom: spacing[1]
+    marginBottom: spacing[0.5]
   },
   skillCategoryTitle: {
     fontSize: 10.5,
     fontFamily: 'Times-Bold',
-    color: '#171717',  // neutral-900
+    color: '#171717',
     width: '100pt'
   },
   skillList: {
     flex: 1,
-    fontSize: 10.5,
-    color: '#404040',  // neutral-700
-    lineHeight: 1.4
+    fontSize: 10,
+    color: '#404040',
+    lineHeight: 1.3
   },
   summary: {
-    marginBottom: spacing[3],
-    color: '#404040',  // neutral-700
-    lineHeight: 1.4,
+    marginBottom: spacing[2],
+    color: '#404040',
+    lineHeight: 1.3,
     fontSize: 10
   }
 });
