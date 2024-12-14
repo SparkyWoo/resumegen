@@ -24,11 +24,7 @@ export const ProjectsForm = ({ data, onChange, githubData }: Props) => {
         name: repo.name,
         description: repo.description || '',
         url: repo.url,
-        highlights: [
-          `Built with ${repo.language}`,
-          `${repo.stars} GitHub stars`,
-          ...repo.topics || []
-        ]
+        highlights: []
       }));
       onChange(githubProjects);
     }
@@ -57,17 +53,6 @@ export const ProjectsForm = ({ data, onChange, githubData }: Props) => {
     newData[index] = {
       ...newData[index],
       [field]: e.target.value
-    };
-    onChange(newData);
-  };
-
-  const handleHighlightChange = (index: number) => (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    const newData = [...data];
-    newData[index] = {
-      ...newData[index],
-      highlights: e.target.value.split('\n').filter(Boolean)
     };
     onChange(newData);
   };
@@ -104,6 +89,7 @@ export const ProjectsForm = ({ data, onChange, githubData }: Props) => {
                 value={project.url}
                 onChange={handleChange(index, 'url')}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
+                placeholder="e.g., https://github.com/username/project"
               />
             </div>
           </div>
@@ -113,20 +99,9 @@ export const ProjectsForm = ({ data, onChange, githubData }: Props) => {
             <textarea
               value={project.description}
               onChange={handleChange(index, 'description')}
-              rows={2}
+              rows={3}
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Highlights (one per line)
-            </label>
-            <textarea
-              value={project.highlights.join('\n')}
-              onChange={handleHighlightChange(index)}
-              rows={4}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
+              placeholder="Brief description of the project and your role"
             />
           </div>
 
