@@ -47,7 +47,7 @@ export const ResumeBuilder = ({ initialData, githubData }: Props) => {
   };
 
   return (
-    <main className="relative h-full w-full overflow-hidden bg-zinc-50">
+    <main className="h-screen w-full bg-zinc-50">
       {/* Fixed Header */}
       <div className="fixed top-0 left-0 right-0 z-10 bg-white border-b border-zinc-200 px-6 py-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
@@ -77,9 +77,9 @@ export const ResumeBuilder = ({ initialData, githubData }: Props) => {
         </div>
       </div>
 
-      <div className="grid h-screen grid-cols-1 lg:grid-cols-2 pt-32">
+      <div className="grid h-[calc(100vh-116px)] grid-cols-1 lg:grid-cols-2 mt-[116px]">
         {/* Form Section */}
-        <div className="h-full overflow-y-auto border-r border-zinc-200 bg-white px-6 scrollbar-thin scrollbar-track-zinc-100 scrollbar-thumb-zinc-300">
+        <div className="overflow-y-auto border-r border-zinc-200 bg-white px-6">
           <div className="mx-auto w-full max-w-3xl py-8">
             <Form 
               githubData={githubData} 
@@ -90,10 +90,8 @@ export const ResumeBuilder = ({ initialData, githubData }: Props) => {
         </div>
 
         {/* Preview Section - Always visible on large screens */}
-        <div className="relative h-screen overflow-hidden bg-zinc-100/50 hidden lg:block">
-          <div className="absolute inset-0">
-            <PDFViewer data={resume} />
-          </div>
+        <div className="sticky top-[116px] h-[calc(100vh-116px)] overflow-hidden bg-zinc-100/50 hidden lg:block">
+          <PDFViewer data={resume} />
         </div>
       </div>
     </main>

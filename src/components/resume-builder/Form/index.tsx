@@ -76,12 +76,12 @@ export const Form = ({ githubData, activeSection, onSectionChange }: FormProps) 
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-8">
       {sections.map((section) => (
         <section 
           key={section.id}
           id={section.id}
-          className={`space-y-4 scroll-mt-32 rounded-lg bg-white p-6 shadow-sm ${
+          className={`space-y-4 scroll-mt-[140px] rounded-lg bg-white p-6 shadow-sm ${
             activeSection === section.id ? 'ring-2 ring-blue-500' : ''
           }`}
         >
