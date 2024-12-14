@@ -3,36 +3,71 @@ import { ResumeState } from '@/lib/redux/resumeSlice';
 
 const styles = StyleSheet.create({
   page: {
-    padding: 30,
-    fontFamily: 'Helvetica'
+    padding: '40 50',
+    fontFamily: 'Helvetica',
+    fontSize: 11,
+    lineHeight: 1.5,
+    color: '#334155'
+  },
+  header: {
+    marginBottom: 20
+  },
+  name: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 4,
+    color: '#111827'
+  },
+  contact: {
+    flexDirection: 'row',
+    gap: 15,
+    color: '#4B5563',
+    fontSize: 11
   },
   section: {
-    marginBottom: 20
+    marginBottom: 15
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#334155'
+    marginBottom: 8,
+    color: '#111827',
+    textTransform: 'uppercase',
+    paddingBottom: 4,
+    borderBottom: '1 solid #E5E7EB'
   },
-  heading: {
-    fontSize: 24,
+  jobTitle: {
+    fontSize: 13,
     fontWeight: 'bold',
-    marginBottom: 5
+    color: '#111827'
   },
-  subheading: {
-    fontSize: 14,
+  company: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4
+  },
+  companyName: {
+    fontSize: 12,
     fontWeight: 'bold',
-    marginBottom: 5
+    color: '#4B5563'
   },
-  text: {
-    fontSize: 12,
-    marginBottom: 3
+  date: {
+    fontSize: 11,
+    color: '#6B7280'
   },
-  summary: {
-    fontSize: 12,
-    marginBottom: 15,
-    lineHeight: 1.4
+  bullet: {
+    flexDirection: 'row',
+    marginBottom: 2,
+    paddingLeft: 8
+  },
+  bulletPoint: {
+    width: 6,
+    fontSize: 9,
+    marginRight: 6,
+    marginTop: 4
+  },
+  bulletText: {
+    flex: 1
   },
   skills: {
     flexDirection: 'row',
@@ -40,42 +75,83 @@ const styles = StyleSheet.create({
     gap: 8
   },
   skill: {
-    fontSize: 11,
-    backgroundColor: '#f1f5f9',
-    padding: '4 8',
-    borderRadius: 4
+    backgroundColor: '#F3F4F6',
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    borderRadius: 4,
+    fontSize: 10,
+    color: '#4B5563'
+  },
+  summary: {
+    marginBottom: 15,
+    color: '#4B5563',
+    lineHeight: 1.6
   }
 });
 
-interface Props {
-  data: ResumeState;
-}
-
-export const PDFViewer = ({ data }: Props) => {
+export const PDFViewer = ({ data }: { data: ResumeState }) => {
   return (
-    <ReactPDFViewer width="100%" height={800}>
+    <ReactPDFViewer className="h-full w-full">
       <Document>
         <Page size="A4" style={styles.page}>
-          {/* Basic Info */}
-          <View style={styles.section}>
-            <Text style={styles.heading}>{data.basics.name}</Text>
-            <Text style={styles.text}>{data.basics.email} • {data.basics.phone}</Text>
-            <Text style={styles.text}>{data.basics.location}</Text>
-            {data.basics.summary && (
-              <Text style={styles.summary}>{data.basics.summary}</Text>
-            )}
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.name}>{data.basics.name}</Text>
+            <View style={styles.contact}>
+              {data.basics.email && <Text>{data.basics.email}</Text>}
+              {data.basics.phone && <Text>{data.basics.phone}</Text>}
+              {data.basics.location && <Text>{data.basics.location}</Text>}
+              {data.basics.url && <Text>{data.basics.url}</Text>}
+            </View>
           </View>
+
+          {/* Summary */}
+          {data.basics.summary && (
+            <View style={styles.section}>
+              <Text style={styles.summary}>{data.basics.summary}</Text>
+            </View>
+          )}
 
           {/* Work Experience */}
           {data.work.length > 0 && (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Work Experience</Text>
-              {data.work.map((work, i) => (
+              <Text style={styles.sectionTitle}>Experience</Text>
+              {data.work.map((job, i) => (
                 <View key={i} style={{ marginBottom: 10 }}>
-                  <Text style={styles.subheading}>{work.position} at {work.company}</Text>
-                  <Text style={styles.text}>{work.startDate} - {work.endDate}</Text>
-                  {work.highlights.map((highlight, j) => (
-                    <Text key={j} style={styles.text}>• {highlight}</Text>
+                  <View style={styles.company}>
+                    <Text style={styles.jobTitle}>{job.position}</Text>
+                    <Text style={styles.date}>{job.startDate} - {job.endDate}</Text>
+                  </View>
+                  <Text style={styles.companyName}>{job.company}</Text>
+                  {job.highlights.map((highlight, j) => (
+                    <View key={j} style={styles.bullet}>
+                      <Text style={styles.bulletPoint}>•</Text>
+                      <Text style={styles.bulletText}>{highlight}</Text>
+                    </View>
+                  ))}
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* Projects */}
+          {data.projects.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Projects</Text>
+              {data.projects.map((project, i) => (
+                <View key={i} style={{ marginBottom: 10 }}>
+                  <View style={styles.company}>
+                    <Text style={styles.jobTitle}>{project.name}</Text>
+                    {project.url && <Text style={styles.date}>{project.url}</Text>}
+                  </View>
+                  {project.description && (
+                    <Text style={styles.companyName}>{project.description}</Text>
+                  )}
+                  {project.highlights.map((highlight, j) => (
+                    <View key={j} style={styles.bullet}>
+                      <Text style={styles.bulletPoint}>•</Text>
+                      <Text style={styles.bulletText}>{highlight}</Text>
+                    </View>
                   ))}
                 </View>
               ))}
@@ -88,27 +164,11 @@ export const PDFViewer = ({ data }: Props) => {
               <Text style={styles.sectionTitle}>Education</Text>
               {data.education.map((edu, i) => (
                 <View key={i} style={{ marginBottom: 10 }}>
-                  <Text style={styles.subheading}>{edu.studyType} in {edu.area}</Text>
-                  <Text style={styles.text}>{edu.institution}</Text>
-                  <Text style={styles.text}>{edu.startDate} - {edu.endDate}</Text>
-                  {edu.score && <Text style={styles.text}>GPA: {edu.score}</Text>}
-                </View>
-              ))}
-            </View>
-          )}
-
-          {/* Projects */}
-          {data.projects.length > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Projects</Text>
-              {data.projects.map((project, i) => (
-                <View key={i} style={{ marginBottom: 10 }}>
-                  <Text style={styles.subheading}>{project.name}</Text>
-                  <Text style={styles.text}>{project.description}</Text>
-                  {project.url && <Text style={styles.text}>URL: {project.url}</Text>}
-                  {project.highlights.map((highlight, j) => (
-                    <Text key={j} style={styles.text}>• {highlight}</Text>
-                  ))}
+                  <View style={styles.company}>
+                    <Text style={styles.jobTitle}>{edu.studyType} {edu.area}</Text>
+                    <Text style={styles.date}>{edu.startDate} - {edu.endDate}</Text>
+                  </View>
+                  <Text style={styles.companyName}>{edu.institution}</Text>
                 </View>
               ))}
             </View>
