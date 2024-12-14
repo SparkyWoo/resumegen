@@ -19,22 +19,25 @@ export const ResumeBuilder = ({ initialData }: Props) => {
   }, [dispatch, initialData]);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="mx-auto max-w-[1600px] px-4">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-          <div className="col-span-1 space-y-8">
-            <div className="rounded-lg bg-white p-8 shadow">
-              <h1 className="mb-6 text-3xl font-bold">Resume Builder</h1>
-              <Form />
-            </div>
+    <main className="relative h-full w-full overflow-hidden bg-zinc-50">
+      <div className="grid h-[100vh] grid-cols-1 gap-0 lg:grid-cols-2">
+        {/* Form Section */}
+        <div className="h-full overflow-y-auto border-r border-zinc-200 bg-white px-6 scrollbar-thin scrollbar-track-zinc-100 scrollbar-thumb-zinc-300">
+          <div className="mx-auto w-full max-w-3xl py-8">
+            <h1 className="mb-8 text-3xl font-bold">Resume Builder</h1>
+            <Form />
           </div>
-          <div className="col-span-1 lg:sticky lg:top-8 lg:h-[calc(100vh-4rem)]">
-            <div className="h-full rounded-lg bg-white p-8 shadow">
+        </div>
+
+        {/* Preview Section */}
+        <div className="relative h-full overflow-hidden bg-zinc-100/50">
+          <div className="absolute inset-0 overflow-y-auto p-6 scrollbar-thin scrollbar-track-zinc-100 scrollbar-thumb-zinc-300">
+            <div className="mx-auto w-full max-w-3xl">
               <Resume />
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }; 
