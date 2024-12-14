@@ -16,15 +16,13 @@ Font.register({
   family: 'Liberation Serif',
   fonts: [
     { 
-      src: '/fonts/LiberationSerif-Regular.ttf',
-      fontWeight: 'normal',
-      fontStyle: 'normal'
+      src: 'https://db.onlinewebfonts.com/t/c2d0a02d7e9a84415e33b4238b29d1c3.ttf',
+      fontWeight: 'normal'
     },
     { 
-      src: '/fonts/LiberationSerif-Bold.ttf',
-      fontWeight: 'bold',
-      fontStyle: 'normal'
-    },
+      src: 'https://db.onlinewebfonts.com/t/6d0863b717c36af4700a0d0a5c5af2fb.ttf',
+      fontWeight: 'bold'
+    }
   ]
 });
 
