@@ -11,113 +11,123 @@ const ReactPDFViewer = dynamic(
   { ssr: false }
 );
 
+// Tailwind spacing in points (pt) for PDF
+const spacing = {
+  0.5: "1.5pt",
+  1: "3pt",
+  2: "6pt",
+  3: "9pt",
+  4: "12pt",
+  5: "15pt",
+  6: "18pt",
+  8: "24pt",
+  10: "30pt",
+  12: "36pt"
+};
+
 const styles = StyleSheet.create({
   page: {
-    padding: '40 60',
+    padding: `${spacing[8]} ${spacing[10]}`,
     fontFamily: 'Times-Roman',
-    fontSize: 11,
-    lineHeight: 1.6,
-    color: '#1a1a1a'
+    fontSize: 10,
+    lineHeight: 1.3,
+    color: '#171717'  // neutral-900
   },
   header: {
+    display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 25,
-    paddingBottom: 15,
-    borderBottom: '1 solid #000000'
+    marginBottom: spacing[6],
+    paddingBottom: spacing[2],
+    borderBottom: '0.5 solid #404040'  // neutral-700
   },
   headerLeft: {
     flex: 1
   },
-  headerRight: {
-    width: '30%',
-    textAlign: 'right'
-  },
   name: {
-    fontSize: 28,
+    fontSize: 20,
     fontFamily: 'Times-Bold',
-    marginBottom: 4,
-    color: '#000000'
+    marginBottom: spacing[1],
+    color: '#171717'  // neutral-900
   },
   contact: {
-    color: '#1a1a1a',
-    fontSize: 10,
+    color: '#404040',  // neutral-700
+    fontSize: 9,
     lineHeight: 1.4
   },
-  contactLink: {
-    color: '#000000',
-    textDecoration: 'none'
-  },
   section: {
-    marginBottom: 20
+    marginBottom: spacing[4]
   },
   sectionTitle: {
-    fontSize: 14,
-    fontFamily: 'Times-Bold',
-    marginBottom: 12,
-    color: '#000000',
-    textTransform: 'uppercase',
-    paddingBottom: 4,
-    borderBottom: '1 solid #000000'
-  },
-  jobTitle: {
     fontSize: 12,
     fontFamily: 'Times-Bold',
-    color: '#000000'
+    marginBottom: spacing[2],
+    color: '#171717',  // neutral-900
+    textTransform: 'uppercase',
+    paddingBottom: spacing[0.5],
+    borderBottom: '0.5 solid #404040'  // neutral-700
+  },
+  jobTitle: {
+    fontSize: 10,
+    fontFamily: 'Times-Bold',
+    color: '#171717'  // neutral-900
   },
   company: {
+    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 6,
-    marginTop: 12
+    marginBottom: spacing[0.5],
+    marginTop: spacing[2]
   },
   companyName: {
-    fontSize: 11,
+    fontSize: 10,
     fontFamily: 'Times-Bold',
-    color: '#1a1a1a'
+    color: '#404040'  // neutral-700
   },
   date: {
-    fontSize: 11,
-    color: '#1a1a1a'
+    fontSize: 9,
+    color: '#525252'  // neutral-600
   },
   bullet: {
+    display: 'flex',
     flexDirection: 'row',
-    marginBottom: 3,
-    paddingLeft: 12
+    marginBottom: spacing[0.5],
+    paddingLeft: spacing[2]
   },
   bulletPoint: {
-    width: 6,
-    fontSize: 10,
-    marginRight: 6,
-    marginTop: 2
+    width: spacing[1],
+    fontSize: 8,
+    marginRight: spacing[1],
+    marginTop: "2pt"
   },
   bulletText: {
     flex: 1,
-    fontSize: 11,
-    lineHeight: 1.4
+    fontSize: 10,
+    lineHeight: 1.3,
+    color: '#404040'  // neutral-700
   },
   skillsContainer: {
-    marginTop: 8
+    marginTop: spacing[1]
   },
   skillCategory: {
-    marginBottom: 8
+    marginBottom: spacing[1]
   },
   skillCategoryTitle: {
-    fontSize: 11,
+    fontSize: 10,
     fontFamily: 'Times-Bold',
-    marginBottom: 4,
-    color: '#000000'
+    color: '#171717',  // neutral-900
+    marginRight: spacing[1]
   },
   skillList: {
-    fontSize: 11,
-    color: '#1a1a1a',
-    lineHeight: 1.4
+    flex: 1,
+    fontSize: 10,
+    color: '#404040',  // neutral-700
+    lineHeight: 1.3
   },
   summary: {
-    marginBottom: 20,
-    color: '#1a1a1a',
-    lineHeight: 1.6,
-    fontSize: 11
+    marginBottom: spacing[3],
+    color: '#404040',  // neutral-700
+    lineHeight: 1.4,
+    fontSize: 10
   }
 });
 
