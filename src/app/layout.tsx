@@ -1,5 +1,5 @@
 import React from 'react';
-import { Providers } from './providers';
+import { Providers } from '@/lib/redux/provider';
 
 export default function RootLayout({
   children,

@@ -10,7 +10,6 @@ interface Props {
 
 export function ResumePreview({ resume }: Props) {
   const router = useRouter();
-  const { linkedin_data, github_data, job_data } = resume;
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-8">
@@ -24,7 +23,7 @@ export function ResumePreview({ resume }: Props) {
       {/* GitHub Section */}
       <section className="mb-8">
         <h3 className="text-lg font-semibold mb-4">GitHub Projects</h3>
-        {github_data.repositories.map((repo: any, i: number) => (
+        {resume.github_data?.repositories?.map((repo: any, i: number) => (
           <div key={i} className="mb-4">
             <h4 className="font-medium">{repo.name}</h4>
             <p className="text-sm text-gray-600">{repo.description}</p>
@@ -41,12 +40,12 @@ export function ResumePreview({ resume }: Props) {
         <h3 className="text-lg font-semibold mb-4">Job Match</h3>
         <div className="mb-4">
           <h4 className="font-medium">Position</h4>
-          <p>{job_data.title}</p>
+          <p>{resume.job_data?.title ?? 'No title'}</p>
         </div>
         <div className="mb-4">
           <h4 className="font-medium">Skills</h4>
           <div className="flex flex-wrap gap-2">
-            {job_data.skills.map((skill: string, i: number) => (
+            {resume.job_data?.skills?.map((skill: string, i: number) => (
               <span
                 key={i}
                 className="px-3 py-1 bg-gray-100 rounded-full text-sm"
@@ -58,12 +57,12 @@ export function ResumePreview({ resume }: Props) {
         </div>
       </section>
 
-      <div className="mt-8 flex justify-end">
+      <div className="mt-8 flex justify-end space-x-4">
         <button
-          onClick={() => router.push(`/resume/${resume.id}/edit`)}
+          onClick={() => router.push(`/resume/${resume.id}/builder`)}
           className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
         >
-          Edit Resume
+          Customize Resume
         </button>
       </div>
     </div>

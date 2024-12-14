@@ -38,25 +38,51 @@ interface GitHubRepository {
 
 export interface Resume {
   id: string;
-  user_id: string;
-  github_data: {
-    repositories: GitHubRepository[];
+  name: string;
+  email: string;
+  phone: string;
+  location: string;
+  url: string;
+  summary: string;
+  work: Array<{
+    company: string;
+    position: string;
+    startDate: string;
+    endDate: string;
+    highlights: string[];
+  }>;
+  education: Array<{
+    institution: string;
+    area: string;
+    studyType: string;
+    startDate: string;
+    endDate: string;
+    score: string;
+  }>;
+  projects: Array<{
+    name: string;
+    description: string;
+    url: string;
+    highlights: string[];
+  }>;
+  skills: string[];
+  github_data?: {
+    repositories: Array<{
+      name: string;
+      description: string | null;
+      language: string;
+      stars: number;
+      url: string;
+    }>;
   };
-  linkedin_data: {
-    profile: LinkedInProfile;
-    email: string;
-    experience: {
-      elements: LinkedInExperience[];
-    };
+  linkedin_data?: {
+    // ... LinkedIn fields
   };
-  job_data: {
+  job_data?: {
     title: string;
     description: string;
-    requirements: string[];
     skills: string[];
   };
-  generated_content: any;
-  created_at: string;
 }
 
 export interface Job {
