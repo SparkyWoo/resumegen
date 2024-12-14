@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import dynamic from 'next/dynamic';
 import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
 import { ResumeState } from '@/lib/redux/resumeSlice';
@@ -140,113 +141,114 @@ const styles = StyleSheet.create({
 export const PDFViewer = ({ data }: { data: ResumeState }) => {
   return (
     <div className="h-full w-full">
-      <ReactPDFViewer 
-        style={{ width: '100%', height: '100vh' }}
-        showToolbar={false}
-        loading={
-          <div className="flex items-center justify-center h-full w-full">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-          </div>
-        }
-      >
-        <Document>
-          <Page size="A4" style={styles.page}>
-            {/* Header */}
-            <View style={styles.header}>
-              <View style={styles.headerLeft}>
-                <Text style={styles.name}>{data.basics.name}</Text>
-              </View>
-              <View style={styles.headerRight}>
-                <Text style={styles.contact}>{data.basics.email}</Text>
-                {data.basics.phone && <Text style={styles.contact}>{data.basics.phone}</Text>}
-                {data.basics.location && <Text style={styles.contact}>{data.basics.location}</Text>}
-                {data.basics.url && <Text style={styles.contact}>{data.basics.url}</Text>}
-                {data.basics.profiles?.map((profile, index) => 
-                  profile.network === 'LinkedIn' ? (
-                    <Text key={index} style={styles.contact}>
-                      linkedin.com/in/{profile.username}
-                    </Text>
-                  ) : null
-                )}
-              </View>
-            </View>
-
-            {/* Summary */}
-            {data.basics.summary && (
-              <View style={styles.section}>
-                <Text style={styles.summary}>{data.basics.summary}</Text>
-              </View>
-            )}
-
-            {/* Work Experience */}
-            {data.work.length > 0 && (
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Professional Experience</Text>
-                {data.work.map((job, i) => (
-                  <View key={i} style={{ marginBottom: i < data.work.length - 1 ? 15 : 0 }}>
-                    <View style={styles.company}>
-                      <Text style={styles.jobTitle}>{job.position}</Text>
-                      <Text style={styles.date}>{job.startDate} - {job.endDate}</Text>
-                    </View>
-                    <Text style={styles.companyName}>{job.company}</Text>
-                    {job.highlights.map((highlight, j) => (
-                      <View key={j} style={styles.bullet}>
-                        <Text style={styles.bulletPoint}>•</Text>
-                        <Text style={styles.bulletText}>{highlight}</Text>
-                      </View>
-                    ))}
-                  </View>
-                ))}
-              </View>
-            )}
-
-            {/* Skills */}
-            {data.skills.length > 0 && (
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Technical Skills</Text>
-                <View style={styles.skillsContainer}>
-                  {/* Group skills by category */}
-                  {[
-                    { title: 'Backend', filter: (s: string) => s.includes('Backend:') },
-                    { title: 'Frontend', filter: (s: string) => s.includes('Front End:') },
-                    { title: 'Data', filter: (s: string) => s.includes('Data:') },
-                    { title: 'DevOps', filter: (s: string) => s.includes('Deployment:') || s.includes('CI/CD:') }
-                  ].map((category, i) => {
-                    const categorySkills = data.skills.filter(category.filter);
-                    if (categorySkills.length === 0) return null;
-                    
-                    return (
-                      <View key={i} style={styles.skillCategory}>
-                        <Text style={styles.skillCategoryTitle}>{category.title}:</Text>
-                        <Text style={styles.skillList}>
-                          {categorySkills.map(skill => skill.replace(/^[^:]+:\s*/, '')).join(', ')}
-                        </Text>
-                      </View>
-                    );
-                  })}
+      <React.Suspense fallback={
+        <div className="flex items-center justify-center h-full w-full">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+        </div>
+      }>
+        <ReactPDFViewer 
+          style={{ width: '100%', height: '100vh' }}
+          showToolbar={false}
+        >
+          <Document>
+            <Page size="A4" style={styles.page}>
+              {/* Header */}
+              <View style={styles.header}>
+                <View style={styles.headerLeft}>
+                  <Text style={styles.name}>{data.basics.name}</Text>
+                </View>
+                <View style={styles.headerRight}>
+                  <Text style={styles.contact}>{data.basics.email}</Text>
+                  {data.basics.phone && <Text style={styles.contact}>{data.basics.phone}</Text>}
+                  {data.basics.location && <Text style={styles.contact}>{data.basics.location}</Text>}
+                  {data.basics.url && <Text style={styles.contact}>{data.basics.url}</Text>}
+                  {data.basics.profiles?.map((profile, index) => 
+                    profile.network === 'LinkedIn' ? (
+                      <Text key={index} style={styles.contact}>
+                        linkedin.com/in/{profile.username}
+                      </Text>
+                    ) : null
+                  )}
                 </View>
               </View>
-            )}
 
-            {/* Education */}
-            {data.education.length > 0 && (
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Education</Text>
-                {data.education.map((edu, i) => (
-                  <View key={i} style={{ marginBottom: i < data.education.length - 1 ? 10 : 0 }}>
-                    <View style={styles.company}>
-                      <Text style={styles.jobTitle}>{edu.studyType} {edu.area}</Text>
-                      <Text style={styles.date}>{edu.startDate} - {edu.endDate}</Text>
+              {/* Summary */}
+              {data.basics.summary && (
+                <View style={styles.section}>
+                  <Text style={styles.summary}>{data.basics.summary}</Text>
+                </View>
+              )}
+
+              {/* Work Experience */}
+              {data.work.length > 0 && (
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Professional Experience</Text>
+                  {data.work.map((job, i) => (
+                    <View key={i} style={{ marginBottom: i < data.work.length - 1 ? 15 : 0 }}>
+                      <View style={styles.company}>
+                        <Text style={styles.jobTitle}>{job.position}</Text>
+                        <Text style={styles.date}>{job.startDate} - {job.endDate}</Text>
+                      </View>
+                      <Text style={styles.companyName}>{job.company}</Text>
+                      {job.highlights.map((highlight, j) => (
+                        <View key={j} style={styles.bullet}>
+                          <Text style={styles.bulletPoint}>•</Text>
+                          <Text style={styles.bulletText}>{highlight}</Text>
+                        </View>
+                      ))}
                     </View>
-                    <Text style={styles.companyName}>{edu.institution}</Text>
-                  </View>
-                ))}
-              </View>
-            )}
+                  ))}
+                </View>
+              )}
 
-          </Page>
-        </Document>
-      </ReactPDFViewer>
+              {/* Skills */}
+              {data.skills.length > 0 && (
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Technical Skills</Text>
+                  <View style={styles.skillsContainer}>
+                    {/* Group skills by category */}
+                    {[
+                      { title: 'Backend', filter: (s: string) => s.includes('Backend:') },
+                      { title: 'Frontend', filter: (s: string) => s.includes('Front End:') },
+                      { title: 'Data', filter: (s: string) => s.includes('Data:') },
+                      { title: 'DevOps', filter: (s: string) => s.includes('Deployment:') || s.includes('CI/CD:') }
+                    ].map((category, i) => {
+                      const categorySkills = data.skills.filter(category.filter);
+                      if (categorySkills.length === 0) return null;
+                      
+                      return (
+                        <View key={i} style={styles.skillCategory}>
+                          <Text style={styles.skillCategoryTitle}>{category.title}:</Text>
+                          <Text style={styles.skillList}>
+                            {categorySkills.map(skill => skill.replace(/^[^:]+:\s*/, '')).join(', ')}
+                          </Text>
+                        </View>
+                      );
+                    })}
+                  </View>
+                </View>
+              )}
+
+              {/* Education */}
+              {data.education.length > 0 && (
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Education</Text>
+                  {data.education.map((edu, i) => (
+                    <View key={i} style={{ marginBottom: i < data.education.length - 1 ? 10 : 0 }}>
+                      <View style={styles.company}>
+                        <Text style={styles.jobTitle}>{edu.studyType} {edu.area}</Text>
+                        <Text style={styles.date}>{edu.startDate} - {edu.endDate}</Text>
+                      </View>
+                      <Text style={styles.companyName}>{edu.institution}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+            </Page>
+          </Document>
+        </ReactPDFViewer>
+      </React.Suspense>
     </div>
   );
 }; 
