@@ -9,6 +9,10 @@ export interface ResumeState {
     location: string;
     url: string;
     summary: string;
+    profiles?: Array<{
+      network: string;
+      username: string;
+    }>;
   };
   work: Array<{
     company: string;

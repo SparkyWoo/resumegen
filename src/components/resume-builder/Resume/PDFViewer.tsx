@@ -1,91 +1,122 @@
-import { Document, Page, Text, View, StyleSheet, PDFViewer as ReactPDFViewer } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, PDFViewer as ReactPDFViewer, Font } from '@react-pdf/renderer';
 import { ResumeState } from '@/lib/redux/resumeSlice';
+
+// Register fonts
+Font.register({
+  family: 'Liberation Serif',
+  fonts: [
+    { src: '/fonts/LiberationSerif-Regular.ttf' },
+    { src: '/fonts/LiberationSerif-Bold.ttf', fontWeight: 'bold' },
+  ]
+});
 
 const styles = StyleSheet.create({
   page: {
-    padding: '40 50',
-    fontFamily: 'Helvetica',
+    padding: '40 60',
+    fontFamily: 'Liberation Serif',
     fontSize: 11,
-    lineHeight: 1.5,
-    color: '#334155'
+    lineHeight: 1.6,
+    color: '#1a1a1a'
   },
   header: {
-    marginBottom: 20
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 25,
+    paddingBottom: 15,
+    borderBottom: '1 solid #000000'
+  },
+  headerLeft: {
+    flex: 1
+  },
+  headerRight: {
+    width: '30%',
+    textAlign: 'right'
   },
   name: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 4,
-    color: '#111827'
+    color: '#000000'
   },
   contact: {
-    flexDirection: 'row',
-    gap: 15,
-    color: '#4B5563',
-    fontSize: 11
+    color: '#1a1a1a',
+    fontSize: 10,
+    lineHeight: 1.4
+  },
+  contactLink: {
+    color: '#000000',
+    textDecoration: 'none'
   },
   section: {
-    marginBottom: 15
+    marginBottom: 20
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#111827',
+    marginBottom: 12,
+    color: '#000000',
     textTransform: 'uppercase',
     paddingBottom: 4,
-    borderBottom: '1 solid #E5E7EB'
+    borderBottom: '1 solid #000000'
   },
   jobTitle: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: 'bold',
-    color: '#111827'
+    color: '#000000'
   },
   company: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 4
+    marginBottom: 6,
+    marginTop: 12
   },
   companyName: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 'bold',
-    color: '#4B5563'
+    color: '#1a1a1a'
   },
   date: {
     fontSize: 11,
-    color: '#6B7280'
+    color: '#1a1a1a'
   },
   bullet: {
     flexDirection: 'row',
-    marginBottom: 2,
-    paddingLeft: 8
+    marginBottom: 3,
+    paddingLeft: 12
   },
   bulletPoint: {
     width: 6,
-    fontSize: 9,
+    fontSize: 10,
     marginRight: 6,
-    marginTop: 4
+    marginTop: 2
   },
   bulletText: {
-    flex: 1
+    flex: 1,
+    fontSize: 11,
+    lineHeight: 1.4
   },
-  skills: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8
+  skillsContainer: {
+    marginTop: 8
   },
-  skill: {
-    backgroundColor: '#F3F4F6',
-    paddingVertical: 2,
-    paddingHorizontal: 8,
-    borderRadius: 4,
-    fontSize: 10,
-    color: '#4B5563'
+  skillCategory: {
+    marginBottom: 8
+  },
+  skillCategoryTitle: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    marginBottom: 4,
+    color: '#000000'
+  },
+  skillList: {
+    fontSize: 11,
+    color: '#1a1a1a',
+    lineHeight: 1.4
   },
   summary: {
-    marginBottom: 15,
-    color: '#4B5563',
-    lineHeight: 1.6
+    marginBottom: 20,
+    color: '#1a1a1a',
+    lineHeight: 1.6,
+    fontSize: 11
   }
 });
 
@@ -100,12 +131,19 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
           <Page size="A4" style={styles.page}>
             {/* Header */}
             <View style={styles.header}>
-              <Text style={styles.name}>{data.basics.name}</Text>
-              <View style={styles.contact}>
-                {data.basics.email && <Text>{data.basics.email}</Text>}
-                {data.basics.phone && <Text>{data.basics.phone}</Text>}
-                {data.basics.location && <Text>{data.basics.location}</Text>}
-                {data.basics.url && <Text>{data.basics.url}</Text>}
+              <View style={styles.headerLeft}>
+                <Text style={styles.name}>{data.basics.name}</Text>
+              </View>
+              <View style={styles.headerRight}>
+                <Text style={styles.contact}>
+                  {data.basics.email}\n
+                  {data.basics.phone}\n
+                  {data.basics.location}\n
+                  {data.basics.url && `${data.basics.url}\n`}
+                  {data.basics.profiles?.map(profile => 
+                    profile.network === 'LinkedIn' ? `linkedin.com/in/${profile.username}` : ''
+                  )}
+                </Text>
               </View>
             </View>
 
@@ -119,9 +157,9 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
             {/* Work Experience */}
             {data.work.length > 0 && (
               <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Experience</Text>
+                <Text style={styles.sectionTitle}>Professional Experience</Text>
                 {data.work.map((job, i) => (
-                  <View key={i} style={{ marginBottom: 10 }}>
+                  <View key={i} style={{ marginBottom: i < data.work.length - 1 ? 15 : 0 }}>
                     <View style={styles.company}>
                       <Text style={styles.jobTitle}>{job.position}</Text>
                       <Text style={styles.date}>{job.startDate} - {job.endDate}</Text>
@@ -138,27 +176,31 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
               </View>
             )}
 
-            {/* Projects */}
-            {data.projects.length > 0 && (
+            {/* Skills */}
+            {data.skills.length > 0 && (
               <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Projects</Text>
-                {data.projects.map((project, i) => (
-                  <View key={i} style={{ marginBottom: 10 }}>
-                    <View style={styles.company}>
-                      <Text style={styles.jobTitle}>{project.name}</Text>
-                      {project.url && <Text style={styles.date}>{project.url}</Text>}
-                    </View>
-                    {project.description && (
-                      <Text style={styles.companyName}>{project.description}</Text>
-                    )}
-                    {project.highlights.map((highlight, j) => (
-                      <View key={j} style={styles.bullet}>
-                        <Text style={styles.bulletPoint}>•</Text>
-                        <Text style={styles.bulletText}>{highlight}</Text>
+                <Text style={styles.sectionTitle}>Technical Skills</Text>
+                <View style={styles.skillsContainer}>
+                  {/* Group skills by category */}
+                  {[
+                    { title: 'Backend', filter: (s: string) => s.includes('Backend:') },
+                    { title: 'Frontend', filter: (s: string) => s.includes('Front End:') },
+                    { title: 'Data', filter: (s: string) => s.includes('Data:') },
+                    { title: 'DevOps', filter: (s: string) => s.includes('Deployment:') || s.includes('CI/CD:') }
+                  ].map((category, i) => {
+                    const categorySkills = data.skills.filter(category.filter);
+                    if (categorySkills.length === 0) return null;
+                    
+                    return (
+                      <View key={i} style={styles.skillCategory}>
+                        <Text style={styles.skillCategoryTitle}>{category.title}:</Text>
+                        <Text style={styles.skillList}>
+                          {categorySkills.map(skill => skill.replace(/^[^:]+:\s*/, '')).join(', ')}
+                        </Text>
                       </View>
-                    ))}
-                  </View>
-                ))}
+                    );
+                  })}
+                </View>
               </View>
             )}
 
@@ -167,7 +209,7 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Education</Text>
                 {data.education.map((edu, i) => (
-                  <View key={i} style={{ marginBottom: 10 }}>
+                  <View key={i} style={{ marginBottom: i < data.education.length - 1 ? 10 : 0 }}>
                     <View style={styles.company}>
                       <Text style={styles.jobTitle}>{edu.studyType} {edu.area}</Text>
                       <Text style={styles.date}>{edu.startDate} - {edu.endDate}</Text>
@@ -178,17 +220,6 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
               </View>
             )}
 
-            {/* Skills */}
-            {data.skills.length > 0 && (
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Skills</Text>
-                <View style={styles.skills}>
-                  {data.skills.map((skill, i) => (
-                    <Text key={i} style={styles.skill}>{skill}</Text>
-                  ))}
-                </View>
-              </View>
-            )}
           </Page>
         </Document>
       </ReactPDFViewer>
