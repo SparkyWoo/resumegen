@@ -34,32 +34,27 @@ const styles = StyleSheet.create({
     color: '#171717'  // neutral-900
   },
   header: {
-    display: 'flex',
-    flexDirection: 'row',
     marginBottom: spacing[6],
     paddingBottom: spacing[2],
     borderBottom: '0.5 solid #404040'  // neutral-700
   },
-  headerLeft: {
-    flex: 1,
-    marginBottom: spacing[1]
-  },
   name: {
     fontSize: 20,
     fontFamily: 'Times-Bold',
-    marginBottom: spacing[1],
+    marginBottom: spacing[2],
+    textAlign: 'center',
     color: '#171717'  // neutral-900
   },
-  contactContainer: {
+  contactInfo: {
     display: 'flex',
     flexDirection: 'row',
-    gap: spacing[4],
-    flexWrap: 'wrap'
-  },
-  contact: {
+    justifyContent: 'center',
+    gap: spacing[2],
+    fontSize: 10,
     color: '#404040',  // neutral-700
-    fontSize: 9,
-    lineHeight: 1.4
+  },
+  contactDivider: {
+    color: '#404040'  // neutral-700
   },
   section: {
     marginBottom: spacing[4]
@@ -179,27 +174,21 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
             <Page size="A4" style={styles.page}>
               {/* Header */}
               <View style={styles.header}>
-                <View style={styles.headerLeft}>
-                  <Text style={styles.name}>{data.basics.name}</Text>
-                  <View style={styles.contactContainer}>
-                    {data.basics.email && (
-                      <Text style={styles.contact}>{data.basics.email}</Text>
-                    )}
-                    {data.basics.phone && (
-                      <Text style={styles.contact}>{data.basics.phone}</Text>
-                    )}
-                    {data.basics.location && (
-                      <Text style={styles.contact}>{data.basics.location}</Text>
-                    )}
-                    {data.basics.url && (
-                      <Text style={styles.contact}>{data.basics.url}</Text>
-                    )}
-                    {data.basics.profiles?.find(p => p.network === 'LinkedIn')?.username && (
-                      <Text style={styles.contact}>
-                        linkedin.com/in/{data.basics.profiles.find(p => p.network === 'LinkedIn')?.username}
-                      </Text>
-                    )}
-                  </View>
+                <Text style={styles.name}>{data.basics.name}</Text>
+                <View style={styles.contactInfo}>
+                  {[
+                    data.basics.location,
+                    data.basics.phone,
+                    data.basics.email,
+                    data.basics.url,
+                    data.basics.profiles?.find(p => p.network === 'LinkedIn')?.username && 
+                      `linkedin.com/in/${data.basics.profiles.find(p => p.network === 'LinkedIn')?.username}`
+                  ].filter(Boolean).map((item, index, arr) => (
+                    <React.Fragment key={index}>
+                      <Text>{item}</Text>
+                      {index < arr.length - 1 && <Text style={styles.contactDivider}> | </Text>}
+                    </React.Fragment>
+                  ))}
                 </View>
               </View>
 
