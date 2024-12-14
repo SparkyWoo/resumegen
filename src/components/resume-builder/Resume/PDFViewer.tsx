@@ -139,25 +139,23 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
               <View style={styles.header}>
                 <View style={styles.headerLeft}>
                   <Text style={styles.name}>{data.basics.name}</Text>
-                </View>
-                <View style={styles.headerRight}>
-                  <Text style={styles.contact}>{data.basics.email}</Text>
-                  {data.basics.phone && <Text style={styles.contact}>{data.basics.phone}</Text>}
-                  {data.basics.location && <Text style={styles.contact}>{data.basics.location}</Text>}
-                  {data.basics.url && <Text style={styles.contact}>{data.basics.url}</Text>}
-                  {data.basics.profiles?.map((profile, index) => 
-                    profile.network === 'LinkedIn' ? (
-                      <Text key={index} style={styles.contact}>
-                        linkedin.com/in/{profile.username}
-                      </Text>
-                    ) : null
-                  )}
+                  <Text style={styles.contact}>
+                    {[
+                      data.basics.location,
+                      data.basics.phone,
+                      data.basics.email,
+                      data.basics.url,
+                      data.basics.profiles?.find(p => p.network === 'LinkedIn')?.username && 
+                        `linkedin.com/in/${data.basics.profiles.find(p => p.network === 'LinkedIn')?.username}`
+                    ].filter(Boolean).join(' • ')}
+                  </Text>
                 </View>
               </View>
 
               {/* Summary */}
               {data.basics.summary && (
                 <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Summary</Text>
                   <Text style={styles.summary}>{data.basics.summary}</Text>
                 </View>
               )}
@@ -165,7 +163,7 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
               {/* Work Experience */}
               {data.work.length > 0 && (
                 <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Professional Experience</Text>
+                  <Text style={styles.sectionTitle}>Experience</Text>
                   {data.work.map((job, i) => (
                     <View key={i} style={{ marginBottom: i < data.work.length - 1 ? 15 : 0 }}>
                       <View style={styles.company}>
@@ -184,24 +182,45 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
                 </View>
               )}
 
+              {/* Projects */}
+              {data.projects.length > 0 && (
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Projects</Text>
+                  {data.projects.map((project, i) => (
+                    <View key={i} style={{ marginBottom: i < data.projects.length - 1 ? 15 : 0 }}>
+                      <View style={styles.company}>
+                        <Text style={styles.jobTitle}>{project.name}</Text>
+                        {project.url && <Text style={styles.date}>{project.url}</Text>}
+                      </View>
+                      <Text style={styles.bulletText}>{project.description}</Text>
+                      {project.highlights.map((highlight, j) => (
+                        <View key={j} style={styles.bullet}>
+                          <Text style={styles.bulletPoint}>•</Text>
+                          <Text style={styles.bulletText}>{highlight}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  ))}
+                </View>
+              )}
+
               {/* Skills */}
               {data.skills.length > 0 && (
                 <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Technical Skills</Text>
+                  <Text style={styles.sectionTitle}>Skills</Text>
                   <View style={styles.skillsContainer}>
-                    {/* Group skills by category */}
                     {[
-                      { title: 'Backend', filter: (s: string) => s.includes('Backend:') },
-                      { title: 'Frontend', filter: (s: string) => s.includes('Front End:') },
-                      { title: 'Data', filter: (s: string) => s.includes('Data:') },
-                      { title: 'DevOps', filter: (s: string) => s.includes('Deployment:') || s.includes('CI/CD:') }
+                      { title: 'Languages', filter: (s: string) => s.includes('Languages:') },
+                      { title: 'Frameworks', filter: (s: string) => s.includes('Frameworks:') },
+                      { title: 'Tools', filter: (s: string) => s.includes('Tools:') },
+                      { title: 'Platforms', filter: (s: string) => s.includes('Platforms:') }
                     ].map((category, i) => {
                       const categorySkills = data.skills.filter(category.filter);
                       if (categorySkills.length === 0) return null;
                       
                       return (
-                        <View key={i} style={styles.skillCategory}>
-                          <Text style={styles.skillCategoryTitle}>{category.title}:</Text>
+                        <View key={i} style={styles.bullet}>
+                          <Text style={styles.skillCategoryTitle}>{category.title}: </Text>
                           <Text style={styles.skillList}>
                             {categorySkills.map(skill => skill.replace(/^[^:]+:\s*/, '')).join(', ')}
                           </Text>
