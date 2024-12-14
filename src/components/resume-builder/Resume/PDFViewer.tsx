@@ -122,6 +122,11 @@ const styles = StyleSheet.create({
 });
 
 export const PDFViewer = ({ data }: { data: ResumeState }) => {
+  // Helper function to split highlights by newlines
+  const splitHighlights = (text: string): string[] => {
+    return text.split('\n').filter(line => line.trim() !== '');
+  };
+
   return (
     <div className="h-full w-full">
       <React.Suspense fallback={
@@ -171,12 +176,14 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
                         <Text style={styles.date}>{job.startDate} - {job.endDate}</Text>
                       </View>
                       <Text style={styles.companyName}>{job.company}</Text>
-                      {job.highlights.map((highlight, j) => (
-                        <View key={j} style={styles.bullet}>
-                          <Text style={styles.bulletPoint}>•</Text>
-                          <Text style={styles.bulletText}>{highlight}</Text>
-                        </View>
-                      ))}
+                      {job.highlights.flatMap(highlight => 
+                        splitHighlights(highlight).map((line, j) => (
+                          <View key={`${i}-${j}`} style={styles.bullet}>
+                            <Text style={styles.bulletPoint}>•</Text>
+                            <Text style={styles.bulletText}>{line}</Text>
+                          </View>
+                        ))
+                      )}
                     </View>
                   ))}
                 </View>
@@ -193,12 +200,14 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
                         {project.url && <Text style={styles.date}>{project.url}</Text>}
                       </View>
                       <Text style={styles.bulletText}>{project.description}</Text>
-                      {project.highlights.map((highlight, j) => (
-                        <View key={j} style={styles.bullet}>
-                          <Text style={styles.bulletPoint}>•</Text>
-                          <Text style={styles.bulletText}>{highlight}</Text>
-                        </View>
-                      ))}
+                      {project.highlights.flatMap(highlight => 
+                        splitHighlights(highlight).map((line, j) => (
+                          <View key={`${i}-${j}`} style={styles.bullet}>
+                            <Text style={styles.bulletPoint}>•</Text>
+                            <Text style={styles.bulletText}>{line}</Text>
+                          </View>
+                        ))
+                      )}
                     </View>
                   ))}
                 </View>
@@ -218,12 +227,14 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
                       const categorySkills = data.skills.filter(category.filter);
                       if (categorySkills.length === 0) return null;
                       
+                      const skillLines = categorySkills
+                        .flatMap(skill => splitHighlights(skill.replace(/^[^:]+:\s*/, '')))
+                        .join(', ');
+                      
                       return (
                         <View key={i} style={styles.bullet}>
                           <Text style={styles.skillCategoryTitle}>{category.title}: </Text>
-                          <Text style={styles.skillList}>
-                            {categorySkills.map(skill => skill.replace(/^[^:]+:\s*/, '')).join(', ')}
-                          </Text>
+                          <Text style={styles.skillList}>{skillLines}</Text>
                         </View>
                       );
                     })}
