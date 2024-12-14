@@ -13,14 +13,14 @@ const ReactPDFViewer = dynamic(
 
 // Register fonts
 Font.register({
-  family: 'Liberation Serif',
+  family: 'Source Serif Pro',
   fonts: [
     { 
-      src: 'https://db.onlinewebfonts.com/t/c2d0a02d7e9a84415e33b4238b29d1c3.ttf',
+      src: 'https://fonts.gstatic.com/s/sourceserifpro/v15/neIQzD-0qpwxpaWvjeD0X88SAOeauXQ-pQ.ttf',
       fontWeight: 'normal'
     },
     { 
-      src: 'https://db.onlinewebfonts.com/t/6d0863b717c36af4700a0d0a5c5af2fb.ttf',
+      src: 'https://fonts.gstatic.com/s/sourceserifpro/v15/neIXzD-0qpwxpaWvjeD0X88SAOeasc8btSyqxA.ttf',
       fontWeight: 'bold'
     }
   ]
@@ -29,7 +29,7 @@ Font.register({
 const styles = StyleSheet.create({
   page: {
     padding: '40 60',
-    fontFamily: 'Liberation Serif',
+    fontFamily: 'Source Serif Pro',
     fontSize: 11,
     lineHeight: 1.6,
     color: '#1a1a1a'
