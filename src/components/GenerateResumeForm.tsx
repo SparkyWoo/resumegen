@@ -25,7 +25,7 @@ export function GenerateResumeForm() {
       if (!response.ok) throw new Error('Failed to generate resume');
       
       const data = await response.json();
-      router.push(`/resume/${data.id}`);
+      router.push(`/resume/${data.id}/builder`);
     } catch (error) {
       console.error('Error:', error);
       alert('Failed to generate resume. Please try again.');
