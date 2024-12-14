@@ -69,42 +69,49 @@ const styles = StyleSheet.create({
     borderBottom: '0.5 solid #404040'  // neutral-700
   },
   jobTitle: {
-    fontSize: 10,
+    fontSize: 11,
     fontFamily: 'Times-Bold',
     color: '#171717'  // neutral-900
   },
   company: {
+    marginBottom: spacing[1]
+  },
+  companyHeader: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: spacing[0.5],
-    marginTop: spacing[2]
+    alignItems: 'center'
+  },
+  companyInfo: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing[2]
   },
   companyName: {
-    fontSize: 10,
-    fontFamily: 'Times-Bold',
+    fontSize: 11,
     color: '#404040'  // neutral-700
   },
   date: {
-    fontSize: 9,
-    color: '#525252'  // neutral-600
+    fontSize: 10,
+    color: '#525252',  // neutral-600
+    fontStyle: 'italic'
   },
   bullet: {
     display: 'flex',
     flexDirection: 'row',
-    marginBottom: spacing[0.5],
-    paddingLeft: spacing[2]
+    marginBottom: spacing[1],
+    paddingLeft: spacing[4]
   },
   bulletPoint: {
     width: spacing[1],
-    fontSize: 8,
-    marginRight: spacing[1],
-    marginTop: "2pt"
+    fontSize: 9,
+    marginRight: spacing[1]
   },
   bulletText: {
     flex: 1,
-    fontSize: 10,
-    lineHeight: 1.3,
+    fontSize: 10.5,
+    lineHeight: 1.4,
     color: '#404040'  // neutral-700
   },
   skillsContainer: {
@@ -205,12 +212,17 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Experience</Text>
                   {data.work.map((job, i) => (
-                    <View key={i} style={{ marginBottom: i < data.work.length - 1 ? spacing[4] : 0 }}>
-                      <View style={styles.company}>
-                        <Text style={styles.jobTitle}>{job.position}</Text>
+                    <View key={i} style={[
+                      styles.company,
+                      i < data.work.length - 1 ? { marginBottom: spacing[4] } : null
+                    ]}>
+                      <View style={styles.companyHeader}>
+                        <View style={styles.companyInfo}>
+                          <Text style={styles.jobTitle}>{job.position}</Text>
+                          <Text style={styles.companyName}>{job.company}</Text>
+                        </View>
                         <Text style={styles.date}>{job.startDate} - {job.endDate}</Text>
                       </View>
-                      <Text style={styles.companyName}>{job.company}</Text>
                       {job.highlights.flatMap(highlight => 
                         splitHighlights(highlight).map((line, j) => (
                           <View key={`${i}-${j}`} style={styles.bullet}>
