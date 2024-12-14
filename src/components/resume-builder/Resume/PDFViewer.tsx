@@ -132,6 +132,24 @@ const styles = StyleSheet.create({
 });
 
 export const PDFViewer = ({ data }: { data: ResumeState }) => {
+  // Helper function to check if a section is empty
+  const isSectionEmpty = (section: string) => {
+    switch (section) {
+      case 'summary':
+        return !data.basics.summary?.trim();
+      case 'work':
+        return data.work.length === 0 || !data.work.some(job => job.company?.trim());
+      case 'education':
+        return data.education.length === 0 || !data.education.some(edu => edu.institution?.trim());
+      case 'projects':
+        return data.projects.length === 0 || !data.projects.some(proj => proj.name?.trim());
+      case 'skills':
+        return data.skills.length === 0;
+      default:
+        return true;
+    }
+  };
+
   // Helper function to split highlights by newlines
   const splitHighlights = (text: string): string[] => {
     return text.split('\n').filter(line => line.trim() !== '');
@@ -154,21 +172,23 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
               <View style={styles.header}>
                 <View style={styles.headerLeft}>
                   <Text style={styles.name}>{data.basics.name}</Text>
-                  <Text style={styles.contact}>
-                    {[
-                      data.basics.location,
-                      data.basics.phone,
-                      data.basics.email,
-                      data.basics.url,
-                      data.basics.profiles?.find(p => p.network === 'LinkedIn')?.username && 
-                        `linkedin.com/in/${data.basics.profiles.find(p => p.network === 'LinkedIn')?.username}`
-                    ].filter(Boolean).join(' • ')}
-                  </Text>
+                  {!isSectionEmpty('contact') && (
+                    <Text style={styles.contact}>
+                      {[
+                        data.basics.location,
+                        data.basics.phone,
+                        data.basics.email,
+                        data.basics.url,
+                        data.basics.profiles?.find(p => p.network === 'LinkedIn')?.username && 
+                          `linkedin.com/in/${data.basics.profiles.find(p => p.network === 'LinkedIn')?.username}`
+                      ].filter(Boolean).join(' • ')}
+                    </Text>
+                  )}
                 </View>
               </View>
 
               {/* Summary */}
-              {data.basics.summary && (
+              {!isSectionEmpty('summary') && (
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Summary</Text>
                   <Text style={styles.summary}>{data.basics.summary}</Text>
@@ -176,11 +196,11 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
               )}
 
               {/* Work Experience */}
-              {data.work.length > 0 && (
+              {!isSectionEmpty('work') && (
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Experience</Text>
                   {data.work.map((job, i) => (
-                    <View key={i} style={{ marginBottom: i < data.work.length - 1 ? 15 : 0 }}>
+                    <View key={i} style={{ marginBottom: i < data.work.length - 1 ? spacing[4] : 0 }}>
                       <View style={styles.company}>
                         <Text style={styles.jobTitle}>{job.position}</Text>
                         <Text style={styles.date}>{job.startDate} - {job.endDate}</Text>
@@ -200,11 +220,11 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
               )}
 
               {/* Projects */}
-              {data.projects.length > 0 && (
+              {!isSectionEmpty('projects') && (
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Projects</Text>
                   {data.projects.map((project, i) => (
-                    <View key={i} style={{ marginBottom: i < data.projects.length - 1 ? 15 : 0 }}>
+                    <View key={i} style={{ marginBottom: i < data.projects.length - 1 ? spacing[4] : 0 }}>
                       <View style={styles.company}>
                         <Text style={styles.jobTitle}>{project.name}</Text>
                         {project.url && <Text style={styles.date}>{project.url}</Text>}
@@ -224,7 +244,7 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
               )}
 
               {/* Skills */}
-              {data.skills.length > 0 && (
+              {!isSectionEmpty('skills') && (
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Skills</Text>
                   <View style={styles.skillsContainer}>
@@ -253,11 +273,11 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
               )}
 
               {/* Education */}
-              {data.education.length > 0 && (
+              {!isSectionEmpty('education') && (
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Education</Text>
                   {data.education.map((edu, i) => (
-                    <View key={i} style={{ marginBottom: i < data.education.length - 1 ? 10 : 0 }}>
+                    <View key={i} style={{ marginBottom: i < data.education.length - 1 ? spacing[3] : 0 }}>
                       <View style={styles.company}>
                         <Text style={styles.jobTitle}>{edu.studyType} {edu.area}</Text>
                         <Text style={styles.date}>{edu.startDate} - {edu.endDate}</Text>
