@@ -91,102 +91,104 @@ const styles = StyleSheet.create({
 
 export const PDFViewer = ({ data }: { data: ResumeState }) => {
   return (
-    <ReactPDFViewer className="h-full w-full">
-      <Document>
-        <Page size="A4" style={styles.page}>
-          {/* Header */}
-          <View style={styles.header}>
-            <Text style={styles.name}>{data.basics.name}</Text>
-            <View style={styles.contact}>
-              {data.basics.email && <Text>{data.basics.email}</Text>}
-              {data.basics.phone && <Text>{data.basics.phone}</Text>}
-              {data.basics.location && <Text>{data.basics.location}</Text>}
-              {data.basics.url && <Text>{data.basics.url}</Text>}
-            </View>
-          </View>
-
-          {/* Summary */}
-          {data.basics.summary && (
-            <View style={styles.section}>
-              <Text style={styles.summary}>{data.basics.summary}</Text>
-            </View>
-          )}
-
-          {/* Work Experience */}
-          {data.work.length > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Experience</Text>
-              {data.work.map((job, i) => (
-                <View key={i} style={{ marginBottom: 10 }}>
-                  <View style={styles.company}>
-                    <Text style={styles.jobTitle}>{job.position}</Text>
-                    <Text style={styles.date}>{job.startDate} - {job.endDate}</Text>
-                  </View>
-                  <Text style={styles.companyName}>{job.company}</Text>
-                  {job.highlights.map((highlight, j) => (
-                    <View key={j} style={styles.bullet}>
-                      <Text style={styles.bulletPoint}>•</Text>
-                      <Text style={styles.bulletText}>{highlight}</Text>
-                    </View>
-                  ))}
-                </View>
-              ))}
-            </View>
-          )}
-
-          {/* Projects */}
-          {data.projects.length > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Projects</Text>
-              {data.projects.map((project, i) => (
-                <View key={i} style={{ marginBottom: 10 }}>
-                  <View style={styles.company}>
-                    <Text style={styles.jobTitle}>{project.name}</Text>
-                    {project.url && <Text style={styles.date}>{project.url}</Text>}
-                  </View>
-                  {project.description && (
-                    <Text style={styles.companyName}>{project.description}</Text>
-                  )}
-                  {project.highlights.map((highlight, j) => (
-                    <View key={j} style={styles.bullet}>
-                      <Text style={styles.bulletPoint}>•</Text>
-                      <Text style={styles.bulletText}>{highlight}</Text>
-                    </View>
-                  ))}
-                </View>
-              ))}
-            </View>
-          )}
-
-          {/* Education */}
-          {data.education.length > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Education</Text>
-              {data.education.map((edu, i) => (
-                <View key={i} style={{ marginBottom: 10 }}>
-                  <View style={styles.company}>
-                    <Text style={styles.jobTitle}>{edu.studyType} {edu.area}</Text>
-                    <Text style={styles.date}>{edu.startDate} - {edu.endDate}</Text>
-                  </View>
-                  <Text style={styles.companyName}>{edu.institution}</Text>
-                </View>
-              ))}
-            </View>
-          )}
-
-          {/* Skills */}
-          {data.skills.length > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Skills</Text>
-              <View style={styles.skills}>
-                {data.skills.map((skill, i) => (
-                  <Text key={i} style={styles.skill}>{skill}</Text>
-                ))}
+    <div className="h-full w-full">
+      <ReactPDFViewer width="100%" height="100%" showToolbar={false}>
+        <Document>
+          <Page size="A4" style={styles.page}>
+            {/* Header */}
+            <View style={styles.header}>
+              <Text style={styles.name}>{data.basics.name}</Text>
+              <View style={styles.contact}>
+                {data.basics.email && <Text>{data.basics.email}</Text>}
+                {data.basics.phone && <Text>{data.basics.phone}</Text>}
+                {data.basics.location && <Text>{data.basics.location}</Text>}
+                {data.basics.url && <Text>{data.basics.url}</Text>}
               </View>
             </View>
-          )}
-        </Page>
-      </Document>
-    </ReactPDFViewer>
+
+            {/* Summary */}
+            {data.basics.summary && (
+              <View style={styles.section}>
+                <Text style={styles.summary}>{data.basics.summary}</Text>
+              </View>
+            )}
+
+            {/* Work Experience */}
+            {data.work.length > 0 && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Experience</Text>
+                {data.work.map((job, i) => (
+                  <View key={i} style={{ marginBottom: 10 }}>
+                    <View style={styles.company}>
+                      <Text style={styles.jobTitle}>{job.position}</Text>
+                      <Text style={styles.date}>{job.startDate} - {job.endDate}</Text>
+                    </View>
+                    <Text style={styles.companyName}>{job.company}</Text>
+                    {job.highlights.map((highlight, j) => (
+                      <View key={j} style={styles.bullet}>
+                        <Text style={styles.bulletPoint}>•</Text>
+                        <Text style={styles.bulletText}>{highlight}</Text>
+                      </View>
+                    ))}
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Projects */}
+            {data.projects.length > 0 && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Projects</Text>
+                {data.projects.map((project, i) => (
+                  <View key={i} style={{ marginBottom: 10 }}>
+                    <View style={styles.company}>
+                      <Text style={styles.jobTitle}>{project.name}</Text>
+                      {project.url && <Text style={styles.date}>{project.url}</Text>}
+                    </View>
+                    {project.description && (
+                      <Text style={styles.companyName}>{project.description}</Text>
+                    )}
+                    {project.highlights.map((highlight, j) => (
+                      <View key={j} style={styles.bullet}>
+                        <Text style={styles.bulletPoint}>•</Text>
+                        <Text style={styles.bulletText}>{highlight}</Text>
+                      </View>
+                    ))}
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Education */}
+            {data.education.length > 0 && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Education</Text>
+                {data.education.map((edu, i) => (
+                  <View key={i} style={{ marginBottom: 10 }}>
+                    <View style={styles.company}>
+                      <Text style={styles.jobTitle}>{edu.studyType} {edu.area}</Text>
+                      <Text style={styles.date}>{edu.startDate} - {edu.endDate}</Text>
+                    </View>
+                    <Text style={styles.companyName}>{edu.institution}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Skills */}
+            {data.skills.length > 0 && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Skills</Text>
+                <View style={styles.skills}>
+                  {data.skills.map((skill, i) => (
+                    <Text key={i} style={styles.skill}>{skill}</Text>
+                  ))}
+                </View>
+              </View>
+            )}
+          </Page>
+        </Document>
+      </ReactPDFViewer>
+    </div>
   );
 }; 
