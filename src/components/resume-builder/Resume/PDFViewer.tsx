@@ -154,8 +154,6 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
         return !data.basics.summary?.trim();
       case 'work':
         return data.work.length === 0 || !data.work.some(job => job.company?.trim());
-      case 'education':
-        return data.education.length === 0 || !data.education.some(edu => edu.institution?.trim());
       case 'projects':
         return data.projects.length === 0 || !data.projects.some(proj => proj.name?.trim());
       case 'skills':
@@ -279,22 +277,6 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
                       );
                     })}
                   </View>
-                </View>
-              )}
-
-              {/* Education */}
-              {!isSectionEmpty('education') && (
-                <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Education</Text>
-                  {data.education.map((edu, i) => (
-                    <View key={i} style={{ marginBottom: i < data.education.length - 1 ? spacing[3] : 0 }}>
-                      <View style={styles.company}>
-                        <Text style={styles.jobTitle}>{edu.studyType} {edu.area}</Text>
-                        <Text style={styles.date}>{edu.startDate} - {edu.endDate}</Text>
-                      </View>
-                      <Text style={styles.companyName}>{edu.institution}</Text>
-                    </View>
-                  ))}
                 </View>
               )}
 

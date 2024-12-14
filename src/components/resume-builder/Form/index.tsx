@@ -1,8 +1,7 @@
 import { useAppDispatch, useAppSelector } from '@lib/redux/hooks';
-import { updateBasics, updateWork, updateEducation, updateProjects, updateSkills } from '@/lib/redux/resumeSlice';
+import { updateBasics, updateWork, updateProjects, updateSkills } from '@/lib/redux/resumeSlice';
 import { BasicInfoForm } from './BasicInfoForm';
 import { WorkForm } from './WorkForm';
-import { EducationForm } from './EducationForm';
 import { ProjectsForm } from './ProjectsForm';
 import { SkillsForm } from './SkillsForm';
 
@@ -36,17 +35,6 @@ export const Form = ({ githubData, activeSection, onSectionChange }: FormProps) 
         <WorkForm 
           data={resume.work} 
           onChange={data => dispatch(updateWork(data))} 
-        />
-      )
-    },
-    {
-      id: 'education',
-      title: 'Education',
-      description: 'Add your educational background',
-      component: (
-        <EducationForm 
-          data={resume.education} 
-          onChange={data => dispatch(updateEducation(data))} 
         />
       )
     },

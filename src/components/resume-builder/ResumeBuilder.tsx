@@ -33,7 +33,6 @@ export const ResumeBuilder = ({ initialData, githubData }: Props) => {
   const sections = [
     { id: 'basics', label: 'Basic Info' },
     { id: 'work', label: 'Experience' },
-    { id: 'education', label: 'Education' },
     { id: 'projects', label: 'Projects' },
     { id: 'skills', label: 'Skills' }
   ];
