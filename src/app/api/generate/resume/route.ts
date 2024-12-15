@@ -5,14 +5,7 @@ import { fetchJobData } from '@/services/job';
 
 async function generateSummary(jobUrl: string) {
   try {
-    const baseUrl = process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:3000';
-      
-    console.log('Generating summary for URL:', jobUrl);
-    console.log('Using base URL:', baseUrl);
-    
-    const response = await fetch(`${baseUrl}/api/generate-summary`, {
+    const response = await fetch('/api/generate-summary', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ jobUrl })
