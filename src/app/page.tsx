@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { GenerateResumeForm } from '@/components/GenerateResumeForm';
 import { FaRobot, FaLinkedin, FaGithub, FaCheck } from 'react-icons/fa';
 import { HiOutlineDocumentText } from 'react-icons/hi';
+import { SiGoogle, SiMeta, SiAmazon } from 'react-icons/si';
 
 const features = [
   {
@@ -27,9 +28,18 @@ const features = [
 ];
 
 const socialProof = [
-  "Used by employees at Google, Meta, and Amazon",
-  "4.9/5 rating from 1,000+ users",
-  "Featured in TechCrunch and Forbes"
+  {
+    icon: <SiGoogle className="w-8 h-8 text-[#4285F4]" />,
+    name: "Google"
+  },
+  {
+    icon: <SiMeta className="w-8 h-8 text-[#0668E1]" />,
+    name: "Meta"
+  },
+  {
+    icon: <SiAmazon className="w-8 h-8 text-[#FF9900]" />,
+    name: "Amazon"
+  }
 ];
 
 export default function Home() {
@@ -38,11 +48,11 @@ export default function Home() {
       {/* Hero Section */}
       <div className="max-w-6xl mx-auto py-12 px-4">
         <div className="text-center mb-8">
-          <div className="flex justify-center space-x-4 mb-6">
-            {socialProof.map((proof, index) => (
-              <div key={index} className="flex items-center text-sm text-gray-600">
-                <FaCheck className="w-4 h-4 text-green-500 mr-2" />
-                {proof}
+          <div className="flex justify-center items-center space-x-8 mb-6">
+            <div className="text-sm text-gray-600 mr-3">Used by employees at</div>
+            {socialProof.map((company, index) => (
+              <div key={index} className="flex items-center" title={company.name}>
+                {company.icon}
               </div>
             ))}
           </div>
@@ -53,11 +63,11 @@ export default function Home() {
             Stop spending hours tweaking your resume. Our AI analyzes job requirements and optimizes your experience to get you more interviews, guaranteed.
           </p>
           <div className="flex justify-center items-center space-x-4 mb-8">
-            <div className="bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm font-medium">
-              30-Day Money Back Guarantee
-            </div>
             <div className="bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium">
               5-Minute Setup
+            </div>
+            <div className="bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm font-medium">
+              4.9/5 rating from 1,000+ users
             </div>
           </div>
         </div>
