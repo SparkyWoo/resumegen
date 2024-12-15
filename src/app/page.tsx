@@ -7,8 +7,8 @@ import { SiGoogle, SiMeta, SiAmazon } from 'react-icons/si';
 const features = [
   {
     icon: <FaLinkedin className="w-6 h-6 text-[#0A66C2]" />,
-    title: "One-Click LinkedIn Import",
-    description: "Save 2 hours of manual work. Import your entire career history instantly with perfect formatting."
+    title: "Smart Profile Integration",
+    description: "Seamlessly combine your LinkedIn profile data with your existing resume for a complete professional story."
   },
   {
     icon: <FaRobot className="w-6 h-6 text-blue-500" />,
@@ -94,12 +94,12 @@ export default function Home() {
             </p>
             <div className="grid md:grid-cols-3 gap-6 text-left">
               <div className="bg-white p-4 rounded-lg shadow-sm">
-                <div className="text-blue-600 font-semibold mb-2">1. Upload PDF</div>
-                <p className="text-gray-600 text-sm">Simply upload your current resume in PDF format</p>
+                <div className="text-blue-600 font-semibold mb-2">1. Upload Resume</div>
+                <p className="text-gray-600 text-sm">Upload your current resume and connect LinkedIn to enrich your profile</p>
               </div>
               <div className="bg-white p-4 rounded-lg shadow-sm">
                 <div className="text-blue-600 font-semibold mb-2">2. AI Analysis</div>
-                <p className="text-gray-600 text-sm">Our AI extracts and enhances your experience</p>
+                <p className="text-gray-600 text-sm">Our AI combines and enhances your professional experience</p>
               </div>
               <div className="bg-white p-4 rounded-lg shadow-sm">
                 <div className="text-blue-600 font-semibold mb-2">3. Job Targeting</div>
@@ -114,7 +114,7 @@ export default function Home() {
           <div className="text-center mb-8">
             <h2 className="text-2xl font-semibold mb-2">Get Started in Seconds</h2>
             <p className="text-gray-600">
-              Connect with LinkedIn and paste any job URL. Our AI will analyze the requirements and create your perfect resume instantly.
+              Upload your resume, connect LinkedIn to enhance it, and paste any job URL. Our AI will create your perfect targeted resume instantly.
             </p>
           </div>
           <Suspense fallback={
