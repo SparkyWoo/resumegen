@@ -44,10 +44,19 @@ Write a professional summary that:
     console.log('Calling Anthropic API...');
     const response_ai = await anthropic.messages.create({
       messages: [{ role: 'user', content: prompt }],
-      model: 'claude-3-sonnet-20240229',
+      model: 'claude-3-haiku-20240307',
       max_tokens: 150,
       temperature: 0.7,
+    }).catch(error => {
+      console.error('Anthropic API error details:', {
+        name: error.name,
+        message: error.message,
+        status: error.status,
+        type: error.type
+      });
+      throw error;
     });
+    console.log('Anthropic API response received');
 
     const summary = response_ai.content[0].type === 'text' 
       ? response_ai.content[0].text 
