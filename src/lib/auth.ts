@@ -22,6 +22,8 @@ export const authOptions: NextAuthOptions = {
           image: profile.picture,
         };
       },
+      idToken: false,
+      checks: ['state'],
     }),
   ],
   callbacks: {
