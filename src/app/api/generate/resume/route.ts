@@ -20,7 +20,7 @@ async function generateSkills(jobData: any) {
     console.log('Starting skills generation...');
     
     // Create a prompt that focuses on extracting relevant skills
-    const prompt = `Extract a list of 10-15 most relevant technical and professional skills for this job posting. Format the response as a single-line JSON array of strings, with skills separated by commas. Focus on specific, concrete skills (e.g., "Python", "Agile Project Management") rather than general qualities. Consider both explicit requirements and implicit needs based on the role.
+    const prompt = `Extract and categorize relevant technical and professional skills for this job posting. Format the response as a JSON object with categories as keys and arrays of skills as values. Focus on specific, concrete skills rather than general qualities.
 
 Job Title: ${jobData.title}
 Job Description:
@@ -28,7 +28,12 @@ ${jobData.description}
 Requirements:
 ${jobData.requirements?.join(', ')}
 
-Return only the JSON array in a single line, like this: ["Skill 1", "Skill 2", "Skill 3"]`;
+Return the response in this format:
+{
+  "Technical Skills": ["Skill 1", "Skill 2"],
+  "Professional Skills": ["Skill 3", "Skill 4"],
+  "Domain Knowledge": ["Skill 5", "Skill 6"]
+}`;
 
     // Generate skills using Claude
     console.log('Calling Anthropic API for skills...');
@@ -42,20 +47,21 @@ Return only the JSON array in a single line, like this: ["Skill 1", "Skill 2", "
     const skillsText = response.content[0].type === 'text' ? response.content[0].text : '';
     
     try {
-      // Parse the JSON array from the response
-      const skills = JSON.parse(skillsText);
-      if (Array.isArray(skills)) {
-        return skills;
-      }
-      throw new Error('Skills response is not an array');
+      // Parse the JSON object from the response
+      const skillsObj = JSON.parse(skillsText);
+      // Convert to formatted strings
+      return Object.entries(skillsObj)
+        .map(([category, skills]) => `${category}: ${(skills as string[]).join(', ')}`)
+        .filter(Boolean);
     } catch (error) {
       console.error('Error parsing skills JSON:', error);
-      // Fallback: try to extract skills from text if JSON parsing fails
-      return skillsText
-        .replace(/[\[\]"]/g, '')
+      // Fallback: return as a single category
+      return ['Skills: ' + skillsText
+        .replace(/[\[\]"{}]/g, '')
         .split(',')
         .map(skill => skill.trim())
-        .filter(skill => skill.length > 0);
+        .filter(skill => skill.length > 0)
+        .join(', ')];
     }
   } catch (error) {
     console.error('Error in generateSkills:', error);
