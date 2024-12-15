@@ -7,8 +7,12 @@ import crypto from 'crypto';
 import * as pdfjsLib from 'pdfjs-dist/build/pdf.mjs';
 import path from 'path';
 
-// Configure PDF.js for Node.js environment
-pdfjsLib.GlobalWorkerOptions.workerSrc = path.resolve(process.cwd(), 'node_modules/pdfjs-dist/build/pdf.worker.mjs');
+// Configure PDF.js for serverless environment
+if (typeof process === 'object') {
+  const workerOptions = pdfjsLib.GlobalWorkerOptions as { workerSrc: string | false; disableWorker?: boolean };
+  workerOptions.workerSrc = false;
+  workerOptions.disableWorker = true;
+}
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
