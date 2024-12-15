@@ -9,11 +9,15 @@ interface JobData {
 }
 
 function getLeverJobData($: cheerio.Root): JobData {
+  const description = $('.posting-description').text().trim();
+  const requirements = $('.posting-requirements li').map((_, el) => $(el).text().trim()).get();
+  const combinedText = description + ' ' + requirements.join(' ');
+  
   return {
     title: $('.posting-headline h2').text().trim(),
-    description: $('.posting-description').text().trim(),
-    requirements: $('.posting-requirements li').map((_, el) => $(el).text().trim()).get(),
-    skills: extractSkills($('.posting-description').text()),
+    description,
+    requirements,
+    skills: extractSkills(combinedText).map(skill => skill.trim()).filter(Boolean),
   };
 }
 
@@ -25,15 +29,14 @@ function getGreenhouseJobData($: cheerio.Root): JobData {
   // Get full content
   const content = $('#content');
   const description = content.text().trim() || 'No description available';
-  
-  // Get requirements from bullet points
   const requirements = content.find('li').map((_, el) => $(el).text().trim()).get();
+  const combinedText = description + ' ' + requirements.join(' ');
 
   return {
     title,
     description,
     requirements,
-    skills: extractSkills(description + ' ' + requirements.join(' ')),
+    skills: extractSkills(combinedText).map(skill => skill.trim()).filter(Boolean),
   };
 }
 
