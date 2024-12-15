@@ -9,7 +9,11 @@ import crypto from 'crypto';
 import * as pdfjsLib from 'pdfjs-dist';
 
 // Configure PDF.js for Node.js environment
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsLib.PDFWorker?.workerSrc || '';
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.js'; // Set to a non-existent path
+
+// Use a fake worker
+const { getDocument } = pdfjsLib;
+pdfjsLib.GlobalWorkerOptions.workerSrc = '';
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
@@ -250,6 +254,36 @@ interface WorkExperience {
   highlights: string[];
 }
 
+async function processPDF(oldResume: File) {
+  const arrayBuffer = await oldResume.arrayBuffer();
+  const typedArray = new Uint8Array(arrayBuffer);
+
+  try {
+    const loadingTask = getDocument({
+      data: typedArray,
+      verbosity: 0,
+      useWorkerFetch: false, // Ensure no worker fetch is attempted
+    });
+    const pdf = await loadingTask.promise;
+
+    let fullText = '';
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const text = content.items
+        .map((item) => ('str' in item ? item.str : ''))
+        .join(' ');
+      fullText += text + '\n';
+    }
+
+    return fullText;
+  } catch (error) {
+    console.error('Error processing PDF:', error);
+    throw new Error('Failed to process PDF file');
+  }
+}
+
 export async function POST(req: Request) {
   console.log('Starting resume generation...');
   try {
@@ -264,32 +298,8 @@ export async function POST(req: Request) {
     // Parse old resume if provided
     let existingWorkExperience = null;
     if (oldResume) {
-      const arrayBuffer = await oldResume.arrayBuffer();
-      const typedArray = new Uint8Array(arrayBuffer);
-      
-      try {
-        const loadingTask = pdfjsLib.getDocument({
-          data: typedArray,
-          verbosity: 0
-        });
-        const pdf = await loadingTask.promise;
-        
-        let fullText = '';
-        
-        for (let i = 1; i <= pdf.numPages; i++) {
-          const page = await pdf.getPage(i);
-          const content = await page.getTextContent();
-          const text = content.items
-            .map((item) => 'str' in item ? item.str : '')
-            .join(' ');
-          fullText += text + '\n';
-        }
-        
-        existingWorkExperience = await extractWorkExperience(fullText);
-      } catch (error) {
-        console.error('Error processing PDF:', error);
-        throw new Error('Failed to process PDF file');
-      }
+      const fullText = await processPDF(oldResume);
+      existingWorkExperience = await extractWorkExperience(fullText);
     }
 
     // Fetch job data
