@@ -249,10 +249,21 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
                       i < data.projects.length - 1 ? { marginBottom: spacing[2] } : {}
                     ]}>
                       <View style={styles.companyHeader}>
-                        <Text style={styles.jobTitle}>{project.name}</Text>
-                        {project.url && <Text style={styles.date}>{project.url}</Text>}
+                        <View style={styles.companyInfo}>
+                          <Text style={styles.jobTitle}>{project.name}</Text>
+                          {project.url && (
+                            <Text style={styles.companyName}>{project.url}</Text>
+                          )}
+                        </View>
                       </View>
-                      <Text style={styles.bulletText}>{project.description}</Text>
+                      {project.highlights.flatMap(highlight => 
+                        splitHighlights(highlight).map((line, j) => (
+                          <View key={`${i}-${j}`} style={styles.bullet}>
+                            <Text style={styles.bulletPoint}>•</Text>
+                            <Text style={styles.bulletText}>{line}</Text>
+                          </View>
+                        ))
+                      )}
                     </View>
                   ))}
                 </View>
@@ -262,17 +273,9 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
               {!isSectionEmpty('skills') && (
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Skills</Text>
-                  <View style={styles.skillsContainer}>
-                    {data.skills.map((skill, i) => {
-                      if (!skill.trim()) return null;
-                      
-                      return (
-                        <View key={i} style={styles.skillRow}>
-                          <Text style={styles.skillList}>{skill}</Text>
-                        </View>
-                      );
-                    })}
-                  </View>
+                  <Text style={styles.skillList}>
+                    {data.skills.join(', ')}
+                  </Text>
                 </View>
               )}
 
