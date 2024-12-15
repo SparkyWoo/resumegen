@@ -6,14 +6,11 @@ import { Anthropic } from '@anthropic-ai/sdk';
 import crypto from 'crypto';
 
 // Import PDF.js with proper Node.js configuration
-import * as pdfjsLib from 'pdfjs-dist';
+import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+import type { TextItem } from 'pdfjs-dist/types/src/display/api';
 
 // Configure PDF.js for Node.js environment
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.js'; // Set to a non-existent path
-
-// Use a fake worker
-const { getDocument } = pdfjsLib;
-pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
@@ -261,8 +258,8 @@ async function processPDF(oldResume: File) {
   try {
     const loadingTask = getDocument({
       data: typedArray,
-      verbosity: 0,
-      useWorkerFetch: false, // Ensure no worker fetch is attempted
+      cMapUrl: undefined,
+      cMapPacked: true
     });
     const pdf = await loadingTask.promise;
 
