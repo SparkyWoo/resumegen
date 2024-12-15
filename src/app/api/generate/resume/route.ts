@@ -4,12 +4,11 @@ import { fetchGitHubData } from '@/services/github';
 import { fetchJobData } from '@/services/job';
 import { Anthropic } from '@anthropic-ai/sdk';
 import crypto from 'crypto';
-import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+import { getDocument } from 'pdfjs-dist';
 
-// Initialize PDF.js worker
-if (typeof window === 'undefined') {
-  GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${process.env.NEXT_PUBLIC_PDFJS_VERSION}/pdf.worker.min.js`;
-}
+// Disable worker to run in Node.js environment
+const pdfjsLib = require('pdfjs-dist/build/pdf.js');
+pdfjsLib.GlobalWorkerOptions.workerSrc = null;
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
