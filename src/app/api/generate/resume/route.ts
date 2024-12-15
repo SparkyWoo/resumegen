@@ -71,12 +71,11 @@ Write a professional summary that:
 export async function POST(req: Request) {
   console.log('Starting resume generation...');
   try {
-    const { githubUsername, jobUrl } = await req.json();
-    console.log('Processing request for:', { githubUsername, jobUrl });
+    const { jobUrl, userId, userData } = await req.json();
+    console.log('Processing request for:', { jobUrl, userId, userData });
 
     console.log('Fetching data...');
-    const [githubData, jobData, summary] = await Promise.all([
-      fetchGitHubData(githubUsername),
+    const [jobData, summary] = await Promise.all([
       fetchJobData(jobUrl),
       generateSummary(jobUrl)
     ]);
@@ -86,8 +85,9 @@ export async function POST(req: Request) {
     const { data: resume, error } = await supabase
       .from('resumes')
       .insert({
-        user_id: null,
-        github_data: githubData,
+        user_id: userId,
+        name: userData.name,
+        email: userData.email,
         job_data: jobData,
         summary: summary,
         generated_content: {},
