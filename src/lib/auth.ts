@@ -9,6 +9,13 @@ export const authOptions: NextAuthOptions = {
       authorization: {
         params: {
           scope: 'openid profile email',
+          response_type: 'code',
+        }
+      },
+      token: {
+        async request({ client, params, checks, provider }) {
+          const response = await client.callback(provider.callbackUrl, params, checks);
+          return { tokens: response };
         }
       },
       userinfo: {
@@ -22,7 +29,6 @@ export const authOptions: NextAuthOptions = {
           image: profile.picture,
         };
       },
-      idToken: false,
       checks: ['state'],
     }),
   ],
