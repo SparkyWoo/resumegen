@@ -1,7 +1,7 @@
 import React from 'react';
 import { supabase } from '@/lib/supabase';
 import { Resume } from '@/types';
-import { ResumeBuilder } from '@/components/resume-builder/ResumeBuilder';
+import { ResumeBuilderWrapper } from '@/components/resume-builder/ResumeBuilderWrapper';
 import { ResumeState } from '@lib/redux/resumeSlice';
 
 interface Props {
@@ -43,7 +43,7 @@ export default async function ResumeBuilderPage({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <ResumeBuilder 
+      <ResumeBuilderWrapper 
         initialData={mapDatabaseToResumeState(resume)} 
         githubData={resume.github_data}
         jobData={resume.job_data}
