@@ -153,10 +153,10 @@ async function generateSkills(jobData: any) {
     const prompt = `You are a professional resume writer. Extract 8-10 most relevant skills from this job posting for a resume's skills section. 
 
 Focus on concrete abilities and competencies ONLY:
-- Technical skills (e.g., Python, SQL, AWS)
-- Software/tools (e.g., Jira, Figma, Excel)
-- Methodologies (e.g., Agile, Scrum, Six Sigma)
-- Professional competencies (e.g., Project Management, Team Leadership, Strategic Planning)
+1. Technical Skills: Specific tools, technologies, programming languages, or platforms mentioned
+2. Domain Knowledge: Industry-specific systems, frameworks, or standards
+3. Methodologies & Practices: Development approaches, best practices, or processes
+4. Core Competencies: Essential professional abilities required for the role
 
 DO NOT include:
 - Education requirements
@@ -170,8 +170,7 @@ DO NOT include:
 Job Title: ${jobData.title}
 Description: ${jobData.description?.slice(0, 500)}
 
-IMPORTANT: Return ONLY a comma-separated list with NO introduction or explanation. Example:
-Product Strategy, Data Analysis, SQL, Project Management, Team Leadership`;
+IMPORTANT: Return ONLY a comma-separated list with NO introduction or explanation.`;
 
     console.log('Calling Anthropic API for skills...');
     const response = await anthropic.messages.create({
