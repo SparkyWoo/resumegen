@@ -110,26 +110,28 @@ Highlights:
     
     // Parse the improved content into structured work experience
     const workEntries = improvedContent.split(/\n\n(?=Company:)/);
-    const structuredWork = workEntries.map(entry => {
-      const lines = entry.split('\n');
-      const company = lines.find(l => l.startsWith('Company:'))?.replace('Company:', '').trim() || '';
-      const position = lines.find(l => l.startsWith('Position:'))?.replace('Position:', '').trim() || '';
-      const dates = lines.find(l => l.startsWith('Dates:'))?.replace('Dates:', '').trim() || '';
-      const [startDate, endDate] = dates.split('-').map(d => d.trim());
-      
-      const highlightsStart = lines.findIndex(l => l.startsWith('Highlights:'));
-      const highlights = lines.slice(highlightsStart + 1)
-        .filter(l => l.trim().startsWith('•'))
-        .map(l => l.replace('•', '').trim());
+    const structuredWork = workEntries
+      .map(entry => {
+        const lines = entry.split('\n');
+        const company = lines.find(l => l.startsWith('Company:'))?.replace('Company:', '').trim() || '';
+        const position = lines.find(l => l.startsWith('Position:'))?.replace('Position:', '').trim() || '';
+        const dates = lines.find(l => l.startsWith('Dates:'))?.replace('Dates:', '').trim() || '';
+        const [startDate, endDate] = dates.split('-').map(d => d.trim());
+        
+        const highlightsStart = lines.findIndex(l => l.startsWith('Highlights:'));
+        const highlights = lines.slice(highlightsStart + 1)
+          .filter(l => l.trim().startsWith('•'))
+          .map(l => l.replace('•', '').trim());
 
-      return {
-        company,
-        position,
-        startDate,
-        endDate,
-        highlights
-      };
-    });
+        return {
+          company,
+          position,
+          startDate,
+          endDate,
+          highlights
+        };
+      })
+      .filter(entry => entry.company && entry.position && entry.highlights.length > 0);
 
     return structuredWork;
   } catch (error) {
