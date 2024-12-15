@@ -20,15 +20,15 @@ async function generateSkills(jobData: any) {
     console.log('Starting skills generation...');
     
     // Create a prompt that focuses on extracting relevant skills
-    const prompt = `Extract a list of 10-15 most relevant technical and professional skills for this job posting. Format the response as a JSON array of strings. Focus on specific, concrete skills (e.g., "Python", "Agile Project Management") rather than general qualities. Consider both explicit requirements and implicit needs based on the role.
+    const prompt = `Extract a list of 10-15 most relevant technical and professional skills for this job posting. Format the response as a single-line JSON array of strings, with skills separated by commas. Focus on specific, concrete skills (e.g., "Python", "Agile Project Management") rather than general qualities. Consider both explicit requirements and implicit needs based on the role.
 
 Job Title: ${jobData.title}
 Job Description:
 ${jobData.description}
 Requirements:
-${jobData.requirements?.join('\n')}
+${jobData.requirements?.join(', ')}
 
-Return only the JSON array, no other text.`;
+Return only the JSON array in a single line, like this: ["Skill 1", "Skill 2", "Skill 3"]`;
 
     // Generate skills using Claude
     console.log('Calling Anthropic API for skills...');
