@@ -8,18 +8,26 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
       authorization: {
         params: {
-          scope: 'openid profile email'
+          scope: 'r_liteprofile r_emailaddress'
         }
       },
       userinfo: {
-        url: 'https://api.linkedin.com/v2/userinfo',
+        url: 'https://api.linkedin.com/v2/me?projection=(id,localizedFirstName,localizedLastName,profilePicture(displayImage~digitalmediaAsset:playableStreams))',
       },
-      profile(profile) {
+      async profile(profile, tokens) {
+        const emailRes = await fetch('https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))', {
+          headers: {
+            Authorization: `Bearer ${tokens.access_token}`,
+          },
+        });
+        const emailData = await emailRes.json();
+        const email = emailData.elements?.[0]?.['handle~']?.emailAddress;
+
         return {
-          id: profile.sub,
-          name: profile.name,
-          email: profile.email,
-          image: profile.picture,
+          id: profile.id,
+          name: `${profile.localizedFirstName} ${profile.localizedLastName}`,
+          email: email,
+          image: profile.profilePicture?.['displayImage~']?.elements?.[0]?.identifiers?.[0]?.identifier || null,
         };
       },
     }),
