@@ -6,8 +6,12 @@ import { Anthropic } from '@anthropic-ai/sdk';
 import crypto from 'crypto';
 
 // Import PDF.js with proper Node.js configuration
-import { getDocument } from 'pdfjs-dist/build/pdf.mjs';
+import * as pdfjs from 'pdfjs-dist/build/pdf.min.mjs';
 import type { TextItem } from 'pdfjs-dist/types/src/display/api';
+
+async function initPDFWorker() {
+  await import('pdfjs-dist/build/pdf.worker.min.mjs');
+}
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
@@ -253,7 +257,8 @@ async function processPDF(oldResume: File) {
   const typedArray = new Uint8Array(arrayBuffer);
 
   try {
-    const loadingTask = getDocument({
+    await initPDFWorker();
+    const loadingTask = pdfjs.getDocument({
       data: typedArray,
       cMapUrl: undefined,
       cMapPacked: true

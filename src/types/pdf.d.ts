@@ -28,4 +28,13 @@ declare module 'pdfjs-dist/build/pdf.mjs' {
 
   export const getDocument: (params: GetDocumentParams) => PDFDocumentLoadingTask;
   export const GlobalWorkerOptions: typeof GlobalWorkerOptions;
+}
+
+declare module 'pdfjs-dist/build/pdf.min.mjs' {
+  export * from 'pdfjs-dist';
+}
+
+declare module 'pdfjs-dist/build/pdf.worker.min.mjs' {
+  const worker: any;
+  export default worker;
 } 
