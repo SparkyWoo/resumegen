@@ -11,28 +11,21 @@ const anthropic = new Anthropic({
 
 async function generateSummary(jobUrl: string) {
   try {
-    // Log API key presence (not the actual key)
-    console.log('Anthropic API key present:', !!process.env.ANTHROPIC_API_KEY);
+    console.log('Starting summary generation...');
     
     // Fetch job posting content
-    console.log('Fetching job posting for summary from URL:', jobUrl);
+    console.log('Fetching job posting...');
     const response = await fetch(jobUrl);
     if (!response.ok) {
-      console.error('Job posting fetch failed:', {
-        status: response.status,
-        statusText: response.statusText
-      });
       throw new Error(`Failed to fetch job posting: ${response.status}`);
     }
     const html = await response.text();
-    console.log('Job posting HTML length:', html.length);
 
     // Extract relevant text from the HTML
     const textContent = html
-      .replace(/<[^>]*>/g, ' ')  // Remove HTML tags
-      .replace(/\s+/g, ' ')      // Normalize whitespace
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\s+/g, ' ')
       .trim();
-    console.log('Extracted text length:', textContent.length);
 
     // Create the prompt for Claude
     const prompt = `You are a professional resume writer. Based on the following job posting, write a concise, impactful summary (2-3 sentences) that would attract recruiters. Focus on relevant skills and experience that match the job requirements. Make it specific but don't mention the company name.
@@ -48,33 +41,18 @@ Write a professional summary that:
 5. Avoids clichés and generic statements`;
 
     // Generate summary using Claude
-    console.log('Calling Anthropic API with prompt length:', prompt.length);
-    try {
-      const response_ai = await anthropic.messages.create({
-        messages: [{ role: 'user', content: prompt }],
-        model: 'claude-3-sonnet-20240229',
-        max_tokens: 150,
-        temperature: 0.7,
-      });
-      console.log('Anthropic API response received:', {
-        contentLength: response_ai.content.length,
-        firstContentType: response_ai.content[0]?.type
-      });
+    console.log('Calling Anthropic API...');
+    const response_ai = await anthropic.messages.create({
+      messages: [{ role: 'user', content: prompt }],
+      model: 'claude-3-sonnet-20240229',
+      max_tokens: 150,
+      temperature: 0.7,
+    });
 
-      const summary = response_ai.content[0].type === 'text' 
-        ? response_ai.content[0].text 
-        : '';
-      console.log('Generated summary:', summary);
-      return summary.trim();
-    } catch (anthropicError: any) {
-      console.error('Anthropic API error:', {
-        message: anthropicError.message,
-        status: anthropicError.status,
-        type: anthropicError.type,
-        error: anthropicError
-      });
-      throw anthropicError;
-    }
+    const summary = response_ai.content[0].type === 'text' 
+      ? response_ai.content[0].text 
+      : '';
+    return summary.trim();
   } catch (error) {
     console.error('Error in generateSummary:', error);
     throw error;
@@ -82,23 +60,24 @@ Write a professional summary that:
 }
 
 export async function POST(req: Request) {
+  console.log('Starting resume generation...');
   try {
     const { githubUsername, jobUrl } = await req.json();
-    console.log('Received request:', { githubUsername, jobUrl });
+    console.log('Processing request for:', { githubUsername, jobUrl });
 
+    console.log('Fetching data...');
     const [githubData, jobData, summary] = await Promise.all([
       fetchGitHubData(githubUsername),
       fetchJobData(jobUrl),
-      generateSummary(jobUrl).catch(error => {
-        console.error('Summary generation failed:', error);
-        return 'Failed to generate summary. Please try again later.';
-      })
+      generateSummary(jobUrl)
     ]);
+    console.log('Data fetched successfully');
 
+    console.log('Saving to Supabase...');
     const { data: resume, error } = await supabase
       .from('resumes')
       .insert({
-        user_id: null, // Create as unclaimed resume
+        user_id: null,
         github_data: githubData,
         job_data: jobData,
         summary: summary,
@@ -113,9 +92,10 @@ export async function POST(req: Request) {
       throw error;
     }
 
+    console.log('Resume generated successfully');
     return NextResponse.json(resume);
   } catch (error: any) {
-    console.error('Detailed error:', error);
+    console.error('Error in resume generation:', error);
     return NextResponse.json(
       { error: 'Failed to generate resume', details: error.message },
       { status: 500 }
