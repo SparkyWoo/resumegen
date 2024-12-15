@@ -116,12 +116,20 @@ ${textContent}`;
   }
 }
 
+interface GitHubRepo {
+  name: string;
+  url: string;
+  description: string | null;
+  language: string | null;
+}
+
 export async function POST(req: Request) {
   console.log('Starting resume generation...');
   try {
     const { jobUrl, userId, userData } = await req.json();
     console.log('Processing request for:', { jobUrl, userId, userData });
 
+    // Fetch job data
     console.log('Fetching job data...');
     const jobData = await fetchJobData(jobUrl);
     console.log('Job data fetched successfully');
@@ -130,6 +138,21 @@ export async function POST(req: Request) {
     console.log('Generating skills...');
     const skills = await generateSkills(jobData);
     console.log('Generated skills:', skills);
+
+    // Fetch GitHub data if username provided
+    let githubData = null;
+    if (userData.githubUsername) {
+      console.log('Fetching GitHub data...');
+      githubData = await fetchGitHubData(userData.githubUsername);
+      console.log('GitHub data fetched successfully');
+    }
+
+    // Map GitHub repositories to projects
+    const projects = githubData?.repositories?.map((repo: GitHubRepo) => ({
+      name: repo.name,
+      url: repo.url,
+      highlights: [repo.description || `A ${repo.language || 'software'} project`]
+    })) || [];
 
     console.log('Saving resume to Supabase...');
     const { data: resume, error: resumeError } = await supabaseAdmin
@@ -142,15 +165,14 @@ export async function POST(req: Request) {
         summary: userData.summary || '',
         generated_content: {},
         created_at: new Date().toISOString(),
-        // Initialize other required fields with default values
         phone: '',
         location: '',
         url: '',
         work: [],
         education: [],
-        skills: skills, // Use the generated skills
-        projects: [],
-        github_data: null,
+        skills: skills,
+        projects: projects,
+        github_data: githubData,
         linkedin_data: null,
       })
       .select()
