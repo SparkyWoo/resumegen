@@ -3,11 +3,12 @@
 import React, { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { FaLock } from 'react-icons/fa';
+import { FaLock, FaFileUpload } from 'react-icons/fa';
 
 interface FormState {
   jobUrl: string;
   githubUsername: string;
+  oldResume: File | null;
   isLoading: boolean;
   error: string;
 }
@@ -32,6 +33,7 @@ export function GenerateResumeForm(): JSX.Element {
   const [formState, setFormState] = useState<FormState>({
     jobUrl: jobUrlFromParams || '',
     githubUsername: '',
+    oldResume: null,
     isLoading: false,
     error: ''
   });
@@ -41,6 +43,21 @@ export function GenerateResumeForm(): JSX.Element {
     setFormState(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.type === 'application/pdf') {
+        setFormState(prev => ({ ...prev, oldResume: file }));
+      } else {
+        setFormState(prev => ({ 
+          ...prev, 
+          error: 'Please upload a PDF file',
+          oldResume: null 
+        }));
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!session) return;
@@ -48,20 +65,22 @@ export function GenerateResumeForm(): JSX.Element {
     setFormState(prev => ({ ...prev, isLoading: true, error: '' }));
 
     try {
-      const userData: UserData = {
+      const formData = new FormData();
+      formData.append('jobUrl', formState.jobUrl);
+      formData.append('userId', session.user?.id || '');
+      formData.append('userData', JSON.stringify({
         name: session.user?.name || '',
         email: session.user?.email || '',
         githubUsername: formState.githubUsername
-      };
+      }));
+      
+      if (formState.oldResume) {
+        formData.append('oldResume', formState.oldResume);
+      }
 
       const response = await fetch('/api/generate/resume', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jobUrl: formState.jobUrl,
-          userId: session.user?.id,
-          userData
-        }),
+        body: formData
       });
 
       if (!response.ok) {
@@ -140,6 +159,38 @@ export function GenerateResumeForm(): JSX.Element {
         </div>
         <p className="mt-1 text-sm text-gray-500">
           We'll import your public repositories to showcase in your resume
+        </p>
+      </div>
+
+      <div>
+        <label htmlFor="oldResume" className="block text-sm font-medium text-gray-700">
+          Upload Existing Resume (Optional)
+        </label>
+        <div className="mt-1">
+          <div className="flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-blue-500 transition-colors">
+            <div className="space-y-1 text-center">
+              <FaFileUpload className="mx-auto h-12 w-12 text-gray-400" />
+              <div className="flex text-sm text-gray-600">
+                <label htmlFor="oldResume" className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500">
+                  <span>Upload a PDF file</span>
+                  <input
+                    id="oldResume"
+                    name="oldResume"
+                    type="file"
+                    accept="application/pdf"
+                    onChange={handleFileChange}
+                    className="sr-only"
+                  />
+                </label>
+              </div>
+              <p className="text-xs text-gray-500">
+                {formState.oldResume ? formState.oldResume.name : "PDF up to 10MB"}
+              </p>
+            </div>
+          </div>
+        </div>
+        <p className="mt-1 text-sm text-gray-500">
+          We'll extract and improve your work experience to match the job requirements
         </p>
       </div>
 
