@@ -4,15 +4,14 @@ import { fetchGitHubData } from '@/services/github';
 import { fetchJobData } from '@/services/job';
 import { Anthropic } from '@anthropic-ai/sdk';
 import crypto from 'crypto';
-import * as pdfjsLib from 'pdfjs-dist/build/pdf.mjs';
-import path from 'path';
+import { getDocument, version } from 'pdfjs-dist';
 
 // Configure PDF.js for serverless environment
-if (typeof process === 'object') {
-  const workerOptions = pdfjsLib.GlobalWorkerOptions as { workerSrc: string | false; disableWorker?: boolean };
-  workerOptions.workerSrc = false;
-  workerOptions.disableWorker = true;
-}
+const pdfjsLib = require('pdfjs-dist');
+pdfjsLib.GlobalWorkerOptions = {
+  workerSrc: null,
+  isWorkerDisabled: true
+};
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
@@ -270,7 +269,7 @@ export async function POST(req: Request) {
       const arrayBuffer = await oldResume.arrayBuffer();
       const typedArray = new Uint8Array(arrayBuffer);
       
-      const pdf = await pdfjsLib.getDocument({ data: typedArray }).promise;
+      const pdf = await getDocument({ data: typedArray }).promise;
       let fullText = '';
       
       for (let i = 1; i <= pdf.numPages; i++) {
