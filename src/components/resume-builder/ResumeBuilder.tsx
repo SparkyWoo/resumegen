@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '@lib/redux/hooks';
 import { initializeResume } from '@/lib/redux/resumeSlice';
 import { ResumeState } from '@/lib/redux/resumeSlice';
 import { PDFViewer } from './Resume/PDFViewer';
+import Link from 'next/link';
 
 interface Props {
   initialData: ResumeState;
@@ -28,7 +29,7 @@ interface Props {
   };
 }
 
-export const ResumeBuilder = ({ initialData, githubData, jobData }: Props) => {
+export const ResumeBuilder = ({ initialData, githubData, jobData }: Props): JSX.Element => {
   const dispatch = useAppDispatch();
   const resume = useAppSelector(state => state.resume);
   const [activeSection, setActiveSection] = useState('basics');
@@ -55,31 +56,42 @@ export const ResumeBuilder = ({ initialData, githubData, jobData }: Props) => {
   return (
     <main className="h-screen w-full bg-zinc-50">
       {/* Fixed Header */}
-      <div className="fixed top-0 left-0 right-0 z-10 bg-white border-b border-zinc-200 px-6 py-4">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <h1 className="text-2xl font-bold">Resume Builder</h1>
-          <button
-            onClick={() => window.print()}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
-          >
-            Download PDF
-          </button>
-        </div>
-        {/* Section Navigation */}
-        <div className="flex gap-1 mt-4 border-b border-zinc-200">
-          {sections.map(section => (
+      <div className="fixed top-0 left-0 right-0 z-10 bg-white border-b border-zinc-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <Link href="/" className="flex items-center">
+              <span className="text-2xl font-bold">
+                <span className="text-blue-600">Resume</span>
+                <span className="text-gray-900">Hey</span>
+              </span>
+            </Link>
+
+            {/* Download Button */}
             <button
-              key={section.id}
-              onClick={() => scrollToSection(section.id)}
-              className={`px-4 py-2 text-sm font-medium rounded-t-md ${
-                activeSection === section.id
-                  ? 'text-blue-600 border-b-2 border-blue-600'
-                  : 'text-zinc-600 hover:text-zinc-900'
-              }`}
+              onClick={() => window.print()}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              {section.label}
+              Download PDF
             </button>
-          ))}
+          </div>
+
+          {/* Section Navigation */}
+          <div className="flex gap-1 -mb-px">
+            {sections.map(section => (
+              <button
+                key={section.id}
+                onClick={() => scrollToSection(section.id)}
+                className={`px-4 py-2 text-sm font-medium border-b-2 ${
+                  activeSection === section.id
+                    ? 'text-blue-600 border-blue-600'
+                    : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                {section.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
