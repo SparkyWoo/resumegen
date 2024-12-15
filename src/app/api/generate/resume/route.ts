@@ -4,7 +4,11 @@ import { fetchGitHubData } from '@/services/github';
 import { fetchJobData } from '@/services/job';
 
 async function generateSummary(jobUrl: string) {
-  const response = await fetch(`${process.env.VERCEL_URL || 'http://localhost:3000'}/api/generate-summary`, {
+  const baseUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:3000';
+    
+  const response = await fetch(`${baseUrl}/api/generate-summary`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ jobUrl })
