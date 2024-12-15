@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'ResumeHey - AI-Powered Resume Builder',
-  description: 'Create a tailored resume in seconds using AI and your LinkedIn profile',
+  description: 'Create a professional resume tailored to your job application using AI and modern templates.',
   keywords: 'resume builder, AI resume, ATS friendly resume, job application, career tools, resume generator',
   openGraph: {
     title: 'ResumeHey - AI-Powered Resume Builder',
@@ -24,6 +24,11 @@ export const metadata: Metadata = {
     description: 'Create an ATS-friendly resume in 60 seconds using AI',
   },
   metadataBase: new URL('https://resumehey.com'),
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({

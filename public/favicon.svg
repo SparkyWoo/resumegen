@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="32" height="32" rx="8" fill="#2563EB"/>
+  <!-- RH Letters -->
+  <path d="M10 8h6c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2h-6v8h-2V8h2zm0 6h6v-4h-6v4zm12-6v14h-2V8h2z" fill="white"/>
+</svg> 
