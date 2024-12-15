@@ -11,6 +11,14 @@ interface Props {
 
 export const SkillsForm = ({ data, onChange, jobData }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [inputText, setInputText] = useState(data.join(', '));
+
+  // Keep input in sync with external data changes
+  useEffect(() => {
+    if (!inputText || data.join(', ') !== inputText.replace(/,\s*$/, '')) {
+      setInputText(data.join(', '));
+    }
+  }, [data]);
 
   // Initialize skills from job posting data if available
   useEffect(() => {
@@ -26,6 +34,9 @@ export const SkillsForm = ({ data, onChange, jobData }: Props) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text = e.target.value;
+    setInputText(text);
+    
+    // Update skills array without removing trailing comma
     const skills = text
       .split(/[,\n]/)
       .map(skill => skill.trim())
@@ -43,7 +54,7 @@ export const SkillsForm = ({ data, onChange, jobData }: Props) => {
           Enter skills separated by commas
         </div>
         <textarea
-          value={data.join(', ')}
+          value={inputText}
           onChange={handleChange}
           rows={10}
           placeholder="Product Management, Data Analysis, SQL, Python, A/B Testing"
