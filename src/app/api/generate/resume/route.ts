@@ -27,24 +27,18 @@ async function generateSummary(jobUrl: string) {
     }
     const html = await response.text();
 
-    // Extract relevant text from the HTML
+    // Extract and trim relevant text from the HTML
     const textContent = html
       .replace(/<[^>]*>/g, ' ')
       .replace(/\s+/g, ' ')
-      .trim();
+      .trim()
+      .slice(0, 2000); // Limit input text length
 
-    // Create the prompt for Claude
-    const prompt = `You are a professional resume writer. Based on the following job posting, write a concise, impactful summary (2-3 sentences) that would attract recruiters. Focus on relevant skills and experience that match the job requirements. Make it specific but don't mention the company name.
+    // Create a more concise prompt
+    const prompt = `Write a concise, impactful professional summary (2-3 sentences) for a resume targeting this job. Focus on relevant skills and impact. Don't mention company names.
 
 Job posting:
-${textContent}
-
-Write a professional summary that:
-1. Highlights relevant technical skills and experience
-2. Demonstrates impact and leadership
-3. Is concise and specific
-4. Uses active voice and strong verbs
-5. Avoids clichés and generic statements`;
+${textContent}`;
 
     // Generate summary using Claude
     console.log('Calling Anthropic API...');
