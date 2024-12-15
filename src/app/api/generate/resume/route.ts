@@ -68,42 +68,48 @@ async function extractWorkExperience(pdfText: string) {
 
 async function improveWorkExperience(workExperience: string, jobData: any) {
   try {
-    const prompt = `You are a professional resume writer. Improve these work experience bullet points to better match this job posting while maintaining truthfulness and adding specific metrics where they naturally fit. Focus on:
+    const prompt = `You are a professional resume writer. Improve these work experience bullet points to precisely match this job posting's requirements while maintaining truthfulness. Focus on:
 
-1. Quantifiable achievements and outcomes
-2. Strong action verbs showing leadership
-3. Skills and technologies matching the job
-4. Business impact and value delivered
-5. Clear, direct language without buzzwords
+1. Key requirements from the job posting
+2. Technical skills and tools mentioned in the job description
+3. Quantifiable achievements and metrics that demonstrate relevant expertise
+4. Leadership and soft skills that match the role
+5. Industry-specific terminology from the job posting
+
+Job Title: ${jobData.title}
 
 Job Description:
 ${jobData.description?.slice(0, 500)}
 
+Key Requirements:
+${jobData.requirements?.join('\n')}
+
 Original Work Experience:
 ${workExperience}
 
-Requirements:
-- Keep the company names, positions, and dates exactly as they are
-- Make bullet points concise and impactful
-- Focus on achievements over responsibilities
-- Maintain truthfulness of the original experience
-- Use natural, professional language
-- Align with the target role's requirements
+Instructions:
+- Keep company names, positions, and dates exactly as they are
+- Transform each bullet point to directly address a job requirement
+- Add specific metrics and achievements that demonstrate required skills
+- Use keywords and terminology from the job posting
+- Maintain truthfulness while highlighting relevant experience
+- Focus on achievements that match the role's technical requirements
+- Limit each bullet point to 1-2 lines for readability
 
 Return the improved work experience in this exact format for each role:
 Company: [Name]
 Position: [Title]
 Dates: [Start] - [End]
 Highlights:
-• [Improved bullet point]
-• [Improved bullet point]
+• [Improved bullet point targeting specific job requirement]
+• [Improved bullet point showcasing relevant technical skill]
 ...`;
 
     const response = await anthropic.messages.create({
       messages: [{ role: 'user', content: prompt }],
       model: 'claude-3-haiku-20240307',
       max_tokens: 1000,
-      temperature: 0.7,
+      temperature: 0.5,
     });
 
     const improvedContent = response.content[0].type === 'text' ? response.content[0].text : '';
