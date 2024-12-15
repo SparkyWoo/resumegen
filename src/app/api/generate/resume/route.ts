@@ -19,47 +19,30 @@ async function generateSkills(jobData: any) {
   try {
     console.log('Starting skills generation...');
     
-    const prompt = `You are a professional resume writer. Extract 10-15 most relevant skills from this job posting for a resume's skills section. 
-
-Focus on concrete abilities and competencies ONLY:
-- Technical skills (e.g., Python, SQL, AWS)
-- Software/tools (e.g., Jira, Figma, Excel)
-- Methodologies (e.g., Agile, Scrum, Six Sigma)
-- Professional competencies (e.g., Project Management, Team Leadership, Strategic Planning)
-
-DO NOT include:
-- Education requirements
-- Years of experience
-- Certifications
-- Job titles
-- Industry knowledge
-- Qualifications
+    // Simplified prompt for faster processing
+    const prompt = `Extract 8-10 key skills from this job posting. Focus on specific technical and professional skills only.
 
 Job Title: ${jobData.title}
-Job Description:
-${jobData.description}
-Requirements:
-${jobData.requirements?.join(', ')}
+Description: ${jobData.description?.slice(0, 500)} // Limit description length
 
-IMPORTANT: Respond with ONLY a comma-separated list of skills, with NO introduction or explanation. Example format:
-Product Strategy, Data Analysis, SQL, Project Management, Team Leadership, Agile, Stakeholder Management`;
+Return ONLY comma-separated skills like:
+Product Strategy, Data Analysis, SQL, Project Management, Team Leadership`;
 
     console.log('Calling Anthropic API for skills...');
     const response = await anthropic.messages.create({
       messages: [{ role: 'user', content: prompt }],
       model: 'claude-3-haiku-20240307',
-      max_tokens: 150,
-      temperature: 0.5,
+      max_tokens: 100, // Reduced token limit
+      temperature: 0.1, // Lower temperature for more focused results
     });
 
     const skillsText = response.content[0].type === 'text' ? response.content[0].text : '';
     
-    // Clean up and format the skills list
+    // Simplified cleanup
     return skillsText
-      .replace(/\n/g, ', ') // Replace newlines with commas
       .split(',')
       .map(skill => skill.trim())
-      .filter(skill => skill.length > 0);
+      .filter(skill => skill.length > 0 && skill.length < 30); // Filter out overly long skills
   } catch (error) {
     console.error('Error in generateSkills:', error);
     return [];

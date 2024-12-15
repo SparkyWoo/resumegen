@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ResumeState } from '@/lib/redux/resumeSlice';
 
 interface Props {
@@ -10,16 +10,23 @@ interface Props {
 }
 
 export const SkillsForm = ({ data, onChange, jobData }: Props) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   // Initialize skills from job posting data if available
   useEffect(() => {
     if (jobData?.skills && data.length === 0) {
-      onChange(jobData.skills);
+      setIsLoading(true);
+      try {
+        onChange(jobData.skills);
+      } finally {
+        setIsLoading(false);
+      }
     }
   }, [jobData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const skills = e.target.value
-      .split(/[,\n]/) // Split by either commas or newlines
+      .split(/[,\n]/)
       .map(skill => skill.trim())
       .filter(skill => skill.length > 0);
     onChange(skills);
@@ -39,8 +46,16 @@ export const SkillsForm = ({ data, onChange, jobData }: Props) => {
           onChange={handleChange}
           rows={10}
           placeholder="Product Management, Data Analysis, SQL, Python, A/B Testing"
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm"
+          className={`mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm ${
+            isLoading ? 'bg-gray-50' : ''
+          }`}
+          disabled={isLoading}
         />
+        {isLoading && (
+          <div className="mt-2 text-sm text-gray-500">
+            Generating skills...
+          </div>
+        )}
       </div>
     </div>
   );
