@@ -74,12 +74,9 @@ export async function POST(req: Request) {
     const { jobUrl, userId, userData } = await req.json();
     console.log('Processing request for:', { jobUrl, userId, userData });
 
-    console.log('Fetching data...');
-    const [jobData, summary] = await Promise.all([
-      fetchJobData(jobUrl),
-      generateSummary(jobUrl)
-    ]);
-    console.log('Data fetched successfully');
+    console.log('Fetching job data...');
+    const jobData = await fetchJobData(jobUrl);
+    console.log('Job data fetched successfully');
 
     console.log('Saving to Supabase...');
     const { data: resume, error } = await supabase
@@ -89,7 +86,7 @@ export async function POST(req: Request) {
         name: userData.name,
         email: userData.email,
         job_data: jobData,
-        summary: summary,
+        summary: userData.summary || '',
         generated_content: {},
         created_at: new Date().toISOString(),
       })

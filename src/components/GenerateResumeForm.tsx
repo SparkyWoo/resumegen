@@ -19,6 +19,26 @@ export function GenerateResumeForm() {
 
     setLoading(true);
     try {
+      // First, generate the summary
+      const summaryResponse = await fetch('/api/generate-summary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jobUrl })
+      });
+
+      if (!summaryResponse.ok) throw new Error('Failed to generate summary');
+
+      const reader = summaryResponse.body?.getReader();
+      const decoder = new TextDecoder();
+      let summary = '';
+
+      while (true) {
+        const { done, value } = await reader!.read();
+        if (done) break;
+        summary += decoder.decode(value);
+      }
+
+      // Then create the resume with the summary
       const response = await fetch('/api/generate/resume', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -28,6 +48,7 @@ export function GenerateResumeForm() {
           userData: {
             name: session.user?.name || '',
             email: session.user?.email || '',
+            summary: summary.trim(),
           }
         }),
       });
