@@ -135,7 +135,7 @@ export function GenerateResumeForm(): JSX.Element {
           className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-50 disabled:text-gray-500"
         />
         <p className="mt-1 text-sm text-gray-500">
-          Paste a job posting URL from Lever or Greenhouse
+          Paste a job posting URL from any job board (works best with Lever, Greenhouse, and other major job sites)
         </p>
       </div>
 
