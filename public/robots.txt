@@ -1,0 +1,10 @@
+# https://www.resumehey.com/robots.txt
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow dynamic resume pages
+Disallow: /resume/
+
+# Sitemap location
+Sitemap: https://www.resumehey.com/sitemap.xml 
