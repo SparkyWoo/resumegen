@@ -64,16 +64,99 @@ function getGreenhouseJobData($: cheerio.Root): JobData {
   };
 }
 
-function detectJobBoard(url: string): 'lever' | 'greenhouse' | 'unknown' {
+function getGenericJobData($: cheerio.Root): JobData {
+  // Get title from common patterns
+  const title = 
+    $('h1').first().text().trim() || 
+    $('[data-automation-id="jobTitle"]').text().trim() ||
+    $('[class*="title" i]').first().text().trim() ||
+    'Untitled Position';
+
+  let description = '';
+  let requirements: string[] = [];
+  
+  // Common section headers for requirements
+  const requirementHeaders = [
+    'requirements',
+    'qualifications',
+    'what you need',
+    'what you\'ll need',
+    'what we\'re looking for',
+    'minimum qualifications',
+    'basic qualifications',
+    'required qualifications',
+    'who you are'
+  ];
+
+  // Common section headers to exclude
+  const excludeHeaders = [
+    'benefits',
+    'perks',
+    'about us',
+    'about the company',
+    'apply',
+    'how to apply'
+  ];
+
+  // Function to check if text matches any pattern
+  const matchesPattern = (text: string, patterns: string[]) => 
+    patterns.some(pattern => text.toLowerCase().includes(pattern.toLowerCase()));
+
+  // Process all potential content sections
+  $('div, section').each((_, element) => {
+    const $el = $(element);
+    const headerText = $el.find('h1, h2, h3, h4, strong').first().text().trim();
+    const content = $el.text().trim();
+
+    if (!content) return;
+
+    // Check if this section is a requirements section
+    if (matchesPattern(headerText, requirementHeaders)) {
+      // Extract list items if they exist, otherwise use the whole text
+      const listItems = $el.find('li').map((_, li) => $(li).text().trim()).get();
+      if (listItems.length > 0) {
+        requirements.push(...listItems);
+      } else {
+        requirements.push(content);
+      }
+    }
+    // Add to description if it's not a requirements section and not excluded
+    else if (!matchesPattern(headerText, excludeHeaders)) {
+      description += content + '\n';
+    }
+  });
+
+  // Clean up the text
+  description = description.trim();
+  requirements = requirements
+    .map(req => req.trim())
+    .filter(req => req.length > 10); // Filter out very short items
+
+  // Extract skills from both description and requirements
+  const combinedText = description + ' ' + requirements.join(' ');
+  const skills = extractSkills(combinedText).map(skill => skill.trim()).filter(Boolean);
+
+  return {
+    title,
+    description,
+    requirements,
+    skills,
+  };
+}
+
+function detectJobBoard(url: string): 'lever' | 'greenhouse' | 'generic' {
   if (url.includes('lever.co')) return 'lever';
   if (url.includes('greenhouse.io')) return 'greenhouse';
-  return 'unknown';
+  return 'generic';
 }
 
 export async function fetchJobData(url: string) {
   const response = await fetch(url, {
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+      'Accept-Language': 'en-US,en;q=0.5',
+      'Referer': 'https://www.google.com/'
     }
   });
 
@@ -92,6 +175,6 @@ export async function fetchJobData(url: string) {
     case 'greenhouse':
       return getGreenhouseJobData($);
     default:
-      throw new Error('Unsupported job board platform');
+      return getGenericJobData($);
   }
 } 
