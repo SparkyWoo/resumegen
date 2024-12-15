@@ -19,7 +19,7 @@ async function generateSkills(jobData: any) {
   try {
     console.log('Starting skills generation...');
     
-    const prompt = `You are a professional resume writer. Based on this job posting, identify the most relevant technical and professional skills that should be highlighted in a resume. Focus on specific, concrete skills that are either explicitly mentioned or strongly implied by the job requirements. Include both hard skills (technical tools, languages, platforms) and soft skills (professional competencies).
+    const prompt = `You are a professional resume writer. Extract 10-15 most relevant skills from this job posting for a resume's skills section. Include both hard skills (technical tools, languages, platforms) and soft skills (professional competencies).
 
 Job Title: ${jobData.title}
 Job Description:
@@ -27,7 +27,7 @@ ${jobData.description}
 Requirements:
 ${jobData.requirements?.join(', ')}
 
-Return ONLY a comma-separated list of 10-15 skills, ordered from most important to least important. Focus on skills that would stand out in a resume's skills section. Example format:
+IMPORTANT: Respond with ONLY a comma-separated list of skills, with NO introduction or explanation. Example format:
 Python, SQL, Data Analysis, Project Management, Cross-functional Leadership, Agile Methodologies, API Development`;
 
     console.log('Calling Anthropic API for skills...');
