@@ -6,12 +6,12 @@ import { Anthropic } from '@anthropic-ai/sdk';
 import crypto from 'crypto';
 
 // Import PDF.js with proper Node.js configuration
-import { getDocument } from 'pdfjs-dist/build/pdf.mjs';
-import { TextItem } from 'pdfjs-dist/types/src/display/api';
+import * as pdfjsLib from 'pdfjs-dist';
 
 // Configure PDF.js for Node.js environment
-const pdfjsLib = require('pdfjs-dist/build/pdf.mjs');
-pdfjsLib.GlobalWorkerOptions.workerSrc = false;
+if (typeof pdfjsLib.GlobalWorkerOptions !== 'undefined') {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+}
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
@@ -270,10 +270,8 @@ export async function POST(req: Request) {
       const typedArray = new Uint8Array(arrayBuffer);
       
       try {
-        const pdf = await getDocument({
-          data: typedArray,
-          cMapUrl: undefined,
-          cMapPacked: true
+        const pdf = await pdfjsLib.getDocument({
+          data: typedArray
         }).promise;
         
         let fullText = '';
