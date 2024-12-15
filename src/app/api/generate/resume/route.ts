@@ -9,9 +9,7 @@ import crypto from 'crypto';
 import * as pdfjsLib from 'pdfjs-dist';
 
 // Configure PDF.js for Node.js environment
-if (typeof pdfjsLib.GlobalWorkerOptions !== 'undefined') {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = '';
-}
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsLib.PDFWorker?.workerSrc || '';
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
@@ -270,9 +268,11 @@ export async function POST(req: Request) {
       const typedArray = new Uint8Array(arrayBuffer);
       
       try {
-        const pdf = await pdfjsLib.getDocument({
-          data: typedArray
-        }).promise;
+        const loadingTask = pdfjsLib.getDocument({
+          data: typedArray,
+          verbosity: 0
+        });
+        const pdf = await loadingTask.promise;
         
         let fullText = '';
         
