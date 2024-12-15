@@ -6,11 +6,8 @@ import { Anthropic } from '@anthropic-ai/sdk';
 import crypto from 'crypto';
 
 // Import PDF.js with proper Node.js configuration
-import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+import { getDocument } from 'pdfjs-dist/build/pdf.mjs';
 import type { TextItem } from 'pdfjs-dist/types/src/display/api';
-
-// Configure PDF.js for Node.js environment
-GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
