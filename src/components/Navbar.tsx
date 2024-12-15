@@ -46,9 +46,11 @@ export function Navbar(): JSX.Element {
         <div className="flex justify-between h-16">
           {/* Logo section */}
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <span className="text-2xl font-bold text-blue-600">Resume</span>
-              <span className="text-2xl font-bold text-gray-900">Hey</span>
+            <Link href="/" className="flex items-center">
+              <span className="text-2xl font-bold">
+                <span className="text-blue-600">Resume</span>
+                <span className="text-gray-900">Hey</span>
+              </span>
             </Link>
           </div>
 
