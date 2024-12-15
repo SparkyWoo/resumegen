@@ -68,14 +68,26 @@ async function generateSummary(jobData: any) {
   try {
     console.log('Starting summary generation...');
     
-    // Create a more concise prompt
-    const prompt = `Write a concise, impactful professional summary (2-3 sentences) for a resume targeting this job. Focus on relevant skills and impact. Don't mention company names.
+    const prompt = `As an expert resume writer, craft a powerful professional summary that demonstrates the candidate's value proposition for this role. The summary should:
+
+- Be 2-3 impactful sentences
+- Highlight transferable leadership abilities and strategic impact
+- Use strong action verbs and professional language
+- Avoid repeating exact phrases from the job description
+- Focus on delivering business value and driving results
+- NOT include any phrases like "Here is" or mention the job title directly
+- NOT use cliché terms like "results-driven" or "proven track record"
+- Be written in first person without using "I" or "my"
+
+Example format:
+"Strategic technology leader with expertise in scaling enterprise platforms and driving digital transformation initiatives. Demonstrated success in building high-performing teams and delivering complex projects that accelerate business growth. Combines deep technical knowledge with business acumen to identify opportunities and execute innovative solutions."
 
 Job Title: ${jobData.title}
 Job Description:
-${jobData.description}`;
+${jobData.description}
 
-    // Generate summary using Claude
+Return ONLY the summary text with no additional context or explanations.`;
+
     console.log('Calling Anthropic API for summary...');
     const response_ai = await anthropic.messages.create({
       messages: [{ role: 'user', content: prompt }],
@@ -95,7 +107,12 @@ ${jobData.description}`;
     const summary = response_ai.content[0].type === 'text' 
       ? response_ai.content[0].text 
       : '';
-    return summary.trim();
+    
+    // Clean up any potential "Here is" or similar introductory phrases
+    return summary
+      .trim()
+      .replace(/^(here is|here's|this is|presenting|i am|i'm|my|i have|i)\s+/i, '')
+      .replace(/^[^a-z0-9]*/i, ''); // Remove any non-alphanumeric characters from start
   } catch (error) {
     console.error('Error in generateSummary:', error);
     throw error;
