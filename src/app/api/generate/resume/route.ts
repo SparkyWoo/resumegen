@@ -19,8 +19,7 @@ async function generateSkills(jobData: any) {
   try {
     console.log('Starting skills generation...');
     
-    // Create a prompt that focuses on extracting relevant skills
-    const prompt = `Extract 10-15 most relevant skills from this job posting. Include both technical and professional skills. Return them as a simple comma-separated list. Focus on specific, concrete skills rather than general qualities.
+    const prompt = `Extract 10-15 most relevant skills from this job posting. Return them as a single line, comma-separated list. Include both technical and professional skills.
 
 Job Title: ${jobData.title}
 Job Description:
@@ -28,10 +27,9 @@ ${jobData.description}
 Requirements:
 ${jobData.requirements?.join(', ')}
 
-Return ONLY the comma-separated list, like this:
+Return ONLY a single line of comma-separated skills like this example (do not include line breaks):
 Product Management, Data Analysis, Cross-functional Leadership, SQL, Python, A/B Testing`;
 
-    // Generate skills using Claude
     console.log('Calling Anthropic API for skills...');
     const response = await anthropic.messages.create({
       messages: [{ role: 'user', content: prompt }],
@@ -42,13 +40,13 @@ Product Management, Data Analysis, Cross-functional Leadership, SQL, Python, A/B
 
     const skillsText = response.content[0].type === 'text' ? response.content[0].text : '';
     
-    // Clean up and format the skills list
+    // Clean up and format the skills list - replace any newlines with commas first
     const skills = skillsText
+      .replace(/\n/g, ', ')
       .split(',')
       .map(skill => skill.trim())
       .filter(skill => skill.length > 0);
 
-    // Return as a single array
     return skills;
   } catch (error) {
     console.error('Error in generateSkills:', error);
