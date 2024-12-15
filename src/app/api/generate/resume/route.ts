@@ -64,30 +64,16 @@ Product Strategy, Data Analysis, SQL, Project Management, Team Leadership`;
   }
 }
 
-async function generateSummary(jobUrl: string) {
+async function generateSummary(jobData: any) {
   try {
     console.log('Starting summary generation...');
     
-    // Fetch job posting content
-    console.log('Fetching job posting...');
-    const response = await fetch(jobUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch job posting: ${response.status}`);
-    }
-    const html = await response.text();
-
-    // Extract and trim relevant text from the HTML
-    const textContent = html
-      .replace(/<[^>]*>/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim()
-      .slice(0, 2000);
-
     // Create a more concise prompt
     const prompt = `Write a concise, impactful professional summary (2-3 sentences) for a resume targeting this job. Focus on relevant skills and impact. Don't mention company names.
 
-Job posting:
-${textContent}`;
+Job Title: ${jobData.title}
+Job Description:
+${jobData.description}`;
 
     // Generate summary using Claude
     console.log('Calling Anthropic API for summary...');
@@ -134,12 +120,11 @@ export async function POST(req: Request) {
     const jobData = await fetchJobData(jobUrl);
     console.log('Job data fetched successfully');
 
-    // Generate summary
+    // Generate summary and skills based on job data
     console.log('Generating summary...');
-    const summary = await generateSummary(jobUrl);
+    const summary = await generateSummary(jobData);
     console.log('Generated summary:', summary);
 
-    // Generate skills based on job data
     console.log('Generating skills...');
     const skills = await generateSkills(jobData);
     console.log('Generated skills:', skills);
