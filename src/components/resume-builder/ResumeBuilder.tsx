@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '@lib/redux/hooks';
 import { initializeResume } from '@/lib/redux/resumeSlice';
 import { ResumeState } from '@/lib/redux/resumeSlice';
 import { PDFViewer } from './Resume/PDFViewer';
+import { Logo } from '@/components/Logo';
 import Link from 'next/link';
 import { FaDownload } from 'react-icons/fa';
 
@@ -76,16 +77,15 @@ export const ResumeBuilder = ({ initialData, githubData, jobData }: Props): JSX.
   return (
     <main className="h-screen w-full bg-zinc-50">
       {/* Fixed Header */}
-      <div className="fixed top-0 left-0 right-0 z-10 bg-white border-b border-zinc-200">
+      <nav className="fixed top-0 left-0 right-0 z-10 bg-white shadow-sm">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center">
-              <span className="text-2xl font-bold">
-                <span className="text-blue-600">Resume</span>
-                <span className="text-gray-900">Hey</span>
-              </span>
-            </Link>
+            <div className="flex-shrink-0 flex items-center">
+              <Link href="/" className="flex items-center">
+                <Logo size={28} />
+              </Link>
+            </div>
 
             {/* Download Button */}
             <button
@@ -117,7 +117,7 @@ export const ResumeBuilder = ({ initialData, githubData, jobData }: Props): JSX.
             ))}
           </div>
         </div>
-      </div>
+      </nav>
 
       <div className="grid h-[calc(100vh-116px)] grid-cols-1 lg:grid-cols-2 mt-[116px]">
         {/* Form Section */}
