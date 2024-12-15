@@ -5,9 +5,10 @@ import { fetchJobData } from '@/services/job';
 import { Anthropic } from '@anthropic-ai/sdk';
 import crypto from 'crypto';
 import * as pdfjsLib from 'pdfjs-dist/build/pdf.mjs';
+import path from 'path';
 
 // Configure PDF.js for Node.js environment
-pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+pdfjsLib.GlobalWorkerOptions.workerSrc = path.resolve(process.cwd(), 'node_modules/pdfjs-dist/build/pdf.worker.mjs');
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
