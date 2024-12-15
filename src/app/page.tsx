@@ -53,6 +53,30 @@ export default function Home() {
           ))}
         </div>
 
+        {/* Resume Improvement Section */}
+        <div className="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 to-indigo-50 p-8 rounded-lg shadow-sm border border-blue-100 mb-16">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">Already Have a Resume?</h2>
+            <p className="text-xl text-gray-700 mb-6">
+              Upload your existing resume and watch our AI transform it into a masterpiece
+            </p>
+            <div className="grid md:grid-cols-3 gap-6 text-left">
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <div className="text-blue-600 font-semibold mb-2">1. Upload PDF</div>
+                <p className="text-gray-600 text-sm">Simply upload your current resume in PDF format</p>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <div className="text-blue-600 font-semibold mb-2">2. AI Analysis</div>
+                <p className="text-gray-600 text-sm">Our AI extracts and enhances your experience</p>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <div className="text-blue-600 font-semibold mb-2">3. Job Targeting</div>
+                <p className="text-gray-600 text-sm">Content automatically aligns with job requirements</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Form Section */}
         <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-sm border border-gray-100">
           <div className="text-center mb-8">
