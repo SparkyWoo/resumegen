@@ -25,11 +25,20 @@ export const SkillsForm = ({ data, onChange, jobData }: Props) => {
   }, [jobData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const skills = e.target.value
-      .split(/[,\n]/)
-      .map(skill => skill.trim())
-      .filter(skill => skill.length > 0);
-    onChange(skills);
+    // Allow direct typing of commas by not splitting immediately
+    const text = e.target.value;
+    
+    // Only split and process when we detect a comma or newline
+    if (text.includes(',') || text.includes('\n')) {
+      const skills = text
+        .split(/[,\n]/)
+        .map(skill => skill.trim())
+        .filter(skill => skill.length > 0);
+      onChange(skills);
+    } else {
+      // If no comma or newline, treat the entire text as a single skill
+      onChange([text.trim()].filter(Boolean));
+    }
   };
 
   return (
