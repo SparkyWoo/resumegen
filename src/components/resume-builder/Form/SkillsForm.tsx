@@ -11,6 +11,12 @@ interface Props {
 
 export const SkillsForm = ({ data, onChange, jobData }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [inputValue, setInputValue] = useState(data.join(', '));
+
+  // Update input value when data changes externally
+  useEffect(() => {
+    setInputValue(data.join(', '));
+  }, [data]);
 
   // Initialize skills from job posting data if available
   useEffect(() => {
@@ -25,20 +31,26 @@ export const SkillsForm = ({ data, onChange, jobData }: Props) => {
   }, [jobData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    // Allow direct typing of commas by not splitting immediately
     const text = e.target.value;
-    
-    // Only split and process when we detect a comma or newline
-    if (text.includes(',') || text.includes('\n')) {
+    setInputValue(text);
+
+    // Process the input into skills array on certain conditions
+    if (text.endsWith(',') || text.endsWith('\n') || text === '') {
       const skills = text
         .split(/[,\n]/)
         .map(skill => skill.trim())
         .filter(skill => skill.length > 0);
       onChange(skills);
-    } else {
-      // If no comma or newline, treat the entire text as a single skill
-      onChange([text.trim()].filter(Boolean));
     }
+  };
+
+  // Process skills on blur to catch any unprocessed input
+  const handleBlur = () => {
+    const skills = inputValue
+      .split(/[,\n]/)
+      .map(skill => skill.trim())
+      .filter(skill => skill.length > 0);
+    onChange(skills);
   };
 
   return (
@@ -51,8 +63,9 @@ export const SkillsForm = ({ data, onChange, jobData }: Props) => {
           Enter skills separated by commas
         </div>
         <textarea
-          value={data.join(', ')}
+          value={inputValue}
           onChange={handleChange}
+          onBlur={handleBlur}
           rows={10}
           placeholder="Product Management, Data Analysis, SQL, Python, A/B Testing"
           className={`mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm ${
