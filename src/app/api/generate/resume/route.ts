@@ -15,6 +15,54 @@ function generateUUID() {
   return crypto.randomUUID();
 }
 
+async function generateSkills(jobData: any) {
+  try {
+    console.log('Starting skills generation...');
+    
+    // Create a prompt that focuses on extracting relevant skills
+    const prompt = `Extract a list of 10-15 most relevant technical and professional skills for this job posting. Format the response as a JSON array of strings. Focus on specific, concrete skills (e.g., "Python", "Agile Project Management") rather than general qualities. Consider both explicit requirements and implicit needs based on the role.
+
+Job Title: ${jobData.title}
+Job Description:
+${jobData.description}
+Requirements:
+${jobData.requirements?.join('\n')}
+
+Return only the JSON array, no other text.`;
+
+    // Generate skills using Claude
+    console.log('Calling Anthropic API for skills...');
+    const response = await anthropic.messages.create({
+      messages: [{ role: 'user', content: prompt }],
+      model: 'claude-3-haiku-20240307',
+      max_tokens: 150,
+      temperature: 0.5,
+    });
+
+    const skillsText = response.content[0].type === 'text' ? response.content[0].text : '';
+    
+    try {
+      // Parse the JSON array from the response
+      const skills = JSON.parse(skillsText);
+      if (Array.isArray(skills)) {
+        return skills;
+      }
+      throw new Error('Skills response is not an array');
+    } catch (error) {
+      console.error('Error parsing skills JSON:', error);
+      // Fallback: try to extract skills from text if JSON parsing fails
+      return skillsText
+        .replace(/[\[\]"]/g, '')
+        .split(',')
+        .map(skill => skill.trim())
+        .filter(skill => skill.length > 0);
+    }
+  } catch (error) {
+    console.error('Error in generateSkills:', error);
+    return [];
+  }
+}
+
 async function generateSummary(jobUrl: string) {
   try {
     console.log('Starting summary generation...');
@@ -32,7 +80,7 @@ async function generateSummary(jobUrl: string) {
       .replace(/<[^>]*>/g, ' ')
       .replace(/\s+/g, ' ')
       .trim()
-      .slice(0, 2000); // Limit input text length
+      .slice(0, 2000);
 
     // Create a more concise prompt
     const prompt = `Write a concise, impactful professional summary (2-3 sentences) for a resume targeting this job. Focus on relevant skills and impact. Don't mention company names.
@@ -41,7 +89,7 @@ Job posting:
 ${textContent}`;
 
     // Generate summary using Claude
-    console.log('Calling Anthropic API...');
+    console.log('Calling Anthropic API for summary...');
     const response_ai = await anthropic.messages.create({
       messages: [{ role: 'user', content: prompt }],
       model: 'claude-3-haiku-20240307',
@@ -56,7 +104,6 @@ ${textContent}`;
       });
       throw error;
     });
-    console.log('Anthropic API response received');
 
     const summary = response_ai.content[0].type === 'text' 
       ? response_ai.content[0].text 
@@ -78,6 +125,11 @@ export async function POST(req: Request) {
     const jobData = await fetchJobData(jobUrl);
     console.log('Job data fetched successfully');
 
+    // Generate skills based on job data
+    console.log('Generating skills...');
+    const skills = await generateSkills(jobData);
+    console.log('Generated skills:', skills);
+
     console.log('Saving resume to Supabase...');
     const { data: resume, error: resumeError } = await supabaseAdmin
       .from('resumes')
@@ -95,7 +147,7 @@ export async function POST(req: Request) {
         url: '',
         work: [],
         education: [],
-        skills: [],
+        skills: skills, // Use the generated skills
         projects: [],
         github_data: null,
         linkedin_data: null,
