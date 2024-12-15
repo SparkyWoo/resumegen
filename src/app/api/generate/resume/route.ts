@@ -68,53 +68,49 @@ async function generateSummary(jobData: any) {
   try {
     console.log('Starting summary generation...');
     
-    const prompt = `As an expert resume writer, craft a powerful professional summary that demonstrates the candidate's value proposition for this role. The summary should:
-
-- Be 2-3 impactful sentences
-- Highlight transferable leadership abilities and strategic impact
-- Use strong action verbs and professional language
-- Avoid repeating exact phrases from the job description
-- Focus on delivering business value and driving results
-- NOT include any phrases like "Here is" or mention the job title directly
-- NOT use cliché terms like "results-driven" or "proven track record"
-- Be written in first person without using "I" or "my"
-
-Example format:
-"Strategic technology leader with expertise in scaling enterprise platforms and driving digital transformation initiatives. Demonstrated success in building high-performing teams and delivering complex projects that accelerate business growth. Combines deep technical knowledge with business acumen to identify opportunities and execute innovative solutions."
+    const prompt = `You are a professional resume writer crafting a targeted summary for a job application. Create a concise, impactful summary that demonstrates alignment with this specific role.
 
 Job Title: ${jobData.title}
-Job Description:
-${jobData.description}
 
-Return ONLY the summary text with no additional context or explanations.`;
+Job Description:
+${jobData.description?.slice(0, 1000)}
+
+Requirements:
+${jobData.requirements?.join('\n')}
+
+Write a 2-3 sentence professional summary that:
+1. Highlights relevant experience and expertise that directly matches the job requirements
+2. Uses specific, quantifiable achievements when possible
+3. Incorporates key technical skills and domain knowledge from the job posting
+4. Demonstrates understanding of the company's needs
+5. Uses active voice and strong action verbs
+6. Avoids generic statements that could apply to any job
+
+DO NOT:
+- Use first person pronouns (I, my, etc.)
+- Include objectives or career goals
+- Mention years of experience
+- Use cliché phrases like "results-driven" or "team player"
+- Make it longer than 3 sentences
+- Include any introductory phrases
+
+Example format:
+"Software engineer specializing in distributed systems and cloud architecture, with proven expertise in designing and scaling microservices on AWS. Led development of mission-critical applications processing over 1M transactions daily while maintaining 99.99% uptime. Demonstrated track record of optimizing system performance and reducing infrastructure costs through innovative architectural solutions."
+
+Return ONLY the summary text with NO additional context or explanation.`;
 
     console.log('Calling Anthropic API for summary...');
-    const response_ai = await anthropic.messages.create({
+    const response = await anthropic.messages.create({
       messages: [{ role: 'user', content: prompt }],
       model: 'claude-3-haiku-20240307',
-      max_tokens: 150,
-      temperature: 0.7,
-    }).catch(error => {
-      console.error('Anthropic API error details:', {
-        name: error.name,
-        message: error.message,
-        status: error.status,
-        type: error.type
-      });
-      throw error;
+      max_tokens: 200,
+      temperature: 0.5,
     });
 
-    const summary = response_ai.content[0].type === 'text' 
-      ? response_ai.content[0].text 
-      : '';
-    
-    // Clean up any potential "Here is" or similar introductory phrases
-    return summary
-      .trim()
-      .replace(/^(here is|here's|this is|presenting|i am|i'm|my|i have|i)\s+/i, '')
-      .replace(/^[^a-z0-9]*/i, ''); // Remove any non-alphanumeric characters from start
+    const summaryText = response.content[0].type === 'text' ? response.content[0].text : '';
+    return summaryText.trim();
   } catch (error) {
-    console.error('Error in generateSummary:', error);
+    console.error('Error generating summary:', error);
     throw error;
   }
 }

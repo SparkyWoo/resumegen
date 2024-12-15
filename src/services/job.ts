@@ -23,20 +23,44 @@ function getLeverJobData($: cheerio.Root): JobData {
 
 function getGreenhouseJobData($: cheerio.Root): JobData {
   // Get title and location
-  const title = $('h1').text().trim() || 'Untitled Position';
-  const location = $('.location').text().trim();
+  const title = $('h1.app-title').text().trim() || $('h1').text().trim() || 'Untitled Position';
   
-  // Get full content
+  // Get job content sections
   const content = $('#content');
-  const description = content.text().trim() || 'No description available';
-  const requirements = content.find('li').map((_, el) => $(el).text().trim()).get();
+  
+  // Extract description and requirements more precisely
+  let description = '';
+  let requirements: string[] = [];
+  
+  // Find all content sections
+  content.find('div').each((_, el) => {
+    const $el = $(el);
+    const text = $el.text().trim();
+    
+    // Skip empty sections
+    if (!text) return;
+    
+    // Look for common section headers
+    const headerText = $el.prev('h3').text().toLowerCase();
+    
+    if (headerText.includes('what you')) {
+      requirements.push(text);
+    } else if (!headerText.includes('apply') && !headerText.includes('benefits') && !headerText.includes('perks')) {
+      description += text + '\n';
+    }
+  });
+
+  description = description.trim();
+  
+  // Extract skills from both description and requirements
   const combinedText = description + ' ' + requirements.join(' ');
+  const skills = extractSkills(combinedText).map(skill => skill.trim()).filter(Boolean);
 
   return {
     title,
     description,
     requirements,
-    skills: extractSkills(combinedText).map(skill => skill.trim()).filter(Boolean),
+    skills,
   };
 }
 
