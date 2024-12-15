@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="256" fill="#2563EB"/>
+  
+  <!-- Document shape (scaled and centered) -->
+  <path
+    d="M160 112C160 98.7452 170.745 88 184 88H328C341.255 88 352 98.7452 352 112V400C352 413.255 341.255 424 328 424H184C170.745 424 160 413.255 160 400V112Z"
+    fill="white"
+  />
+  <!-- Folded corner -->
+  <path
+    d="M328 88L352 112H328V88Z"
+    fill="#E2E8F0"
+  />
+  <!-- Text lines -->
+  <rect x="192" y="144" width="160" height="24" rx="12" fill="#2563EB" opacity="0.9" />
+  <rect x="192" y="192" width="112" height="24" rx="12" fill="#2563EB" opacity="0.7" />
+  <rect x="192" y="240" width="160" height="24" rx="12" fill="#2563EB" opacity="0.9" />
+  <rect x="192" y="288" width="128" height="24" rx="12" fill="#2563EB" opacity="0.7" />
+  <!-- Checkmark overlay -->
+  <path
+    d="M368 176L400 208L448 160"
+    stroke="#10B981"
+    strokeWidth="32"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  />
+</svg> 

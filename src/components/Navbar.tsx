@@ -4,6 +4,7 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { FaLinkedin } from 'react-icons/fa';
 import { ErrorBoundary } from 'react-error-boundary';
+import { Logo } from './Logo';
 
 interface LoadingStateProps {
   className?: string;
@@ -47,10 +48,7 @@ export function Navbar(): JSX.Element {
           {/* Logo section */}
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="flex items-center">
-              <span className="text-2xl font-bold">
-                <span className="text-blue-600">Resume</span>
-                <span className="text-gray-900">Hey</span>
-              </span>
+              <Logo size={28} />
             </Link>
           </div>
 
