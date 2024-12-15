@@ -18,7 +18,10 @@ export const SkillsForm = ({ data, onChange, jobData }: Props) => {
   }, [jobData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const skills = e.target.value.split('\n');
+    const skills = e.target.value
+      .split(/[,\n]/) // Split by either commas or newlines
+      .map(skill => skill.trim())
+      .filter(skill => skill.length > 0);
     onChange(skills);
   };
 
@@ -29,13 +32,13 @@ export const SkillsForm = ({ data, onChange, jobData }: Props) => {
           Skills
         </label>
         <div className="mt-1 text-sm text-gray-500">
-          Enter each skill on a new line, or separate with commas
+          Enter skills separated by commas
         </div>
         <textarea
-          value={data.join('\n')}
+          value={data.join(', ')}
           onChange={handleChange}
           rows={10}
-          placeholder="Product Management&#10;Data Analysis&#10;SQL, Python, A/B Testing"
+          placeholder="Product Management, Data Analysis, SQL, Python, A/B Testing"
           className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm"
         />
       </div>
