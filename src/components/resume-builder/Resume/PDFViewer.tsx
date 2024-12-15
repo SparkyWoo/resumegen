@@ -2,8 +2,10 @@
 
 import React from 'react';
 import dynamic from 'next/dynamic';
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
 import { ResumeState } from '@/lib/redux/resumeSlice';
+import { pdf } from '@react-pdf/renderer';
+import { saveAs } from 'file-saver';
 
 // Dynamically import PDFViewer with SSR disabled
 const ReactPDFViewer = dynamic(
@@ -168,6 +170,122 @@ export const PDFViewer = ({ data }: { data: ResumeState }) => {
   const splitHighlights = (text: string): string[] => {
     return text.split('\n').filter(line => line.trim() !== '');
   };
+
+  const handleDownload = async (): Promise<void> => {
+    try {
+      const blob = await pdf(
+        <Document>
+          <Page size="A4" style={styles.page}>
+            {/* Header */}
+            <View style={styles.header}>
+              <Text style={styles.name}>{data.basics.name}</Text>
+              <View style={styles.contactInfo}>
+                {[
+                  data.basics.location,
+                  data.basics.phone,
+                  data.basics.email,
+                  data.basics.url,
+                  data.basics.profiles?.find(p => p.network === 'LinkedIn')?.username && 
+                    `linkedin.com/in/${data.basics.profiles.find(p => p.network === 'LinkedIn')?.username}`
+                ].filter(Boolean).map((item, index, arr) => (
+                  <React.Fragment key={index}>
+                    <Text>{item}</Text>
+                    {index < arr.length - 1 && <Text style={styles.contactDivider}> | </Text>}
+                  </React.Fragment>
+                ))}
+              </View>
+            </View>
+
+            {/* Summary */}
+            {!isSectionEmpty('summary') && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Summary</Text>
+                <Text style={styles.summary}>{data.basics.summary}</Text>
+              </View>
+            )}
+
+            {/* Work Experience */}
+            {!isSectionEmpty('work') && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Experience</Text>
+                {data.work.map((job, i) => (
+                  <View key={i} style={[
+                    styles.company,
+                    i < data.work.length - 1 ? { marginBottom: spacing[4] } : {}
+                  ]}>
+                    <View style={styles.companyHeader}>
+                      <View style={styles.companyInfo}>
+                        <Text style={styles.jobTitle}>{job.position}</Text>
+                        <Text style={styles.companyName}>{job.company}</Text>
+                      </View>
+                      <Text style={styles.date}>{job.startDate} - {job.endDate}</Text>
+                    </View>
+                    {job.highlights.flatMap(highlight => 
+                      splitHighlights(highlight).map((line, j) => (
+                        <View key={`${i}-${j}`} style={styles.bullet}>
+                          <Text style={styles.bulletPoint}>•</Text>
+                          <Text style={styles.bulletText}>{line}</Text>
+                        </View>
+                      ))
+                    )}
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Projects */}
+            {!isSectionEmpty('projects') && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Projects</Text>
+                {data.projects.map((project, i) => (
+                  <View key={i} style={[
+                    styles.company,
+                    i < data.projects.length - 1 ? { marginBottom: spacing[2] } : {}
+                  ]}>
+                    <View style={styles.companyHeader}>
+                      <View style={styles.companyInfo}>
+                        <Text style={styles.jobTitle}>{project.name}</Text>
+                        {project.url && (
+                          <Text style={styles.companyName}>{project.url}</Text>
+                        )}
+                      </View>
+                    </View>
+                    {project.highlights.flatMap(highlight => 
+                      splitHighlights(highlight).map((line, j) => (
+                        <View key={`${i}-${j}`} style={styles.bullet}>
+                          <Text style={styles.bulletPoint}>•</Text>
+                          <Text style={styles.bulletText}>{line}</Text>
+                        </View>
+                      ))
+                    )}
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Skills */}
+            {!isSectionEmpty('skills') && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Skills</Text>
+                <Text style={styles.skillList}>
+                  {data.skills.join(', ')}
+                </Text>
+              </View>
+            )}
+          </Page>
+        </Document>
+      ).toBlob();
+      
+      saveAs(blob, 'resume.pdf');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
+  };
+
+  // Make handleDownload available globally
+  if (typeof window !== 'undefined') {
+    (window as any).downloadResumePDF = handleDownload;
+  }
 
   return (
     <div className="h-full w-full">

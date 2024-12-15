@@ -8,6 +8,7 @@ import { initializeResume } from '@/lib/redux/resumeSlice';
 import { ResumeState } from '@/lib/redux/resumeSlice';
 import { PDFViewer } from './Resume/PDFViewer';
 import Link from 'next/link';
+import { FaDownload } from 'react-icons/fa';
 
 interface Props {
   initialData: ResumeState;
@@ -33,6 +34,7 @@ export const ResumeBuilder = ({ initialData, githubData, jobData }: Props): JSX.
   const dispatch = useAppDispatch();
   const resume = useAppSelector(state => state.resume);
   const [activeSection, setActiveSection] = useState('basics');
+  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     dispatch(initializeResume(initialData));
@@ -53,6 +55,24 @@ export const ResumeBuilder = ({ initialData, githubData, jobData }: Props): JSX.
     }
   };
 
+  const handleDownload = async () => {
+    if (isDownloading) return;
+    
+    setIsDownloading(true);
+    
+    try {
+      // Call the PDF viewer's download function
+      await (window as any).downloadResumePDF();
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+    } finally {
+      // Add a small delay before resetting state to show the animation
+      setTimeout(() => {
+        setIsDownloading(false);
+      }, 300);
+    }
+  };
+
   return (
     <main className="h-screen w-full bg-zinc-50">
       {/* Fixed Header */}
@@ -69,10 +89,14 @@ export const ResumeBuilder = ({ initialData, githubData, jobData }: Props): JSX.
 
             {/* Download Button */}
             <button
-              onClick={() => window.print()}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              onClick={handleDownload}
+              disabled={isDownloading}
+              className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 ${
+                isDownloading ? 'opacity-75 cursor-not-allowed' : ''
+              }`}
             >
-              Download PDF
+              <FaDownload className={`mr-2 h-4 w-4 ${isDownloading ? 'animate-bounce' : ''}`} />
+              {isDownloading ? 'Preparing...' : 'Download PDF'}
             </button>
           </div>
 
