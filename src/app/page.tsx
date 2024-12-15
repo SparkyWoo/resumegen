@@ -64,7 +64,7 @@ export default function Home() {
           </p>
           <div className="flex justify-center items-center space-x-4 mb-8">
             <div className="bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium">
-              5-Minute Setup
+              1-Minute Setup
             </div>
             <div className="bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm font-medium">
               4.9/5 rating from 1,000+ users
