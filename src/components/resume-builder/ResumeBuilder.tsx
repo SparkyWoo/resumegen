@@ -19,9 +19,12 @@ interface Props {
       url: string;
     }>;
   };
+  jobData?: {
+    url: string;
+  };
 }
 
-export const ResumeBuilder = ({ initialData, githubData }: Props) => {
+export const ResumeBuilder = ({ initialData, githubData, jobData }: Props) => {
   const dispatch = useAppDispatch();
   const resume = useAppSelector(state => state.resume);
   const [activeSection, setActiveSection] = useState('basics');
@@ -82,6 +85,7 @@ export const ResumeBuilder = ({ initialData, githubData }: Props) => {
           <div className="mx-auto w-full max-w-3xl py-8">
             <Form 
               githubData={githubData} 
+              jobData={jobData}
               activeSection={activeSection}
               onSectionChange={setActiveSection}
             />

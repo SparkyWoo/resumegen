@@ -7,11 +7,14 @@ import { SkillsForm } from './SkillsForm';
 
 interface FormProps {
   githubData?: any;
+  jobData?: {
+    url: string;
+  };
   activeSection: string;
   onSectionChange: (section: string) => void;
 }
 
-export const Form = ({ githubData, activeSection, onSectionChange }: FormProps) => {
+export const Form = ({ githubData, jobData, activeSection, onSectionChange }: FormProps) => {
   const dispatch = useAppDispatch();
   const resume = useAppSelector(state => state.resume);
 
@@ -23,7 +26,8 @@ export const Form = ({ githubData, activeSection, onSectionChange }: FormProps) 
       component: (
         <BasicInfoForm 
           data={resume.basics} 
-          onChange={data => dispatch(updateBasics(data))} 
+          onChange={data => dispatch(updateBasics(data))}
+          jobData={jobData}
         />
       )
     },

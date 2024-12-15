@@ -1,14 +1,19 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ResumeState } from '@/lib/redux/resumeSlice';
 
 interface Props {
   data: ResumeState['basics'];
   onChange: (data: ResumeState['basics']) => void;
+  jobData?: {
+    url: string;
+  };
 }
 
-export const BasicInfoForm = ({ data, onChange }: Props) => {
+export const BasicInfoForm = ({ data, onChange, jobData }: Props) => {
+  const [isGenerating, setIsGenerating] = useState(false);
+
   const handleChange = (field: keyof ResumeState['basics']) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -18,13 +23,50 @@ export const BasicInfoForm = ({ data, onChange }: Props) => {
     });
   };
 
+  const generateSummary = async (jobUrl: string) => {
+    try {
+      setIsGenerating(true);
+      const response = await fetch('/api/generate-summary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jobUrl })
+      });
+
+      if (!response.ok) throw new Error('Failed to generate summary');
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let summary = '';
+
+      while (true) {
+        const { done, value } = await reader!.read();
+        if (done) break;
+        summary += decoder.decode(value);
+      }
+
+      onChange({
+        ...data,
+        summary: summary.trim()
+      });
+    } catch (error) {
+      console.error('Error generating summary:', error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  // Auto-generate summary when job data is available
+  useEffect(() => {
+    if (jobData?.url && !data.summary && !isGenerating) {
+      generateSummary(jobData.url);
+    }
+  }, [jobData?.url]);
+
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Basic Information</h2>
-      
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Name</label>
+          <label className="block text-sm font-medium text-gray-700">Full Name</label>
           <input
             type="text"
             value={data.name}
@@ -60,17 +102,24 @@ export const BasicInfoForm = ({ data, onChange }: Props) => {
             value={data.location}
             onChange={handleChange('location')}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
+            placeholder="City, State"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Summary</label>
+        <div className="flex justify-between items-center">
+          <label className="block text-sm font-medium text-gray-700">Professional Summary</label>
+          {isGenerating && (
+            <span className="text-sm text-blue-600">Generating summary...</span>
+          )}
+        </div>
         <textarea
           value={data.summary}
           onChange={handleChange('summary')}
-          rows={3}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
+          rows={4}
+          className="mt-2 block w-full rounded-md border border-gray-300 px-3 py-2"
+          placeholder="A brief summary of your professional background and key strengths"
         />
       </div>
     </div>
