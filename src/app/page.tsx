@@ -54,9 +54,15 @@ export default function Home() {
         </div>
 
         {/* Form Section */}
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-sm border border-gray-100">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-semibold mb-2">Start with Your Dream Job</h2>
+            <p className="text-gray-600">
+              Paste a job posting URL from Lever or Greenhouse, and we'll analyze it to create a perfectly tailored resume.
+            </p>
+          </div>
           <Suspense fallback={
-            <div className="space-y-6 bg-white p-8 rounded-lg shadow animate-pulse">
+            <div className="space-y-6 animate-pulse">
               <div className="h-10 bg-gray-200 rounded w-full"></div>
               <div className="h-20 bg-gray-200 rounded w-full"></div>
               <div className="h-10 bg-gray-200 rounded w-full"></div>
