@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     const { data: resume, error } = await supabase
       .from('resumes')
       .insert({
-        user_id: '00000000-0000-0000-0000-000000000000', // Default public user ID
+        user_id: null, // Create as unclaimed resume
         github_data: githubData,
         job_data: jobData,
         generated_content: {},
