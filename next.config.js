@@ -8,11 +8,7 @@ const nextConfig = {
     };
     return config;
   },
-  // Existing config options
   reactStrictMode: true,
-  experimental: {
-    serverActions: true,
-  },
 };
 
 module.exports = nextConfig; 
