@@ -11,12 +11,6 @@ interface Props {
 
 export const SkillsForm = ({ data, onChange, jobData }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [inputValue, setInputValue] = useState(data.join(', '));
-
-  // Update input value when data changes externally
-  useEffect(() => {
-    setInputValue(data.join(', '));
-  }, [data]);
 
   // Initialize skills from job posting data if available
   useEffect(() => {
@@ -32,24 +26,10 @@ export const SkillsForm = ({ data, onChange, jobData }: Props) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text = e.target.value;
-    setInputValue(text);
-
-    // Process the input into skills array on certain conditions
-    if (text.endsWith(',') || text.endsWith('\n') || text === '') {
-      const skills = text
-        .split(/[,\n]/)
-        .map(skill => skill.trim())
-        .filter(skill => skill.length > 0);
-      onChange(skills);
-    }
-  };
-
-  // Process skills on blur to catch any unprocessed input
-  const handleBlur = () => {
-    const skills = inputValue
+    const skills = text
       .split(/[,\n]/)
       .map(skill => skill.trim())
-      .filter(skill => skill.length > 0);
+      .filter(Boolean);
     onChange(skills);
   };
 
@@ -63,9 +43,8 @@ export const SkillsForm = ({ data, onChange, jobData }: Props) => {
           Enter skills separated by commas
         </div>
         <textarea
-          value={inputValue}
+          value={data.join(', ')}
           onChange={handleChange}
-          onBlur={handleBlur}
           rows={10}
           placeholder="Product Management, Data Analysis, SQL, Python, A/B Testing"
           className={`mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm ${
