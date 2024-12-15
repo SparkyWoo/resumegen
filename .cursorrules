@@ -1,0 +1,104 @@
+# TypeScript Rules
+- Use TypeScript's strict mode
+- Always define proper interfaces/types for data structures
+- Use type inference when types are obvious
+- Use `type` for unions/intersections and `interface` for object shapes
+- Avoid `any` type unless absolutely necessary
+- Use `unknown` instead of `any` when type is truly unknown
+- Use TypeScript's built-in utility types when applicable (Pick, Omit, Partial, etc.)
+
+# Next.js Rules
+- Use Next.js 14 App Router conventions
+- Keep pages simple, move complex logic to components/hooks
+- Use server components by default, client components only when needed
+- Follow Next.js file-system based routing
+- Use proper data fetching methods (Server Components, Route Handlers)
+- Implement proper error boundaries and loading states
+- Use Next.js Image component for images
+- Use proper metadata for SEO
+
+# React Rules
+- Use functional components with hooks
+- Keep components focused and single-responsibility
+- Use proper React hooks (useState, useEffect, useCallback, useMemo)
+- Avoid prop drilling, use context or state management
+- Implement proper error boundaries
+- Use proper key props in lists
+- Use proper event handlers (onClick, onChange, etc.)
+- Use proper form handling
+
+# Redux Rules
+- Use Redux Toolkit for all Redux code
+- Keep Redux state normalized
+- Use proper slice patterns
+- Use createAsyncThunk for async actions
+- Use proper selector patterns with reselect
+- Avoid storing derived state
+- Keep actions granular and specific
+- Use proper action naming conventions
+
+# State Management
+- Use local state for UI-only state
+- Use Redux for global application state
+- Use React Query/SWR for server state
+- Implement proper loading states
+- Implement proper error states
+- Use proper caching strategies
+
+# API Rules
+- Use proper HTTP methods
+- Implement proper error handling
+- Use proper status codes
+- Use proper request/response typing
+- Implement proper validation
+- Use proper security headers
+- Use proper rate limiting
+- Use proper caching headers
+
+# Performance Rules
+- Implement proper code splitting
+- Use proper lazy loading
+- Implement proper caching strategies
+- Use proper bundle optimization
+- Use proper image optimization
+- Implement proper performance monitoring
+- Use proper CDN strategies
+
+# Testing Rules
+- Write unit tests for utilities and hooks
+- Write integration tests for components
+- Write e2e tests for critical paths
+- Use proper testing patterns
+- Implement proper test coverage
+- Use proper mocking strategies
+- Use proper testing utilities
+
+# Security Rules
+- Implement proper authentication
+- Implement proper authorization
+- Use proper CSRF protection
+- Use proper XSS protection
+- Use proper input validation
+- Use proper output encoding
+- Use proper security headers
+- Use proper session management
+
+# Code Style
+- Use proper naming conventions
+- Use proper file organization
+- Use proper commenting
+- Use proper error handling
+- Use proper logging
+- Use proper documentation
+- Follow DRY principles
+- Follow SOLID principles
+
+# Git Rules
+- Use proper branch naming
+- Use proper commit messages
+- Use proper PR descriptions
+- Use proper PR reviews
+- Use proper versioning
+- Use proper release notes
+- Use proper git workflow
+- Use proper git hooks 

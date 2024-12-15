@@ -5,22 +5,22 @@ import { HiOutlineDocumentText } from 'react-icons/hi';
 
 const features = [
   {
-    icon: <FaRobot className="w-6 h-6 text-blue-500" />,
-    title: "AI-Powered Resume Generation",
-    description: "Automatically generate tailored skills and summaries based on job descriptions using advanced AI"
-  },
-  {
-    icon: <FaLinkedin className="w-6 h-6 text-blue-500" />,
+    icon: <FaLinkedin className="w-6 h-6 text-[#0A66C2]" />,
     title: "LinkedIn Integration",
     description: "Import your professional experience directly from LinkedIn to save time"
   },
   {
-    icon: <FaGithub className="w-6 h-6 text-blue-500" />,
+    icon: <FaRobot className="w-6 h-6 text-blue-500" />,
+    title: "AI-Powered Generation",
+    description: "Automatically generate tailored skills and summaries based on job descriptions"
+  },
+  {
+    icon: <FaGithub className="w-6 h-6 text-gray-900" />,
     title: "GitHub Integration",
     description: "Showcase your best projects and contributions from GitHub"
   },
   {
-    icon: <HiOutlineDocumentText className="w-6 h-6 text-blue-500" />,
+    icon: <HiOutlineDocumentText className="w-6 h-6 text-green-500" />,
     title: "ATS-Friendly Format",
     description: "Create resumes that pass Applicant Tracking Systems with our optimized templates"
   }
@@ -33,17 +33,17 @@ export default function Home() {
       <div className="max-w-6xl mx-auto py-12 px-4">
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-gray-900 mb-4">
-            Generate Your Tailored Resume
+            Generate Your Perfect Resume
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Create an ATS-friendly resume in 60 seconds using AI. Automatically tailor your skills and experience to match your dream job.
+            Sign in with LinkedIn, paste a job posting URL, and let AI create a perfectly tailored resume in seconds.
           </p>
         </div>
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 gap-8 mb-16">
           {features.map((feature, index) => (
-            <div key={index} className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <div key={index} className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
               <div className="flex items-center mb-4">
                 {feature.icon}
                 <h3 className="text-lg font-semibold ml-3">{feature.title}</h3>
@@ -58,7 +58,7 @@ export default function Home() {
           <div className="text-center mb-8">
             <h2 className="text-2xl font-semibold mb-2">Start with Your Dream Job</h2>
             <p className="text-gray-600">
-              Paste a job posting URL from Lever or Greenhouse, and we'll analyze it to create a perfectly tailored resume.
+              Sign in with LinkedIn and paste a job posting URL from Lever or Greenhouse. We'll analyze it to create your perfect resume.
             </p>
           </div>
           <Suspense fallback={

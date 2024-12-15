@@ -2,12 +2,13 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 import { Providers } from '@/components/Providers';
 import { Metadata } from 'next';
+import { Navbar } from '@/components/Navbar';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'ResumeHey - AI-Powered Resume Builder',
-  description: 'Create an ATS-friendly resume in 60 seconds. ResumeHey uses AI to automatically tailor your resume to match job descriptions from Lever and Greenhouse.',
+  description: 'Create a tailored resume in seconds using AI and your LinkedIn profile',
   keywords: 'resume builder, AI resume, ATS friendly resume, job application, career tools, resume generator',
   openGraph: {
     title: 'ResumeHey - AI-Powered Resume Builder',
@@ -37,7 +38,10 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <Providers>
-          {children}
+          <Navbar />
+          <div className="pt-16">
+            {children}
+          </div>
         </Providers>
       </body>
     </html>
