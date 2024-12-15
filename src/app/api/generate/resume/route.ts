@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 import { fetchGitHubData } from '@/services/github';
 import { fetchJobData } from '@/services/job';
 import { Anthropic } from '@anthropic-ai/sdk';
@@ -79,7 +79,7 @@ export async function POST(req: Request) {
     console.log('Job data fetched successfully');
 
     console.log('Saving resume to Supabase...');
-    const { data: resume, error: resumeError } = await supabase
+    const { data: resume, error: resumeError } = await supabaseAdmin
       .from('resumes')
       .insert({
         user_id: userId,
