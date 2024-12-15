@@ -4,17 +4,14 @@ import { fetchGitHubData } from '@/services/github';
 import { fetchJobData } from '@/services/job';
 import { Anthropic } from '@anthropic-ai/sdk';
 import crypto from 'crypto';
-import * as pdfjsLib from 'pdfjs-dist';
 
-// Configure PDF.js for serverless environment
-if (typeof window === 'undefined') {
-  // Server-side configuration
-  const pdfjsWorker = require('pdfjs-dist/build/pdf.worker.entry');
-  pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-} else {
-  // Client-side configuration (if needed)
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
-}
+// Import PDF.js with proper Node.js configuration
+import { getDocument } from 'pdfjs-dist/build/pdf.mjs';
+import { TextItem } from 'pdfjs-dist/types/src/display/api';
+
+// Configure PDF.js for Node.js environment
+const pdfjsLib = require('pdfjs-dist/build/pdf.mjs');
+pdfjsLib.GlobalWorkerOptions.workerSrc = false;
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
@@ -272,18 +269,29 @@ export async function POST(req: Request) {
       const arrayBuffer = await oldResume.arrayBuffer();
       const typedArray = new Uint8Array(arrayBuffer);
       
-      const loadingTask = pdfjsLib.getDocument({ data: typedArray });
-      const pdf = await loadingTask.promise;
-      let fullText = '';
-      
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const content = await page.getTextContent();
-        const text = content.items.map((item: any) => item.str).join(' ');
-        fullText += text + '\n';
+      try {
+        const pdf = await getDocument({
+          data: typedArray,
+          cMapUrl: undefined,
+          cMapPacked: true
+        }).promise;
+        
+        let fullText = '';
+        
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          const text = content.items
+            .map((item) => 'str' in item ? item.str : '')
+            .join(' ');
+          fullText += text + '\n';
+        }
+        
+        existingWorkExperience = await extractWorkExperience(fullText);
+      } catch (error) {
+        console.error('Error processing PDF:', error);
+        throw new Error('Failed to process PDF file');
       }
-      
-      existingWorkExperience = await extractWorkExperience(fullText);
     }
 
     // Fetch job data

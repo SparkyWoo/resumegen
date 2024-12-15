@@ -6,6 +6,15 @@ const nextConfig = {
       ...config.resolve.fallback,
       punycode: false,
     };
+
+    // Handle PDF.js worker
+    if (!isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'pdfjs-dist': 'pdfjs-dist/build/pdf.mjs',
+      };
+    }
+
     return config;
   },
   reactStrictMode: true,
