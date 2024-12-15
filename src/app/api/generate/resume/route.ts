@@ -4,14 +4,17 @@ import { fetchGitHubData } from '@/services/github';
 import { fetchJobData } from '@/services/job';
 import { Anthropic } from '@anthropic-ai/sdk';
 import crypto from 'crypto';
-import { getDocument, version } from 'pdfjs-dist';
+import * as pdfjsLib from 'pdfjs-dist';
 
 // Configure PDF.js for serverless environment
-const pdfjsLib = require('pdfjs-dist');
-pdfjsLib.GlobalWorkerOptions = {
-  workerSrc: null,
-  isWorkerDisabled: true
-};
+if (typeof window === 'undefined') {
+  // Server-side configuration
+  const pdfjsWorker = require('pdfjs-dist/build/pdf.worker.entry');
+  pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+} else {
+  // Client-side configuration (if needed)
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+}
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
@@ -269,7 +272,8 @@ export async function POST(req: Request) {
       const arrayBuffer = await oldResume.arrayBuffer();
       const typedArray = new Uint8Array(arrayBuffer);
       
-      const pdf = await getDocument({ data: typedArray }).promise;
+      const loadingTask = pdfjsLib.getDocument({ data: typedArray });
+      const pdf = await loadingTask.promise;
       let fullText = '';
       
       for (let i = 1; i <= pdf.numPages; i++) {
