@@ -16,6 +16,7 @@
     "@supabase/supabase-js": "^2.47.6",
     "@tailwindcss/forms": "^0.5.9",
     "@types/file-saver": "^2.0.7",
+    "@vercel/analytics": "^1.4.1",
     "ai": "^4.0.18",
     "cheerio": "^1.0.0",
     "file-saver": "^2.0.5",
