@@ -8,6 +8,10 @@ interface Props {
   onChange: (data: ResumeState['basics']) => void;
   jobData?: {
     url: string;
+    title: string;
+    description: string;
+    skills: string[];
+    requirements?: string[];
   };
 }
 
@@ -60,7 +64,7 @@ export const BasicInfoForm = ({ data, onChange, jobData }: Props) => {
     if (jobData?.url && !data.summary && !isGenerating) {
       generateSummary(jobData.url);
     }
-  }, [jobData?.url]);
+  }, [jobData?.url, data.summary, isGenerating]);
 
   return (
     <div className="space-y-4">

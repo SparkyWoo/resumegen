@@ -9,6 +9,10 @@ interface FormProps {
   githubData?: any;
   jobData?: {
     url: string;
+    title: string;
+    description: string;
+    skills: string[];
+    requirements?: string[];
   };
   activeSection: string;
   onSectionChange: (section: string) => void;

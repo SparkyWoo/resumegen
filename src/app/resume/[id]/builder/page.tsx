@@ -46,6 +46,7 @@ export default async function ResumeBuilderPage({ params }: Props) {
       <ResumeBuilder 
         initialData={mapDatabaseToResumeState(resume)} 
         githubData={resume.github_data}
+        jobData={resume.job_data}
       />
     </main>
   );

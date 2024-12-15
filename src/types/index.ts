@@ -38,6 +38,7 @@ interface GitHubRepository {
 
 export interface Resume {
   id: string;
+  user_id: string;
   name: string;
   email: string;
   phone: string;
@@ -59,29 +60,21 @@ export interface Resume {
     endDate: string;
     score: string;
   }>;
+  skills: string[];
   projects: Array<{
     name: string;
     description: string;
-    url: string;
     highlights: string[];
+    keywords: string[];
+    url: string;
   }>;
-  skills: string[];
-  github_data?: {
-    repositories: Array<{
-      name: string;
-      description: string | null;
-      language: string;
-      stars: number;
-      url: string;
-    }>;
-  };
-  linkedin_data?: {
-    // ... LinkedIn fields
-  };
+  github_data?: any;
   job_data?: {
+    url: string;
     title: string;
     description: string;
     skills: string[];
+    requirements?: string[];
   };
 }
 

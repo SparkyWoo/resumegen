@@ -21,6 +21,10 @@ interface Props {
   };
   jobData?: {
     url: string;
+    title: string;
+    description: string;
+    skills: string[];
+    requirements?: string[];
   };
 }
 

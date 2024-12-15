@@ -22,6 +22,7 @@ export async function POST(req: Request) {
 
     // Extract job details (Lever-specific selectors)
     const jobData = {
+      url: jobUrl,
       title: $('.posting-headline h2').text().trim(),
       description: $('.posting-description').text().trim(),
       requirements: $('.posting-requirements li').map((_, el) => $(el).text().trim()).get(),
