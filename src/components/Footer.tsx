@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { FaGithub } from 'react-icons/fa';
 
 interface FooterLink {
   label: string;
@@ -20,12 +19,6 @@ const footerSections: FooterSection[] = [
       { label: 'Privacy Policy', href: '/privacy' },
       { label: 'Terms & Conditions', href: '/terms' }
     ]
-  },
-  {
-    title: 'Open Source',
-    links: [
-      { label: 'GitHub', href: 'https://github.com/yourusername/resumehey' }
-    ]
   }
 ];
 
@@ -34,8 +27,8 @@ export function Footer(): JSX.Element {
 
   return (
     <footer className="bg-white border-t border-gray-200">
-      <div className="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+      <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-8">
           {footerSections.map((section) => (
             <div key={section.title}>
               <h3 className="text-sm font-semibold text-gray-500 tracking-wider uppercase">
@@ -48,14 +41,7 @@ export function Footer(): JSX.Element {
                       href={link.href}
                       className="text-base text-gray-600 hover:text-gray-900"
                     >
-                      {link.href.startsWith('http') ? (
-                        <span className="inline-flex items-center">
-                          <FaGithub className="mr-2" />
-                          {link.label}
-                        </span>
-                      ) : (
-                        link.label
-                      )}
+                      {link.label}
                     </Link>
                   </li>
                 ))}
