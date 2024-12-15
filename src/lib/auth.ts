@@ -1,6 +1,5 @@
 import { NextAuthOptions } from 'next-auth';
 import LinkedInProvider from 'next-auth/providers/linkedin';
-import { supabase } from './supabase';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -9,28 +8,34 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
       authorization: {
         params: {
-          scope: 'r_liteprofile r_emailaddress',
-        },
+          scope: 'openid profile email'
+        }
+      },
+      userinfo: {
+        url: 'https://api.linkedin.com/v2/userinfo',
+      },
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+        };
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, account, profile }) {
-      if (account && profile) {
-        token.id = profile.sub;
+    async session({ session, token }) {
+      if (session?.user) {
+        session.user.id = token.sub;
+      }
+      return session;
+    },
+    async jwt({ token, account }) {
+      if (account) {
         token.accessToken = account.access_token;
       }
       return token;
-    },
-    async session({ session, token }) {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: token.id as string,
-        },
-        accessToken: token.accessToken as string,
-      };
-    },
+    }
   },
 }; 
