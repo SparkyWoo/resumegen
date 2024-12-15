@@ -3,11 +3,17 @@ import { supabase } from '@/lib/supabase';
 import { fetchGitHubData } from '@/services/github';
 import { fetchJobData } from '@/services/job';
 import { Anthropic } from '@anthropic-ai/sdk';
+import crypto from 'crypto';
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY || '',
 });
+
+// Generate a UUID v4
+function generateUUID() {
+  return crypto.randomUUID();
+}
 
 async function generateSummary(jobUrl: string) {
   try {
@@ -78,8 +84,8 @@ export async function POST(req: Request) {
     const jobData = await fetchJobData(jobUrl);
     console.log('Job data fetched successfully');
 
-    console.log('Saving to Supabase...');
-    const { data: resume, error } = await supabase
+    console.log('Saving resume to Supabase...');
+    const { data: resume, error: resumeError } = await supabase
       .from('resumes')
       .insert({
         user_id: userId,
@@ -89,13 +95,23 @@ export async function POST(req: Request) {
         summary: userData.summary || '',
         generated_content: {},
         created_at: new Date().toISOString(),
+        // Initialize other required fields with default values
+        phone: '',
+        location: '',
+        url: '',
+        work: [],
+        education: [],
+        skills: [],
+        projects: [],
+        github_data: null,
+        linkedin_data: null,
       })
       .select()
       .single();
 
-    if (error) {
-      console.error('Supabase error:', error);
-      throw error;
+    if (resumeError) {
+      console.error('Supabase resume error:', resumeError);
+      throw resumeError;
     }
 
     console.log('Resume generated successfully');
