@@ -13,8 +13,9 @@ export function GenerateResumeForm() {
   const router = useRouter();
   const { data: session } = useSession();
   const searchParams = useSearchParams();
-  const jobUrl = searchParams.get('jobUrl') || '';
-
+  const jobUrlFromParams = searchParams.get('jobUrl');
+  
+  const [jobUrl, setJobUrl] = useState(jobUrlFromParams || '');
   const [githubUsername, setGithubUsername] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -71,7 +72,8 @@ export function GenerateResumeForm() {
           required
           placeholder="https://..."
           value={jobUrl}
-          disabled={!!jobUrl}
+          onChange={(e) => setJobUrl(e.target.value)}
+          disabled={!!jobUrlFromParams}
           className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-50 disabled:text-gray-500"
         />
         <p className="mt-1 text-sm text-gray-500">
