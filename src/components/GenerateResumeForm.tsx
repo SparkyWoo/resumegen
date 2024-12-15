@@ -2,12 +2,8 @@
 
 import React, { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { signIn, useSession } from 'next-auth/react';
-import { FaLinkedin } from 'react-icons/fa';
-
-interface FormData {
-  githubUsername: string;
-}
+import { useSession } from 'next-auth/react';
+import { FaLock } from 'react-icons/fa';
 
 export function GenerateResumeForm() {
   const router = useRouter();
@@ -22,12 +18,8 @@ export function GenerateResumeForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!session) {
-      signIn('linkedin', { 
-        callbackUrl: `${window.location.origin}/?jobUrl=${encodeURIComponent(jobUrl)}`
-      });
-      return;
-    }
+    if (!session) return;
+    
     setIsLoading(true);
     setError('');
 
@@ -59,6 +51,23 @@ export function GenerateResumeForm() {
       setIsLoading(false);
     }
   };
+
+  if (!session) {
+    return (
+      <div className="text-center py-8">
+        <div className="inline-flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-blue-100">
+          <FaLock className="w-6 h-6 text-blue-600" />
+        </div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Sign in Required</h3>
+        <p className="text-gray-600 mb-4">
+          Please sign in with LinkedIn using the button in the top navigation bar to generate your resume.
+        </p>
+        <p className="text-sm text-gray-500">
+          We'll use your LinkedIn profile to pre-fill your professional experience.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -113,18 +122,9 @@ export function GenerateResumeForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="inline-flex items-center rounded-md bg-[#0A66C2] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#004182] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0A66C2]"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
-          {isLoading ? (
-            'Generating...'
-          ) : session ? (
-            'Generate Resume'
-          ) : (
-            <>
-              <FaLinkedin className="mr-2 h-5 w-5" />
-              Sign in with LinkedIn
-            </>
-          )}
+          {isLoading ? 'Generating...' : 'Generate Resume'}
         </button>
       </div>
     </form>
