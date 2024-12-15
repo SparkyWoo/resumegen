@@ -134,6 +134,11 @@ export async function POST(req: Request) {
     const jobData = await fetchJobData(jobUrl);
     console.log('Job data fetched successfully');
 
+    // Generate summary
+    console.log('Generating summary...');
+    const summary = await generateSummary(jobUrl);
+    console.log('Generated summary:', summary);
+
     // Generate skills based on job data
     console.log('Generating skills...');
     const skills = await generateSkills(jobData);
@@ -162,7 +167,7 @@ export async function POST(req: Request) {
         name: userData.name,
         email: userData.email,
         job_data: jobData,
-        summary: userData.summary || '',
+        summary: summary,
         generated_content: {},
         created_at: new Date().toISOString(),
         phone: '',

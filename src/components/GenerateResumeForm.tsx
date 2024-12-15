@@ -52,7 +52,7 @@ export function GenerateResumeForm() {
       }
 
       const data = await response.json();
-      router.push(`/resume/${data.id}`);
+      router.push(`/resume/${data.id}/builder`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
