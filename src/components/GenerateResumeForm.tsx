@@ -1,19 +1,23 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn, useSession } from 'next-auth/react';
 
 export function GenerateResumeForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session } = useSession();
-  const [jobUrl, setJobUrl] = useState('');
+  const [jobUrl, setJobUrl] = useState(searchParams.get('jobUrl') || '');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!session) {
-      signIn('linkedin');
+      // Store the job URL in the URL when redirecting to sign in
+      signIn('linkedin', { 
+        callbackUrl: `${window.location.origin}/?jobUrl=${encodeURIComponent(jobUrl)}`
+      });
       return;
     }
 
@@ -64,6 +68,14 @@ export function GenerateResumeForm() {
       setLoading(false);
     }
   };
+
+  // Update jobUrl state when searchParams changes (after sign-in redirect)
+  useEffect(() => {
+    const urlJobUrl = searchParams.get('jobUrl');
+    if (urlJobUrl) {
+      setJobUrl(urlJobUrl);
+    }
+  }, [searchParams]);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-lg shadow">
