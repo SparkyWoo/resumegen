@@ -82,31 +82,31 @@ export default function Home() {
       />
 
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-white/80 backdrop-blur-sm">
+      <div className="relative overflow-hidden bg-white/80 backdrop-blur-sm pt-8 sm:pt-12 lg:pt-16">
         <AnimatedSection className="max-w-7xl mx-auto">
           <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:pb-28 xl:pb-32">
             <div className="relative px-4 sm:px-6 lg:px-8">
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="pt-6 sm:pt-8 lg:pt-12 lg:grid lg:grid-cols-12 lg:gap-8">
+                <div className="lg:grid lg:grid-cols-12 lg:gap-8">
                   {/* Left Column */}
                   <div className="sm:text-center lg:text-left lg:col-span-6">
                     <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
                       <span className="block">Land Your Dream Job with an</span>
-                      <span className="block text-blue-600">AI-Powered Resume</span>
+                      <span className="block text-blue-600 mt-2">AI-Powered Resume</span>
                     </h1>
-                    <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto lg:mx-0">
+                    <p className="mt-6 text-base text-gray-500 sm:text-lg sm:max-w-xl sm:mx-auto lg:mx-0">
                       Stop spending hours tweaking your resume. Our AI analyzes job requirements and optimizes your experience to get you more interviews, guaranteed.
                     </p>
                     
                     {/* Stats */}
-                    <div className="mt-6 grid grid-cols-3 gap-4">
+                    <div className="mt-8 grid grid-cols-3 gap-6">
                       {stats.map((stat, index) => (
                         <div key={index} className="flex flex-col items-center lg:items-start">
                           <div className="flex items-center text-blue-600">
                             {stat.icon}
                             <span className="ml-2 text-2xl font-bold">{stat.value}</span>
                           </div>
-                          <div className="mt-1 text-sm text-gray-500">{stat.label}</div>
+                          <div className="mt-2 text-sm text-gray-500">{stat.label}</div>
                         </div>
                       ))}
                     </div>
@@ -115,7 +115,7 @@ export default function Home() {
                   {/* Right Column - Form */}
                   <div className="mt-12 lg:mt-0 lg:col-span-6">
                     <div className="bg-white sm:max-w-md lg:max-w-full mx-auto rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
-                      <div className="px-4 py-8 sm:px-10">
+                      <div className="px-6 py-8 sm:px-10">
                         <Suspense fallback={
                           <div className="space-y-6 animate-pulse">
                             <div className="h-10 bg-gray-200 rounded w-full"></div>
@@ -139,9 +139,9 @@ export default function Home() {
       <SectionDivider icon="check" />
 
       {/* Company Logos Section */}
-      <div className="bg-white/80 backdrop-blur-sm py-12">
-        <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-lg font-medium text-gray-600 mb-8">
+      <div className="bg-white/80 backdrop-blur-sm py-16 sm:py-20">
+        <AnimatedSection className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
+          <p className="text-center text-lg font-medium text-gray-600 mb-10">
             Trusted by professionals from leading companies
           </p>
           <div className="grid grid-cols-4 gap-8 md:grid-cols-8">
