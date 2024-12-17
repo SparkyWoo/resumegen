@@ -85,8 +85,8 @@ export default function Home() {
       <div className="relative overflow-hidden bg-white/80 backdrop-blur-sm">
         <AnimatedSection className="max-w-7xl mx-auto">
           <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:pb-28 xl:pb-32">
-            <div className="relative pt-6 px-4 sm:px-6 lg:px-8">
-              <div className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
+            <div className="relative px-4 sm:px-6 lg:px-8">
+              <div className="mt-16 mx-auto max-w-7xl px-4 sm:mt-24 sm:px-6 md:mt-32 lg:mt-40 lg:px-8 xl:mt-48">
                 <div className="lg:grid lg:grid-cols-12 lg:gap-8">
                   {/* Left Column */}
                   <div className="sm:text-center lg:text-left lg:col-span-6">
