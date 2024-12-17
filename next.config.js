@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+  pageExtensions: ['ts', 'tsx', 'js', 'jsx'],
   webpack: (config, { isServer }) => {
     // Handle punycode deprecation
     config.resolve.fallback = {
@@ -15,9 +17,14 @@ const nextConfig = {
       };
     }
 
+    // Exclude open-resume directories
+    config.watchOptions = {
+      ...config.watchOptions,
+      ignored: ['**/open-resume/**', '**/temp-resume/**', '**/temp-open-resume/**']
+    };
+
     return config;
-  },
-  reactStrictMode: true,
+  }
 };
 
 module.exports = nextConfig; 
