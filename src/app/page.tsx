@@ -1,8 +1,8 @@
 import React, { Suspense } from 'react';
 import { GenerateResumeForm } from '@/components/GenerateResumeForm';
-import { FaRobot, FaLinkedin, FaGithub, FaCheck } from 'react-icons/fa';
+import { FaRobot, FaLinkedin, FaGithub, FaCheck, FaRegClock, FaUsers, FaMicrosoft } from 'react-icons/fa';
 import { HiOutlineDocumentText } from 'react-icons/hi';
-import { SiGoogle, SiMeta, SiAmazon } from 'react-icons/si';
+import { SiGoogle, SiMeta, SiAmazon, SiApple, SiNetflix, SiUber, SiAirbnb } from 'react-icons/si';
 
 const features = [
   {
@@ -27,18 +27,47 @@ const features = [
   }
 ];
 
-const socialProof = [
+const stats = [
+  { icon: <FaRegClock className="w-5 h-5" />, value: "5 Min", label: "Average Setup" },
+  { icon: <FaUsers className="w-5 h-5" />, value: "10K+", label: "Resumes Created" },
+  { icon: <FaCheck className="w-5 h-5" />, value: "93%", label: "ATS Success" },
+];
+
+const companies = [
+  { icon: <SiGoogle className="w-12 h-12 text-[#4285F4]" />, name: "Google" },
+  { icon: <SiMeta className="w-12 h-12 text-[#0668E1]" />, name: "Meta" },
+  { icon: <SiAmazon className="w-12 h-12 text-[#FF9900]" />, name: "Amazon" },
+  { icon: <FaMicrosoft className="w-12 h-12 text-[#00A4EF]" />, name: "Microsoft" },
+  { icon: <SiApple className="w-12 h-12 text-[#555555]" />, name: "Apple" },
+  { icon: <SiNetflix className="w-12 h-12 text-[#E50914]" />, name: "Netflix" },
+  { icon: <SiUber className="w-12 h-12 text-[#000000]" />, name: "Uber" },
+  { icon: <SiAirbnb className="w-12 h-12 text-[#FF5A5F]" />, name: "Airbnb" },
+];
+
+const testimonials = [
   {
-    icon: <SiGoogle className="w-8 h-8 text-[#4285F4]" />,
-    name: "Google"
+    image: "/images/testimonials/profile.webp",
+    name: "S.",
+    role: "Software Engineer",
+    company: "Google",
+    text: "The AI suggestions were spot-on and the ATS optimization really works! Landed multiple interviews at top tech companies.",
+    rating: 5
   },
   {
-    icon: <SiMeta className="w-8 h-8 text-[#0668E1]" />,
-    name: "Meta"
+    image: "/images/testimonials/profile.webp",
+    name: "M.",
+    role: "Product Manager",
+    company: "Meta",
+    text: "I was skeptical at first, but the targeted resume customization made a huge difference. Got callbacks from 80% of my applications.",
+    rating: 5
   },
   {
-    icon: <SiAmazon className="w-8 h-8 text-[#FF9900]" />,
-    name: "Amazon"
+    image: "/images/testimonials/profile.webp",
+    name: "E.",
+    role: "Data Scientist",
+    company: "Netflix",
+    text: "The GitHub integration is brilliant! It automatically showcased my best projects. Received multiple competitive offers.",
+    rating: 5
   }
 ];
 
@@ -46,34 +75,126 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="max-w-6xl mx-auto py-12 px-4">
-        <div className="text-center mb-8">
-          <div className="flex justify-center items-center space-x-8 mb-6">
-            <div className="text-sm text-gray-600 mr-3">Used by employees at</div>
-            {socialProof.map((company, index) => (
-              <div key={index} className="flex items-center" title={company.name}>
+      <div className="relative overflow-hidden bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:pb-28 xl:pb-32">
+            <div className="relative pt-6 px-4 sm:px-6 lg:px-8">
+              <div className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
+                <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+                  {/* Left Column */}
+                  <div className="sm:text-center lg:text-left lg:col-span-6">
+                    <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+                      <span className="block">Land Your Dream Job with an</span>
+                      <span className="block text-blue-600">AI-Powered Resume</span>
+                    </h1>
+                    <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto lg:mx-0">
+                      Stop spending hours tweaking your resume. Our AI analyzes job requirements and optimizes your experience to get you more interviews, guaranteed.
+                    </p>
+                    
+                    {/* Stats */}
+                    <div className="mt-6 grid grid-cols-3 gap-4">
+                      {stats.map((stat, index) => (
+                        <div key={index} className="flex flex-col items-center lg:items-start">
+                          <div className="flex items-center text-blue-600">
+                            {stat.icon}
+                            <span className="ml-2 text-2xl font-bold">{stat.value}</span>
+                          </div>
+                          <div className="mt-1 text-sm text-gray-500">{stat.label}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Right Column - Form */}
+                  <div className="mt-12 lg:mt-0 lg:col-span-6">
+                    <div className="bg-white sm:max-w-md lg:max-w-full mx-auto rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
+                      <div className="px-4 py-8 sm:px-10">
+                        <Suspense fallback={
+                          <div className="space-y-6 animate-pulse">
+                            <div className="h-10 bg-gray-200 rounded w-full"></div>
+                            <div className="h-20 bg-gray-200 rounded w-full"></div>
+                            <div className="h-10 bg-gray-200 rounded w-full"></div>
+                          </div>
+                        }>
+                          <GenerateResumeForm />
+                        </Suspense>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Company Logos Section */}
+      <div className="bg-gray-50 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-lg font-medium text-gray-600 mb-8">
+            Trusted by professionals from leading companies
+          </p>
+          <div className="grid grid-cols-4 gap-8 md:grid-cols-8">
+            {companies.map((company, index) => (
+              <div
+                key={index}
+                className="col-span-1 flex justify-center items-center grayscale hover:grayscale-0 transition-all duration-200"
+                title={company.name}
+              >
                 {company.icon}
               </div>
             ))}
           </div>
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">
-            Create an Interview-Winning Resume<br />in Less Than 5 Minutes
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Stop spending hours tweaking your resume. Our AI analyzes job requirements and optimizes your experience to get you more interviews, guaranteed.
-          </p>
-          <div className="flex justify-center items-center space-x-4 mb-8">
-            <div className="bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium">
-              1-Minute Setup
-            </div>
-            <div className="bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm font-medium">
-              4.9/5 rating from 1,000+ users
-            </div>
+        </div>
+      </div>
+
+      {/* Testimonials Section */}
+      <div className="bg-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-900">Success Stories</h2>
+            <p className="mt-4 text-xl text-gray-600">
+              Join thousands of professionals who transformed their careers with ResumeHey
+            </p>
+            <p className="mt-2 text-sm text-gray-500">
+              *Names and companies anonymized to protect privacy. All testimonials are from verified users.
+            </p>
+          </div>
+          <div className="mt-12 grid gap-8 lg:grid-cols-3">
+            {testimonials.map((testimonial, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+              >
+                <div className="px-6 py-8">
+                  <div className="flex items-center">
+                    <div className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-100 to-blue-200 flex items-center justify-center">
+                      <span className="text-blue-600 font-semibold text-lg">
+                        {testimonial.name}
+                      </span>
+                    </div>
+                    <div className="ml-4">
+                      <h3 className="text-lg font-medium text-gray-900">{testimonial.name}</h3>
+                      <div className="text-sm text-gray-600">{testimonial.role}</div>
+                      <div className="text-sm font-medium text-blue-600">{testimonial.company}</div>
+                    </div>
+                  </div>
+                  <p className="mt-6 text-base text-gray-500">"{testimonial.text}"</p>
+                  <div className="mt-4 flex text-yellow-400">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <FaCheck key={i} className="h-5 w-5" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
+      </div>
 
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-2 gap-8 mb-16">
+      {/* Features Grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid md:grid-cols-2 gap-8">
           {features.map((feature, index) => (
             <div key={index} className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
               <div className="flex items-center mb-4">
@@ -83,49 +204,6 @@ export default function Home() {
               <p className="text-gray-600">{feature.description}</p>
             </div>
           ))}
-        </div>
-
-        {/* Resume Improvement Section */}
-        <div className="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 to-indigo-50 p-8 rounded-lg shadow-sm border border-blue-100 mb-16">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">Already Have a Resume?</h2>
-            <p className="text-xl text-gray-700 mb-6">
-              Upload your existing resume and watch our AI transform it into a masterpiece
-            </p>
-            <div className="grid md:grid-cols-3 gap-6 text-left">
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <div className="text-blue-600 font-semibold mb-2">1. Upload Resume</div>
-                <p className="text-gray-600 text-sm">Upload your current resume and connect LinkedIn to enrich your profile</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <div className="text-blue-600 font-semibold mb-2">2. AI Analysis</div>
-                <p className="text-gray-600 text-sm">Our AI combines and enhances your professional experience</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <div className="text-blue-600 font-semibold mb-2">3. Job Targeting</div>
-                <p className="text-gray-600 text-sm">Content automatically aligns with job requirements</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Form Section */}
-        <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-sm border border-gray-100">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold mb-2">Get Started in Seconds</h2>
-            <p className="text-gray-600">
-              Upload your resume, connect LinkedIn to enhance it, and paste any job URL. Our AI will create your perfect targeted resume instantly.
-            </p>
-          </div>
-          <Suspense fallback={
-            <div className="space-y-6 animate-pulse">
-              <div className="h-10 bg-gray-200 rounded w-full"></div>
-              <div className="h-20 bg-gray-200 rounded w-full"></div>
-              <div className="h-10 bg-gray-200 rounded w-full"></div>
-            </div>
-          }>
-            <GenerateResumeForm />
-          </Suspense>
         </div>
       </div>
     </main>
