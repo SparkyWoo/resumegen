@@ -4,6 +4,7 @@ import { FaRobot, FaLinkedin, FaGithub, FaCheck, FaRegClock, FaUsers, FaMicrosof
 import { HiOutlineDocumentText } from 'react-icons/hi';
 import { SiGoogle, SiMeta, SiAmazon, SiApple, SiNetflix, SiUber, SiAirbnb } from 'react-icons/si';
 import { AnimatedSection, AnimatedCompanyLogo, ScrollIndicator, SectionDivider } from '@/components/AnimatedLanding';
+import { FAQ } from '@/components/FAQ';
 
 const features = [
   {
@@ -219,6 +220,8 @@ export default function Home() {
           </div>
         </AnimatedSection>
       </div>
+
+      <FAQ />
     </main>
   );
 } 
