@@ -87,7 +87,7 @@ export default function Home() {
           <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:pb-28 xl:pb-32">
             <div className="relative px-4 sm:px-6 lg:px-8">
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="pt-10 lg:pt-16 lg:grid lg:grid-cols-12 lg:gap-8">
+                <div className="pt-6 sm:pt-8 lg:pt-12 lg:grid lg:grid-cols-12 lg:gap-8">
                   {/* Left Column */}
                   <div className="sm:text-center lg:text-left lg:col-span-6">
                     <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
