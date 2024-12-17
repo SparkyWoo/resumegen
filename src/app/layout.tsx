@@ -10,31 +10,32 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'ResumeHey - AI-Powered Resume Builder',
-  description: 'Create a professional resume tailored to your job application using AI and modern templates.',
-  keywords: 'resume builder, AI resume, ATS friendly resume, job application, career tools, resume generator',
-  openGraph: {
-    title: 'ResumeHey - AI-Powered Resume Builder',
-    description: 'Create an ATS-friendly resume in 60 seconds using AI',
-    url: 'https://resumehey.com',
-    siteName: 'ResumeHey',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'ResumeHey - AI-Powered Resume Builder',
-    description: 'Create an ATS-friendly resume in 60 seconds using AI',
-  },
-  metadataBase: new URL('https://resumehey.com'),
+  description: 'Create an ATS-optimized resume in minutes with our AI-powered resume builder. Get more interviews with targeted resume optimization.',
+  manifest: '/site.webmanifest',
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' }
+      { url: '/favicon.ico', sizes: 'any' }
     ],
     apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }
+      { url: '/favicon.svg', type: 'image/svg+xml' }
     ]
   },
+  themeColor: '#ffffff',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'ResumeHey'
+  },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1
+  },
+  robots: {
+    index: true,
+    follow: true
+  }
 };
 
 export default function RootLayout({

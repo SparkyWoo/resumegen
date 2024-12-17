@@ -1,0 +1,17 @@
+{
+  "name": "ResumeHey",
+  "short_name": "ResumeHey",
+  "description": "AI-Powered Resume Builder",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "/"
+} 
