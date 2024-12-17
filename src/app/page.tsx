@@ -78,8 +78,7 @@ export default function Home() {
     <main className="min-h-screen bg-gray-50 relative">
       {/* Background Pattern */}
       <div 
-        className="absolute inset-0 z-0 opacity-[0.02] bg-repeat"
-        style={{ backgroundImage: 'url("/patterns/grid.svg")', backgroundSize: '60px 60px' }}
+        className="absolute inset-0 z-0 opacity-[0.02] bg-grid-pattern"
       />
 
       {/* Hero Section */}

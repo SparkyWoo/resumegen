@@ -37,14 +37,19 @@ const faqs = [
   }
 ];
 
-function FAQItem({ question, answer, icon }: { question: string; answer: string; icon: React.ReactNode }) {
+function FAQItem({ question, answer, icon, index }: { question: string; answer: string; icon: React.ReactNode; index: number }) {
   const [isOpen, setIsOpen] = useState(false);
+  const itemId = `faq-${index}`;
+  const answerId = `faq-answer-${index}`;
 
   return (
     <div className="border-b border-gray-200 last:border-0">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full py-6 text-left"
+        className="flex items-center justify-between w-full py-6 text-left hover:bg-gray-50 transition-colors duration-150 px-4 rounded-lg"
+        aria-expanded={isOpen}
+        aria-controls={answerId}
+        id={itemId}
       >
         <div className="flex items-center gap-4">
           {icon}
@@ -53,20 +58,24 @@ function FAQItem({ question, answer, icon }: { question: string; answer: string;
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.2 }}
+          className="flex-shrink-0"
         >
           <FiChevronDown className="w-5 h-5 text-gray-500" />
         </motion.div>
       </button>
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
+            id={answerId}
+            role="region"
+            aria-labelledby={itemId}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <p className="pb-6 text-gray-600 leading-relaxed">
+            <p className="pb-6 text-gray-600 leading-relaxed px-4">
               {answer}
             </p>
           </motion.div>
@@ -91,14 +100,17 @@ export function FAQ() {
         
         <div className="max-w-3xl mx-auto divide-y divide-gray-200 rounded-2xl bg-white shadow-xl p-8">
           {faqs.map((faq, index) => (
-            <FAQItem key={index} {...faq} />
+            <FAQItem key={index} {...faq} index={index} />
           ))}
         </div>
 
         <div className="mt-12 text-center">
           <p className="text-gray-600">
             Still have questions?{' '}
-            <a href="mailto:support@resumehey.com" className="text-blue-600 hover:text-blue-500 font-medium">
+            <a 
+              href="mailto:support@resumehey.com" 
+              className="text-blue-600 hover:text-blue-500 font-medium transition-colors duration-150"
+            >
               Contact our support team
             </a>
           </p>
