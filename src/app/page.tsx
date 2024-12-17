@@ -82,12 +82,12 @@ export default function Home() {
       />
 
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-white/80 backdrop-blur-sm pt-8 sm:pt-12 lg:pt-16">
+      <div className="relative overflow-hidden bg-white/80 backdrop-blur-sm">
         <AnimatedSection className="max-w-7xl mx-auto">
           <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:pb-28 xl:pb-32">
             <div className="relative px-4 sm:px-6 lg:px-8">
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+                <div className="pt-16 sm:pt-20 lg:pt-24 lg:grid lg:grid-cols-12 lg:gap-8">
                   {/* Left Column */}
                   <div className="sm:text-center lg:text-left lg:col-span-6">
                     <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
