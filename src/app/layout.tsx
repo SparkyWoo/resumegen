@@ -22,15 +22,17 @@ export const metadata: Metadata = {
     ]
   },
   themeColor: '#ffffff',
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'default',
-    title: 'ResumeHey'
+  other: {
+    'mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'default',
+    'apple-mobile-web-app-title': 'ResumeHey'
   },
   viewport: {
     width: 'device-width',
     initialScale: 1,
-    maximumScale: 1
+    maximumScale: 1,
+    userScalable: false
   },
   robots: {
     index: true,
