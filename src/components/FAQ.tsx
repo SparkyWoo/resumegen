@@ -42,11 +42,15 @@ function FAQItem({ question, answer, icon, index }: { question: string; answer: 
   const itemId = `faq-${index}`;
   const answerId = `faq-answer-${index}`;
 
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <div className="border-b border-gray-200 last:border-0">
+    <div className="relative border-b border-gray-200 last:border-0">
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full py-6 text-left hover:bg-gray-50 transition-colors duration-150 px-4 rounded-lg"
+        onClick={handleClick}
+        className="relative z-20 flex items-center justify-between w-full py-6 text-left hover:bg-gray-50 transition-colors duration-150 px-4 rounded-lg select-none"
         aria-expanded={isOpen}
         aria-controls={answerId}
         id={itemId}
@@ -73,11 +77,11 @@ function FAQItem({ question, answer, icon, index }: { question: string; answer: 
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="overflow-hidden"
+            className="relative z-10 overflow-hidden bg-white"
           >
-            <p className="pb-6 text-gray-600 leading-relaxed px-4">
+            <div className="pb-6 text-gray-600 leading-relaxed px-4 select-text">
               {answer}
-            </p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -87,7 +91,7 @@ function FAQItem({ question, answer, icon, index }: { question: string; answer: 
 
 export function FAQ() {
   return (
-    <section className="py-16 bg-gradient-to-b from-white to-blue-50">
+    <section className="relative z-10 py-16 bg-gradient-to-b from-white to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
@@ -98,7 +102,7 @@ export function FAQ() {
           </p>
         </div>
         
-        <div className="max-w-3xl mx-auto divide-y divide-gray-200 rounded-2xl bg-white shadow-xl p-8">
+        <div className="relative z-20 max-w-3xl mx-auto divide-y divide-gray-200 rounded-2xl bg-white shadow-xl p-8">
           {faqs.map((faq, index) => (
             <FAQItem key={index} {...faq} index={index} />
           ))}
