@@ -114,8 +114,8 @@ export default function Home() {
 
                   {/* Right Column - Form */}
                   <div className="mt-12 lg:mt-0 lg:col-span-6">
-                    <div className="bg-white sm:max-w-md lg:max-w-full mx-auto rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
-                      <div className="px-6 py-8 sm:px-10">
+                    <div className="bg-white sm:max-w-md lg:max-w-full mx-auto rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden h-full">
+                      <div className="px-8 py-10 sm:px-10">
                         <Suspense fallback={
                           <div className="space-y-6 animate-pulse">
                             <div className="h-10 bg-gray-200 rounded w-full"></div>
