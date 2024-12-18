@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { getStripe } from '@/lib/stripe';
@@ -82,8 +82,19 @@ function CheckoutForm({ onClose }: { onClose: () => void }) {
 }
 
 export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentModalProps) {
-  // Only initialize Stripe when we have a valid clientSecret and no errors
-  const stripePromise = clientSecret && !error ? getStripe() : null;
+  const [stripePromise, setStripePromise] = useState<any>(null);
+  const [stripeError, setStripeError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (clientSecret && !error) {
+      getStripe()
+        .then(promise => setStripePromise(promise))
+        .catch(err => {
+          console.error('Failed to load Stripe:', err);
+          setStripeError('Failed to initialize payment system. Please try again later.');
+        });
+    }
+  }, [clientSecret, error]);
 
   const getFeatureTitle = () => {
     return 'Premium Resume Features';
@@ -98,7 +109,7 @@ export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentMo
   };
 
   const renderPaymentForm = () => {
-    if (error) {
+    if (error || stripeError) {
       return (
         <div className="rounded-md bg-red-50 p-4">
           <div className="flex">
@@ -110,7 +121,7 @@ export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentMo
                 Payment Error
               </h3>
               <div className="mt-2 text-sm text-red-700">
-                <p>{error}</p>
+                <p>{error || stripeError}</p>
               </div>
               <div className="mt-4">
                 <button

@@ -8,7 +8,11 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 // Initialize Stripe.js
 export const getStripe = async () => {
-  const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+  const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+  if (!publishableKey) {
+    throw new Error('Stripe publishable key is missing');
+  }
+  const stripePromise = loadStripe(publishableKey);
   return stripePromise;
 };
 
