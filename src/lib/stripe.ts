@@ -1,25 +1,25 @@
-import { loadStripe } from '@stripe/stripe-js';
+import { loadStripe, Stripe as StripeType } from '@stripe/stripe-js';
 import Stripe from 'stripe';
 
-// Initialize Stripe
+// Server-side Stripe instance
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-11-20.acacia',
 });
 
-let stripePromise: Promise<any> | null = null;
+// Client-side Stripe promise
+declare global {
+  var stripePromise: Promise<StripeType | null> | null;
+}
 
-// Initialize Stripe.js
+if (!global.stripePromise && typeof window !== 'undefined') {
+  const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+  console.log('[Stripe] Initializing with key available:', !!key);
+  global.stripePromise = loadStripe(key!);
+}
+
 export const getStripe = () => {
-  if (!stripePromise) {
-    const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
-    console.log('Stripe Key Available:', !!key); // Debug log
-    console.log('Stripe Key Length:', key?.length); // Debug log
-    if (!key) {
-      throw new Error('Stripe publishable key is not defined');
-    }
-    stripePromise = loadStripe(key);
-  }
-  return stripePromise;
+  console.log('[Stripe] Getting Stripe instance');
+  return global.stripePromise;
 };
 
 // Premium feature price (in cents)

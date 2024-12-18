@@ -84,18 +84,12 @@ function CheckoutForm({ onClose }: { onClose: () => void }) {
 
 export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentModalProps) {
   const [stripeError, setStripeError] = useState<string | null>(null);
-  const [stripePromise, setStripePromise] = useState<any>(null);
+  const stripePromise = getStripe();
 
   useEffect(() => {
-    try {
-      const promise = getStripe();
-      console.log('Stripe Promise:', !!promise); // Debug log
-      setStripePromise(promise);
-    } catch (err) {
-      console.error('Stripe initialization error:', err);
-      setStripeError('Failed to initialize payment system');
-    }
-  }, []);
+    console.log('[PaymentModal] Stripe Promise:', !!stripePromise);
+    console.log('[PaymentModal] Client Secret:', !!clientSecret);
+  }, [stripePromise, clientSecret]);
 
   const getFeatureTitle = () => {
     return 'Premium Resume Features';
