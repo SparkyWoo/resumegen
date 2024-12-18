@@ -42,7 +42,6 @@ export async function POST(req: Request) {
           .insert({
             user_id: userId,
             resume_id: resumeId,
-            feature_type: 'premium',
             is_active: true,
           });
 
