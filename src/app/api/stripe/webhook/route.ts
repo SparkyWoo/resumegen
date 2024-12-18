@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as any;
-        const { userId, resumeId, featureType } = session.metadata;
+        const { userId, resumeId } = session.metadata;
 
         // Create premium feature record
         await supabase
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
           .insert({
             user_id: userId,
             resume_id: resumeId,
-            feature_type: featureType,
+            feature_type: 'premium',
             is_active: true,
           });
 

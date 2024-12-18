@@ -10,7 +10,6 @@ interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   clientSecret: string;
-  featureType: 'ats_score' | 'interview_tips' | 'bundle';
 }
 
 function CheckoutForm({ onClose }: { onClose: () => void }) {
@@ -81,45 +80,19 @@ function CheckoutForm({ onClose }: { onClose: () => void }) {
   );
 }
 
-export function PaymentModal({ isOpen, onClose, clientSecret, featureType }: PaymentModalProps) {
+export function PaymentModal({ isOpen, onClose, clientSecret }: PaymentModalProps) {
   const stripePromise = getStripe();
 
   const getFeatureTitle = () => {
-    switch (featureType) {
-      case 'ats_score':
-        return 'ATS Score Analysis';
-      case 'interview_tips':
-        return 'AI Interview Tips';
-      case 'bundle':
-        return 'Complete Resume Package';
-      default:
-        return 'Premium Feature';
-    }
+    return 'Premium Resume Features';
   };
 
   const getFeaturePrice = () => {
-    switch (featureType) {
-      case 'ats_score':
-      case 'interview_tips':
-        return '$4.99';
-      case 'bundle':
-        return '$7.99';
-      default:
-        return '';
-    }
+    return '$9.99';
   };
 
   const getFeatureDescription = () => {
-    switch (featureType) {
-      case 'ats_score':
-        return 'Get detailed insights into how your resume performs against ATS systems and receive targeted improvement suggestions.';
-      case 'interview_tips':
-        return 'Receive AI-powered interview preparation tips tailored to the company and role you are applying for.';
-      case 'bundle':
-        return 'Get both ATS Score Analysis and AI Interview Tips at a discounted price.';
-      default:
-        return '';
-    }
+    return 'Get access to all premium features including ATS Score Analysis and AI Interview Tips. Optimize your resume and prepare for interviews with our advanced AI tools.';
   };
 
   return (

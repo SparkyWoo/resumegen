@@ -42,7 +42,6 @@ export const ResumeBuilder = ({ initialData, resumeId, githubData, jobData }: Pr
   const [activeSection, setActiveSection] = useState('basics');
   const [isDownloading, setIsDownloading] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [selectedFeature, setSelectedFeature] = useState<'ats_score' | 'interview_tips' | 'bundle' | null>(null);
   const [clientSecret, setClientSecret] = useState<string>('');
   const { data: session } = useSession();
 
@@ -83,7 +82,7 @@ export const ResumeBuilder = ({ initialData, resumeId, githubData, jobData }: Pr
     }
   };
 
-  const handleUpgrade = async (featureType: 'ats_score' | 'interview_tips' | 'bundle') => {
+  const handleUpgrade = async () => {
     if (!session?.user) return;
 
     try {
@@ -94,7 +93,6 @@ export const ResumeBuilder = ({ initialData, resumeId, githubData, jobData }: Pr
         },
         body: JSON.stringify({
           resumeId,
-          featureType,
         }),
       });
 
@@ -105,7 +103,6 @@ export const ResumeBuilder = ({ initialData, resumeId, githubData, jobData }: Pr
       }
 
       setClientSecret(data.clientSecret);
-      setSelectedFeature(featureType);
       setIsPaymentModalOpen(true);
     } catch (error) {
       console.error('Error creating checkout session:', error);
