@@ -8,11 +8,6 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 // Premium feature price (in cents)
 export const PREMIUM_PRICE = 999; // $9.99 for all features
 
-// Premium product ID
-export const PREMIUM_PRODUCT = process.env.STRIPE_PREMIUM_PRICE_ID;
-
-export type PremiumFeatureType = 'premium';
-
 // Create a checkout session
 export const createCheckoutSession = async ({
   userId,
@@ -30,7 +25,14 @@ export const createCheckoutSession = async ({
       payment_method_types: ['card'],
       line_items: [
         {
-          price: PREMIUM_PRODUCT,
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Premium Resume Features',
+              description: 'Access to ATS Score Analysis and AI Interview Tips',
+            },
+            unit_amount: PREMIUM_PRICE,
+          },
           quantity: 1,
         },
       ],
