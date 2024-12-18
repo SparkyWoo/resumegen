@@ -180,7 +180,6 @@ export const ResumeBuilder = ({ initialData, resumeId, githubData, jobData }: Pr
         isOpen={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
         clientSecret={clientSecret}
-        featureType={selectedFeature || 'ats_score'}
       />
     </main>
   );

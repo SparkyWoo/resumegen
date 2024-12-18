@@ -17,9 +17,9 @@ export async function POST(req: Request) {
 
     const userId = session.user.id;
     const body = await req.json();
-    const { resumeId, featureType } = body;
+    const { resumeId } = body;
 
-    if (!resumeId || !featureType) {
+    if (!resumeId) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
       .select('*')
       .eq('user_id', userId)
       .eq('resume_id', resumeId)
-      .eq('feature_type', featureType)
+      .eq('feature_type', 'premium')
       .eq('is_active', true)
       .single();
 
@@ -70,9 +70,8 @@ export async function POST(req: Request) {
 
     // Create checkout session
     const { sessionId } = await createCheckoutSession({
-      userId,
+      userId: session.user.email || '',
       resumeId,
-      featureType,
       successUrl: `${process.env.NEXT_PUBLIC_APP_URL || ''}/resume/${resumeId}/builder?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL || ''}/resume/${resumeId}/builder`,
     });

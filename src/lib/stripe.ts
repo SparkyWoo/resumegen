@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 
 // Initialize Stripe
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-11-20.acacia',
+  apiVersion: '2023-10-16' as any,
 });
 
 // Initialize Stripe.js
@@ -12,33 +12,23 @@ export const getStripe = async () => {
   return stripePromise;
 };
 
-// Premium feature prices (in cents)
-export const PREMIUM_PRICES = {
-  ATS_SCORE: 499, // $4.99
-  INTERVIEW_TIPS: 499, // $4.99
-  BUNDLE: 799, // $7.99 for both
-} as const;
+// Premium feature price (in cents)
+export const PREMIUM_PRICE = 999; // $9.99 for all features
 
-// Premium feature IDs
-export const PREMIUM_PRODUCTS = {
-  ATS_SCORE: process.env.STRIPE_ATS_SCORE_PRICE_ID!,
-  INTERVIEW_TIPS: process.env.STRIPE_INTERVIEW_TIPS_PRICE_ID!,
-  BUNDLE: process.env.STRIPE_BUNDLE_PRICE_ID!,
-} as const;
+// Premium product ID
+export const PREMIUM_PRODUCT = process.env.STRIPE_PREMIUM_PRICE_ID!;
 
-export type PremiumFeatureType = 'ats_score' | 'interview_tips' | 'bundle';
+export type PremiumFeatureType = 'premium';
 
 // Create a checkout session
 export const createCheckoutSession = async ({
   userId,
   resumeId,
-  featureType,
   successUrl,
   cancelUrl,
 }: {
   userId: string;
   resumeId: string;
-  featureType: PremiumFeatureType;
   successUrl: string;
   cancelUrl: string;
 }) => {
@@ -47,7 +37,7 @@ export const createCheckoutSession = async ({
       payment_method_types: ['card'],
       line_items: [
         {
-          price: PREMIUM_PRODUCTS[featureType.toUpperCase() as keyof typeof PREMIUM_PRODUCTS],
+          price: PREMIUM_PRODUCT,
           quantity: 1,
         },
       ],
@@ -58,7 +48,7 @@ export const createCheckoutSession = async ({
       metadata: {
         userId,
         resumeId,
-        featureType,
+        featureType: 'premium',
       },
     });
 

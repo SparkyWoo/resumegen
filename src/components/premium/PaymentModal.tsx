@@ -114,7 +114,7 @@ export function PaymentModal({ isOpen, onClose, clientSecret, featureType }: Pay
       case 'ats_score':
         return 'Get detailed insights into how your resume performs against ATS systems and receive targeted improvement suggestions.';
       case 'interview_tips':
-        return 'Receive AI-powered interview preparation tips tailored to the company and role you\'re applying for.';
+        return 'Receive AI-powered interview preparation tips tailored to the company and role you are applying for.';
       case 'bundle':
         return 'Get both ATS Score Analysis and AI Interview Tips at a discounted price.';
       default:
