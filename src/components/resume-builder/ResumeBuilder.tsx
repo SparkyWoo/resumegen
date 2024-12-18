@@ -129,17 +129,28 @@ export const ResumeBuilder = ({ initialData, resumeId, githubData, jobData }: Pr
               </Link>
             </div>
 
-            {/* Download Button */}
-            <button
-              onClick={handleDownload}
-              disabled={isDownloading}
-              className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 ${
-                isDownloading ? 'opacity-75 cursor-not-allowed' : ''
-              }`}
-            >
-              <FaDownload className={`mr-2 h-4 w-4 ${isDownloading ? 'animate-bounce' : ''}`} />
-              {isDownloading ? 'Preparing...' : 'Download PDF'}
-            </button>
+            <div className="flex items-center space-x-4">
+              {/* Premium Features Button */}
+              <button
+                onClick={handleUpgrade}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <span className="mr-2">✨</span>
+                Unlock Premium Features
+              </button>
+
+              {/* Download Button */}
+              <button
+                onClick={handleDownload}
+                disabled={isDownloading}
+                className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 ${
+                  isDownloading ? 'opacity-75 cursor-not-allowed' : ''
+                }`}
+              >
+                <FaDownload className={`mr-2 h-4 w-4 ${isDownloading ? 'animate-bounce' : ''}`} />
+                {isDownloading ? 'Preparing...' : 'Download PDF'}
+              </button>
+            </div>
           </div>
 
           {/* Section Navigation */}
