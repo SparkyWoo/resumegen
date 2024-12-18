@@ -12,92 +12,37 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  clientSecret: string;
+  sessionId: string;
   error: string | null;
 }
 
-function CheckoutForm({ onClose }: { onClose: () => void }) {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+export function PaymentModal({ isOpen, onClose, sessionId, error }: PaymentModalProps) {
+  const [stripeError, setStripeError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!stripe || !elements) return;
-
-    setIsProcessing(true);
-    setErrorMessage(null);
+  const handleRedirectToCheckout = async () => {
+    if (!sessionId) return;
 
     try {
-      const { error } = await stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: `${window.location.origin}/payment/success`,
-        },
+      const stripe = await stripePromise;
+      if (!stripe) throw new Error('Stripe failed to load');
+
+      const { error } = await stripe.redirectToCheckout({
+        sessionId
       });
 
       if (error) {
-        setErrorMessage(error.message ?? 'An error occurred');
+        setStripeError(error.message ?? null);
       }
     } catch (err) {
-      setErrorMessage('An unexpected error occurred');
-    } finally {
-      setIsProcessing(false);
+      console.error('Error redirecting to checkout:', err);
+      setStripeError('Failed to load checkout. Please try again.');
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <PaymentElement />
-      
-      {errorMessage && (
-        <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">
-          {errorMessage}
-        </div>
-      )}
-
-      <div className="flex items-center space-x-2 text-sm text-gray-500">
-        <ShieldCheckIcon className="h-5 w-5" />
-        <span>Your payment is secure and encrypted</span>
-      </div>
-
-      <div className="flex items-center justify-end space-x-4">
-        <button
-          type="button"
-          onClick={onClose}
-          disabled={isProcessing}
-          className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          disabled={!stripe || isProcessing}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isProcessing ? 'Processing...' : 'Pay Now'}
-        </button>
-      </div>
-    </form>
-  );
-}
-
-export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentModalProps) {
-  const [stripeError, setStripeError] = useState<string | null>(null);
-
-  const appearance = {
-    theme: 'stripe' as const,
-    variables: {
-      colorPrimary: '#2563eb',
-    },
-  };
-
-  const options = {
-    clientSecret,
-    appearance,
-  };
+  // Redirect to checkout as soon as we have a session ID
+  if (sessionId && isOpen) {
+    handleRedirectToCheckout();
+  }
 
   const renderContent = () => {
     if (error || stripeError) {
@@ -129,18 +74,10 @@ export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentMo
       );
     }
 
-    if (!clientSecret) {
-      return (
-        <div className="flex items-center justify-center p-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        </div>
-      );
-    }
-
     return (
-      <Elements stripe={stripePromise} options={options}>
-        <CheckoutForm onClose={onClose} />
-      </Elements>
+      <div className="flex items-center justify-center p-4">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
     );
   };
 

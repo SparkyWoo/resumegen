@@ -42,7 +42,7 @@ export const ResumeBuilder = ({ initialData, resumeId, githubData, jobData }: Pr
   const [activeSection, setActiveSection] = useState('basics');
   const [isDownloading, setIsDownloading] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [clientSecret, setClientSecret] = useState<string>('');
+  const [sessionId, setSessionId] = useState<string>('');
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const { data: session } = useSession();
 
@@ -107,7 +107,7 @@ export const ResumeBuilder = ({ initialData, resumeId, githubData, jobData }: Pr
         return;
       }
 
-      setClientSecret(data.clientSecret);
+      setSessionId(data.sessionId);
       setIsPaymentModalOpen(true);
     } catch (error) {
       console.error('Error creating checkout session:', error);
@@ -197,7 +197,7 @@ export const ResumeBuilder = ({ initialData, resumeId, githubData, jobData }: Pr
           setIsPaymentModalOpen(false);
           setPaymentError(null);
         }}
-        clientSecret={clientSecret}
+        sessionId={sessionId}
         error={paymentError}
       />
     </main>
