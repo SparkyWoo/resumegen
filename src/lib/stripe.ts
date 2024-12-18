@@ -29,17 +29,12 @@ export const createCheckoutSession = async ({
             currency: 'usd',
             product_data: {
               name: 'ResumeHey Premium Features',
-              description: 'Unlock the full power of AI to supercharge your job applications',
+              description: `• AI-powered ATS Score Analysis
+• Personalized Interview Tips
+• Keyword Optimization
+• Unlimited Resume Exports
+• Priority Support`,
               images: ['https://resumehey.com/premium-features.png'],
-              metadata: {
-                features: [
-                  'AI-powered ATS Score Analysis',
-                  'Personalized Interview Tips',
-                  'Keyword Optimization',
-                  'Unlimited Resume Exports',
-                  'Priority Support'
-                ].join(', ')
-              }
             },
             unit_amount: PREMIUM_PRICE,
           },
@@ -48,13 +43,9 @@ export const createCheckoutSession = async ({
       ],
       mode: 'payment',
       allow_promotion_codes: true,
-      billing_address_collection: 'auto',
       custom_text: {
         submit: {
-          message: 'We\'ll instantly upgrade your resume after payment.'
-        },
-        shipping_address: {
-          message: 'Your purchase will be available immediately after payment.'
+          message: 'Your premium features will be activated instantly after payment'
         }
       },
       success_url: `${successUrl}?session_id={CHECKOUT_SESSION_ID}`,
