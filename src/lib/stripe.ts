@@ -1,30 +1,9 @@
-import { loadStripe, Stripe as StripeType } from '@stripe/stripe-js';
 import Stripe from 'stripe';
 
 // Server-side Stripe instance
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-11-20.acacia',
 });
-
-// Client-side Stripe promise
-declare global {
-  var stripePromise: Promise<StripeType | null> | null;
-}
-
-export const getStripe = () => {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-
-  if (!global.stripePromise) {
-    const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
-    if (!key) {
-      throw new Error('Stripe publishable key is not available');
-    }
-    global.stripePromise = loadStripe(key);
-  }
-  return global.stripePromise;
-};
 
 // Premium feature price (in cents)
 export const PREMIUM_PRICE = 999; // $9.99 for all features
@@ -58,7 +37,7 @@ export const createCheckoutSession = async ({
       mode: 'payment',
       success_url: `${successUrl}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl,
-      customer_email: userId, // We'll update this with actual email
+      customer_email: userId,
       metadata: {
         userId,
         resumeId,

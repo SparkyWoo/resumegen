@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { Stripe, StripeElements } from '@stripe/stripe-js';
-import { getStripe } from '@/lib/stripe';
+import { loadStripe } from '@stripe/stripe-js';
 import { XIcon, ShieldCheckIcon } from 'lucide-react';
+
+// Load Stripe outside of component to avoid recreating Stripe object
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -84,37 +86,20 @@ function CheckoutForm({ onClose }: { onClose: () => void }) {
 
 export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentModalProps) {
   const [stripeError, setStripeError] = useState<string | null>(null);
-  const [stripePromise, setStripePromise] = useState<any>(null);
 
-  useEffect(() => {
-    if (isOpen && clientSecret && !error && !stripePromise) {
-      // Only load Stripe when the modal is open and we have a client secret
-      const loadStripeInstance = async () => {
-        try {
-          const stripe = await getStripe();
-          setStripePromise(stripe);
-        } catch (err) {
-          console.error('Failed to load Stripe:', err);
-          setStripeError('Payment system is temporarily unavailable. Please try again later.');
-        }
-      };
-      loadStripeInstance();
-    }
-  }, [isOpen, clientSecret, error, stripePromise]);
-
-  const getFeatureTitle = () => {
-    return 'Premium Resume Features';
+  const appearance = {
+    theme: 'stripe' as const,
+    variables: {
+      colorPrimary: '#2563eb',
+    },
   };
 
-  const getFeaturePrice = () => {
-    return '$9.99';
+  const options = {
+    clientSecret,
+    appearance,
   };
 
-  const getFeatureDescription = () => {
-    return 'Get access to all premium features including ATS Score Analysis and AI Interview Tips. Optimize your resume and prepare for interviews with our advanced AI tools.';
-  };
-
-  const renderPaymentForm = () => {
+  const renderContent = () => {
     if (error || stripeError) {
       return (
         <div className="rounded-md bg-red-50 p-4">
@@ -144,7 +129,7 @@ export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentMo
       );
     }
 
-    if (!clientSecret || !stripePromise) {
+    if (!clientSecret) {
       return (
         <div className="flex items-center justify-center p-4">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -153,18 +138,7 @@ export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentMo
     }
 
     return (
-      <Elements
-        stripe={stripePromise}
-        options={{
-          clientSecret,
-          appearance: {
-            theme: 'stripe',
-            variables: {
-              colorPrimary: '#2563eb',
-            },
-          },
-        }}
-      >
+      <Elements stripe={stripePromise} options={options}>
         <CheckoutForm onClose={onClose} />
       </Elements>
     );
@@ -204,21 +178,22 @@ export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentMo
               <div className="sm:flex sm:items-start">
                 <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
                   <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    {getFeatureTitle()}
+                    Premium Resume Features
                   </h3>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
-                      {getFeatureDescription()}
+                      Get access to all premium features including ATS Score Analysis and AI Interview Tips. 
+                      Optimize your resume and prepare for interviews with our advanced AI tools.
                     </p>
                   </div>
 
                   <div className="mt-4 flex items-baseline text-2xl font-semibold text-gray-900">
-                    {getFeaturePrice()}
+                    $9.99
                     <span className="ml-1 text-sm font-normal text-gray-500">one-time payment</span>
                   </div>
 
                   <div className="mt-8">
-                    {renderPaymentForm()}
+                    {renderContent()}
                   </div>
                 </div>
               </div>
