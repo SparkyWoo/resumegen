@@ -12,6 +12,8 @@ let stripePromise: Promise<any> | null = null;
 export const getStripe = () => {
   if (!stripePromise) {
     const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+    console.log('Stripe Key Available:', !!key); // Debug log
+    console.log('Stripe Key Length:', key?.length); // Debug log
     if (!key) {
       throw new Error('Stripe publishable key is not defined');
     }

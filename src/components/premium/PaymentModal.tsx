@@ -84,7 +84,18 @@ function CheckoutForm({ onClose }: { onClose: () => void }) {
 
 export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentModalProps) {
   const [stripeError, setStripeError] = useState<string | null>(null);
-  const stripePromise = getStripe();
+  const [stripePromise, setStripePromise] = useState<any>(null);
+
+  useEffect(() => {
+    try {
+      const promise = getStripe();
+      console.log('Stripe Promise:', !!promise); // Debug log
+      setStripePromise(promise);
+    } catch (err) {
+      console.error('Stripe initialization error:', err);
+      setStripeError('Failed to initialize payment system');
+    }
+  }, []);
 
   const getFeatureTitle = () => {
     return 'Premium Resume Features';
@@ -128,7 +139,7 @@ export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentMo
       );
     }
 
-    if (!clientSecret) {
+    if (!clientSecret || !stripePromise) {
       return (
         <div className="flex items-center justify-center p-4">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
