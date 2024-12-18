@@ -84,12 +84,23 @@ function CheckoutForm({ onClose }: { onClose: () => void }) {
 
 export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentModalProps) {
   const [stripeError, setStripeError] = useState<string | null>(null);
-  const stripePromise = getStripe();
+  const [stripePromise, setStripePromise] = useState<any>(null);
 
   useEffect(() => {
-    console.log('[PaymentModal] Stripe Promise:', !!stripePromise);
-    console.log('[PaymentModal] Client Secret:', !!clientSecret);
-  }, [stripePromise, clientSecret]);
+    if (isOpen && clientSecret && !error && !stripePromise) {
+      // Only load Stripe when the modal is open and we have a client secret
+      const loadStripeInstance = async () => {
+        try {
+          const stripe = await getStripe();
+          setStripePromise(stripe);
+        } catch (err) {
+          console.error('Failed to load Stripe:', err);
+          setStripeError('Payment system is temporarily unavailable. Please try again later.');
+        }
+      };
+      loadStripeInstance();
+    }
+  }, [isOpen, clientSecret, error, stripePromise]);
 
   const getFeatureTitle = () => {
     return 'Premium Resume Features';
@@ -124,7 +135,7 @@ export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentMo
                   onClick={onClose}
                   className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                 >
-                  Try again later
+                  Close
                 </button>
               </div>
             </div>

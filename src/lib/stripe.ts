@@ -11,14 +11,18 @@ declare global {
   var stripePromise: Promise<StripeType | null> | null;
 }
 
-if (!global.stripePromise && typeof window !== 'undefined') {
-  const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
-  console.log('[Stripe] Initializing with key available:', !!key);
-  global.stripePromise = loadStripe(key!);
-}
-
 export const getStripe = () => {
-  console.log('[Stripe] Getting Stripe instance');
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  if (!global.stripePromise) {
+    const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+    if (!key) {
+      throw new Error('Stripe publishable key is not available');
+    }
+    global.stripePromise = loadStripe(key);
+  }
   return global.stripePromise;
 };
 
