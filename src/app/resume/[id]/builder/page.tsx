@@ -65,6 +65,7 @@ export default async function ResumeBuilderPage({ params }: Props) {
       <main className="min-h-screen bg-gray-50">
         <ResumeBuilderWrapper 
           initialData={mappedData} 
+          resumeId={params.id}
           githubData={resume.github_data}
           jobData={resume.job_data}
         />

@@ -7,15 +7,17 @@ import { ResumeState } from '@/lib/redux/resumeSlice';
 
 interface Props {
   initialData: ResumeState;
+  resumeId: string;
   githubData: any;
   jobData: any;
 }
 
-export function ResumeBuilderWrapper({ initialData, githubData, jobData }: Props) {
+export function ResumeBuilderWrapper({ initialData, resumeId, githubData, jobData }: Props) {
   return (
     <Provider store={store}>
       <ResumeBuilder 
         initialData={initialData} 
+        resumeId={resumeId}
         githubData={githubData}
         jobData={jobData}
       />

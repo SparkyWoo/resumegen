@@ -10,9 +10,14 @@ import { PDFViewer } from './Resume/PDFViewer';
 import { Logo } from '@/components/Logo';
 import Link from 'next/link';
 import { FaDownload } from 'react-icons/fa';
+import { ATSScore } from '@/components/premium/ATSScore';
+import { InterviewTips } from '@/components/premium/InterviewTips';
+import { PaymentModal } from '@/components/premium/PaymentModal';
+import { useSession } from 'next-auth/react';
 
 interface Props {
   initialData: ResumeState;
+  resumeId: string;
   githubData?: {
     repositories: Array<{
       name: string;
@@ -31,11 +36,15 @@ interface Props {
   };
 }
 
-export const ResumeBuilder = ({ initialData, githubData, jobData }: Props): JSX.Element => {
+export const ResumeBuilder = ({ initialData, resumeId, githubData, jobData }: Props): JSX.Element => {
   const dispatch = useAppDispatch();
   const resume = useAppSelector(state => state.resume);
   const [activeSection, setActiveSection] = useState('basics');
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [selectedFeature, setSelectedFeature] = useState<'ats_score' | 'interview_tips' | 'bundle' | null>(null);
+  const [clientSecret, setClientSecret] = useState<string>('');
+  const { data: session } = useSession();
 
   useEffect(() => {
     dispatch(initializeResume(initialData));
@@ -71,6 +80,35 @@ export const ResumeBuilder = ({ initialData, githubData, jobData }: Props): JSX.
       setTimeout(() => {
         setIsDownloading(false);
       }, 300);
+    }
+  };
+
+  const handleUpgrade = async (featureType: 'ats_score' | 'interview_tips' | 'bundle') => {
+    if (!session?.user) return;
+
+    try {
+      const response = await fetch('/api/stripe/create-checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          resumeId,
+          featureType,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setClientSecret(data.clientSecret);
+      setSelectedFeature(featureType);
+      setIsPaymentModalOpen(true);
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
     }
   };
 
@@ -137,6 +175,13 @@ export const ResumeBuilder = ({ initialData, githubData, jobData }: Props): JSX.
           <PDFViewer data={resume} />
         </div>
       </div>
+
+      <PaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        clientSecret={clientSecret}
+        featureType={selectedFeature || 'ats_score'}
+      />
     </main>
   );
 }; 
