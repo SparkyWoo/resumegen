@@ -82,7 +82,8 @@ function CheckoutForm({ onClose }: { onClose: () => void }) {
 }
 
 export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentModalProps) {
-  const stripePromise = getStripe();
+  // Only initialize Stripe when we have a valid clientSecret and no errors
+  const stripePromise = clientSecret && !error ? getStripe() : null;
 
   const getFeatureTitle = () => {
     return 'Premium Resume Features';
@@ -94,6 +95,62 @@ export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentMo
 
   const getFeatureDescription = () => {
     return 'Get access to all premium features including ATS Score Analysis and AI Interview Tips. Optimize your resume and prepare for interviews with our advanced AI tools.';
+  };
+
+  const renderPaymentForm = () => {
+    if (error) {
+      return (
+        <div className="rounded-md bg-red-50 p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <XIcon className="h-5 w-5 text-red-400" />
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">
+                Payment Error
+              </h3>
+              <div className="mt-2 text-sm text-red-700">
+                <p>{error}</p>
+              </div>
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                >
+                  Try again later
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (!clientSecret || !stripePromise) {
+      return (
+        <div className="flex items-center justify-center p-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+      );
+    }
+
+    return (
+      <Elements
+        stripe={stripePromise}
+        options={{
+          clientSecret,
+          appearance: {
+            theme: 'stripe',
+            variables: {
+              colorPrimary: '#2563eb',
+            },
+          },
+        }}
+      >
+        <CheckoutForm onClose={onClose} />
+      </Elements>
+    );
   };
 
   return (
@@ -144,47 +201,7 @@ export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentMo
                   </div>
 
                   <div className="mt-8">
-                    {error ? (
-                      <div className="rounded-md bg-red-50 p-4">
-                        <div className="flex">
-                          <div className="flex-shrink-0">
-                            <XIcon className="h-5 w-5 text-red-400" />
-                          </div>
-                          <div className="ml-3">
-                            <h3 className="text-sm font-medium text-red-800">
-                              Payment Error
-                            </h3>
-                            <div className="mt-2 text-sm text-red-700">
-                              <p>{error}</p>
-                            </div>
-                            <div className="mt-4">
-                              <button
-                                type="button"
-                                onClick={onClose}
-                                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                              >
-                                Try again later
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <Elements
-                        stripe={stripePromise}
-                        options={{
-                          clientSecret,
-                          appearance: {
-                            theme: 'stripe',
-                            variables: {
-                              colorPrimary: '#2563eb',
-                            },
-                          },
-                        }}
-                      >
-                        <CheckoutForm onClose={onClose} />
-                      </Elements>
-                    )}
+                    {renderPaymentForm()}
                   </div>
                 </div>
               </div>
