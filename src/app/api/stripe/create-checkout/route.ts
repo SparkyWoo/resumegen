@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { stripe, createCheckoutSession } from '@/lib/stripe';
 import { supabase } from '@/lib/supabase';
 import type Stripe from 'stripe';
+import { headers } from 'next/headers';
 
 export async function POST(req: Request) {
   try {
@@ -68,12 +69,18 @@ export async function POST(req: Request) {
         .eq('id', userId);
     }
 
+    // Get the host from headers
+    const headersList = headers();
+    const host = headersList.get('host') || '';
+    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+    const baseUrl = `${protocol}://${host}`;
+
     // Create checkout session
     const { sessionId } = await createCheckoutSession({
       userId: session.user.email || '',
       resumeId,
-      successUrl: `${process.env.NEXT_PUBLIC_APP_URL || ''}/resume/${resumeId}/builder?session_id={CHECKOUT_SESSION_ID}`,
-      cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL || ''}/resume/${resumeId}/builder`,
+      successUrl: `${baseUrl}/resume/${resumeId}/builder?session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl: `${baseUrl}/resume/${resumeId}/builder`,
     });
 
     return NextResponse.json({ sessionId });
