@@ -3,16 +3,20 @@ import Stripe from 'stripe';
 
 // Initialize Stripe
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16' as any,
+  apiVersion: '2024-11-20.acacia',
 });
 
+let stripePromise: Promise<any> | null = null;
+
 // Initialize Stripe.js
-export const getStripe = async () => {
-  const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
-  if (!publishableKey) {
-    throw new Error('Stripe publishable key is missing');
+export const getStripe = () => {
+  if (!stripePromise) {
+    const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+    if (!key) {
+      throw new Error('Stripe publishable key is not defined');
+    }
+    stripePromise = loadStripe(key);
   }
-  const stripePromise = loadStripe(publishableKey);
   return stripePromise;
 };
 
@@ -20,7 +24,7 @@ export const getStripe = async () => {
 export const PREMIUM_PRICE = 999; // $9.99 for all features
 
 // Premium product ID
-export const PREMIUM_PRODUCT = process.env.STRIPE_PREMIUM_PRICE_ID!;
+export const PREMIUM_PRODUCT = process.env.STRIPE_PREMIUM_PRICE_ID;
 
 export type PremiumFeatureType = 'premium';
 

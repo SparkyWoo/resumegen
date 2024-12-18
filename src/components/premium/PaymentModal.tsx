@@ -83,14 +83,8 @@ function CheckoutForm({ onClose }: { onClose: () => void }) {
 }
 
 export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentModalProps) {
-  const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
   const [stripeError, setStripeError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (clientSecret && !error) {
-      setStripePromise(getStripe());
-    }
-  }, [clientSecret, error]);
+  const stripePromise = getStripe();
 
   const getFeatureTitle = () => {
     return 'Premium Resume Features';
@@ -134,7 +128,7 @@ export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentMo
       );
     }
 
-    if (!clientSecret || !stripePromise) {
+    if (!clientSecret) {
       return (
         <div className="flex items-center justify-center p-4">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
