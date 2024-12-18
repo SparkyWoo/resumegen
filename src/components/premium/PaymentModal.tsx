@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { Stripe, StripeElements } from '@stripe/stripe-js';
 import { getStripe } from '@/lib/stripe';
 import { XIcon, ShieldCheckIcon } from 'lucide-react';
 
@@ -82,17 +83,12 @@ function CheckoutForm({ onClose }: { onClose: () => void }) {
 }
 
 export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentModalProps) {
-  const [stripePromise, setStripePromise] = useState<any>(null);
+  const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
   const [stripeError, setStripeError] = useState<string | null>(null);
 
   useEffect(() => {
     if (clientSecret && !error) {
-      getStripe()
-        .then(promise => setStripePromise(promise))
-        .catch(err => {
-          console.error('Failed to load Stripe:', err);
-          setStripeError('Failed to initialize payment system. Please try again later.');
-        });
+      setStripePromise(getStripe());
     }
   }, [clientSecret, error]);
 
