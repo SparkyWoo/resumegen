@@ -6,7 +6,7 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 // Premium feature price (in cents)
-export const PREMIUM_PRICE = 999; // $9.99 for all features
+export const PREMIUM_PRICE = 499; // $4.99 for all features
 
 // Create a checkout session
 export const createCheckoutSession = async ({

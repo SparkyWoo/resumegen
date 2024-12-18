@@ -124,7 +124,7 @@ export function PaymentModal({ isOpen, onClose, sessionId, error }: PaymentModal
             }}
             className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            Unlock Premium Features - $9.99
+            Unlock Premium Features - $4.99
           </button>
         </div>
 
