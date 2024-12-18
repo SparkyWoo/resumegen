@@ -43,6 +43,7 @@ export const ResumeBuilder = ({ initialData, resumeId, githubData, jobData }: Pr
   const [isDownloading, setIsDownloading] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [clientSecret, setClientSecret] = useState<string>('');
+  const [paymentError, setPaymentError] = useState<string | null>(null);
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -85,6 +86,8 @@ export const ResumeBuilder = ({ initialData, resumeId, githubData, jobData }: Pr
   const handleUpgrade = async () => {
     if (!session?.user) return;
 
+    setPaymentError(null);
+    
     try {
       const response = await fetch('/api/stripe/create-checkout', {
         method: 'POST',
@@ -99,13 +102,17 @@ export const ResumeBuilder = ({ initialData, resumeId, githubData, jobData }: Pr
       const data = await response.json();
 
       if (data.error) {
-        throw new Error(data.error);
+        setPaymentError(data.error);
+        setIsPaymentModalOpen(true);
+        return;
       }
 
       setClientSecret(data.clientSecret);
       setIsPaymentModalOpen(true);
     } catch (error) {
       console.error('Error creating checkout session:', error);
+      setPaymentError('Failed to initialize payment. Please try again later.');
+      setIsPaymentModalOpen(true);
     }
   };
 
@@ -175,8 +182,12 @@ export const ResumeBuilder = ({ initialData, resumeId, githubData, jobData }: Pr
 
       <PaymentModal
         isOpen={isPaymentModalOpen}
-        onClose={() => setIsPaymentModalOpen(false)}
+        onClose={() => {
+          setIsPaymentModalOpen(false);
+          setPaymentError(null);
+        }}
         clientSecret={clientSecret}
+        error={paymentError}
       />
     </main>
   );

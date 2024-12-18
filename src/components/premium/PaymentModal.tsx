@@ -10,6 +10,7 @@ interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   clientSecret: string;
+  error: string | null;
 }
 
 function CheckoutForm({ onClose }: { onClose: () => void }) {
@@ -80,7 +81,7 @@ function CheckoutForm({ onClose }: { onClose: () => void }) {
   );
 }
 
-export function PaymentModal({ isOpen, onClose, clientSecret }: PaymentModalProps) {
+export function PaymentModal({ isOpen, onClose, clientSecret, error }: PaymentModalProps) {
   const stripePromise = getStripe();
 
   const getFeatureTitle = () => {
@@ -143,20 +144,47 @@ export function PaymentModal({ isOpen, onClose, clientSecret }: PaymentModalProp
                   </div>
 
                   <div className="mt-8">
-                    <Elements
-                      stripe={stripePromise}
-                      options={{
-                        clientSecret,
-                        appearance: {
-                          theme: 'stripe',
-                          variables: {
-                            colorPrimary: '#2563eb',
+                    {error ? (
+                      <div className="rounded-md bg-red-50 p-4">
+                        <div className="flex">
+                          <div className="flex-shrink-0">
+                            <XIcon className="h-5 w-5 text-red-400" />
+                          </div>
+                          <div className="ml-3">
+                            <h3 className="text-sm font-medium text-red-800">
+                              Payment Error
+                            </h3>
+                            <div className="mt-2 text-sm text-red-700">
+                              <p>{error}</p>
+                            </div>
+                            <div className="mt-4">
+                              <button
+                                type="button"
+                                onClick={onClose}
+                                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                              >
+                                Try again later
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <Elements
+                        stripe={stripePromise}
+                        options={{
+                          clientSecret,
+                          appearance: {
+                            theme: 'stripe',
+                            variables: {
+                              colorPrimary: '#2563eb',
+                            },
                           },
-                        },
-                      }}
-                    >
-                      <CheckoutForm onClose={onClose} />
-                    </Elements>
+                        }}
+                      >
+                        <CheckoutForm onClose={onClose} />
+                      </Elements>
+                    )}
                   </div>
                 </div>
               </div>
