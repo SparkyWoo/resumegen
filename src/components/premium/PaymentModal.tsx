@@ -117,7 +117,11 @@ export function PaymentModal({ isOpen, onClose, sessionId, error }: PaymentModal
 
         <div className="flex items-center justify-center pt-4">
           <button
-            onClick={() => setShowCheckout(true)}
+            onClick={() => {
+              setShowCheckout(true);
+              // Start loading Stripe session immediately when user shows interest
+              handleRedirectToCheckout();
+            }}
             className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Unlock Premium Features - $9.99
@@ -141,6 +145,7 @@ export function PaymentModal({ isOpen, onClose, sessionId, error }: PaymentModal
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
               className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
               onClick={() => !showCheckout && onClose()}
             />
@@ -151,6 +156,7 @@ export function PaymentModal({ isOpen, onClose, sessionId, error }: PaymentModal
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.15 }}
               className="relative inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle"
             >
               {!showCheckout && (
