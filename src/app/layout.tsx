@@ -2,7 +2,7 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 import { Providers } from '@/components/Providers';
 import { Metadata } from 'next';
-import { Navbar } from '@/components/Navbar';
+import { NavbarWrapper } from '@/components/NavbarWrapper';
 import { Footer } from '@/components/Footer';
 import { Analytics } from '@vercel/analytics/react';
 import { Suspense } from 'react';
@@ -131,7 +131,7 @@ export default function RootLayout({
         <Providers>
           <div className="flex flex-col min-h-screen">
             <Suspense fallback={<div className="h-16 bg-white shadow-sm" />}>
-              <Navbar />
+              <NavbarWrapper />
             </Suspense>
             <main className="flex-grow">
               {children}
