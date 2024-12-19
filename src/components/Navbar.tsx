@@ -6,10 +6,10 @@ import { FaLinkedin } from 'react-icons/fa';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Logo } from './Logo';
 import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 import { ATSScore } from './premium/ATSScore';
 import { InterviewTips } from './premium/InterviewTips';
 import { useSearchParams } from 'next/navigation';
-import { createClient } from '@supabase/supabase-js';
 
 interface LoadingStateProps {
   className?: string;
@@ -35,19 +35,13 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetErrorBoundary
   </div>
 );
 
-interface NavbarProps {
-  supabaseUrl: string;
-  supabaseAnonKey: string;
-}
-
-export function Navbar({ supabaseUrl, supabaseAnonKey }: NavbarProps): JSX.Element {
+export function Navbar(): JSX.Element {
   const { data: session, status } = useSession();
   const [isPremium, setIsPremium] = useState(false);
   const [showInterviewTips, setShowInterviewTips] = useState(false);
   const [resumeId, setResumeId] = useState<string | null>(null);
   const [atsScore, setAtsScore] = useState<number | null>(null);
   const searchParams = useSearchParams();
-  const [supabase] = useState(() => createClient(supabaseUrl, supabaseAnonKey));
 
   const handleSignIn = async (): Promise<void> => {
     await signIn('linkedin');
