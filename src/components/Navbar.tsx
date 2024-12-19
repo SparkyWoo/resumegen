@@ -6,7 +6,6 @@ import { FaLinkedin } from 'react-icons/fa';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Logo } from './Logo';
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
 import { ATSScore } from './premium/ATSScore';
 import { InterviewTips } from './premium/InterviewTips';
 import { useSearchParams } from 'next/navigation';
@@ -35,12 +34,17 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetErrorBoundary
   </div>
 );
 
-export function Navbar(): JSX.Element {
+interface NavbarProps {
+  initialPremiumStatus: boolean;
+  initialAtsScore: number | null;
+}
+
+export function Navbar({ initialPremiumStatus, initialAtsScore }: NavbarProps): JSX.Element {
   const { data: session, status } = useSession();
-  const [isPremium, setIsPremium] = useState(false);
+  const [isPremium, setIsPremium] = useState(initialPremiumStatus);
   const [showInterviewTips, setShowInterviewTips] = useState(false);
   const [resumeId, setResumeId] = useState<string | null>(null);
-  const [atsScore, setAtsScore] = useState<number | null>(null);
+  const [atsScore, setAtsScore] = useState<number | null>(initialAtsScore);
   const searchParams = useSearchParams();
 
   const handleSignIn = async (): Promise<void> => {
@@ -51,68 +55,22 @@ export function Navbar(): JSX.Element {
     await signOut();
   };
 
-  // Check premium status and fetch ATS score when session is available
+  // Extract resumeId from URL path
   useEffect(() => {
-    const checkPremiumStatus = async () => {
-      if (!session?.user?.id || !resumeId) return;
-
-      const { data: premiumFeature } = await supabase
-        .from('premium_features')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .eq('resume_id', resumeId)
-        .eq('feature_type', 'premium')
-        .eq('is_active', true)
-        .single();
-
-      setIsPremium(!!premiumFeature);
-
-      if (premiumFeature) {
-        // Fetch ATS score
-        const { data: atsData } = await supabase
-          .from('ats_scores')
-          .select('score')
-          .eq('resume_id', resumeId)
-          .single();
-
-        if (atsData) {
-          setAtsScore(atsData.score);
-        }
-      }
-    };
-
-    // Extract resumeId from URL path
     const path = window.location.pathname;
     const matches = path.match(/\/resume\/([^\/]+)/);
     if (matches && matches[1]) {
       setResumeId(matches[1]);
     }
-
-    checkPremiumStatus();
-  }, [session?.user?.id, resumeId, supabase]);
+  }, []);
 
   // Check for successful Stripe payment
   useEffect(() => {
     const sessionId = searchParams.get('session_id');
-    if (sessionId) {
-      // Refresh premium status
-      const checkPremiumStatus = async () => {
-        if (!session?.user?.id || !resumeId) return;
-        const { data: premiumFeature } = await supabase
-          .from('premium_features')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .eq('resume_id', resumeId)
-          .eq('feature_type', 'premium')
-          .eq('is_active', true)
-          .single();
-
-        setIsPremium(!!premiumFeature);
-      };
-
-      checkPremiumStatus();
+    if (sessionId && resumeId) {
+      setIsPremium(true);
     }
-  }, [searchParams, session?.user?.id, resumeId, supabase]);
+  }, [searchParams, resumeId]);
 
   return (
     <nav className="bg-white shadow-sm fixed w-full z-10">
