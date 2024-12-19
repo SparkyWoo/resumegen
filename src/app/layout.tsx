@@ -5,6 +5,7 @@ import { Metadata } from 'next';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Analytics } from '@vercel/analytics/react';
+import { Suspense } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -129,7 +130,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <div className="flex flex-col min-h-screen">
-            <Navbar />
+            <Suspense fallback={<div className="h-16 bg-white shadow-sm" />}>
+              <Navbar />
+            </Suspense>
             <main className="flex-grow">
               {children}
             </main>
