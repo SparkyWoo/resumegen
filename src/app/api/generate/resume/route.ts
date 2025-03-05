@@ -249,6 +249,7 @@ interface GitHubRepo {
   url: string;
   description: string | null;
   language: string | null;
+  stars: number;
 }
 
 interface WorkExperience {
@@ -291,51 +292,236 @@ async function processPDF(oldResume: File) {
 }
 
 export async function POST(req: Request) {
-  console.log('Starting resume generation...');
+  console.log('Resume generation API called');
   try {
+    console.log('Parsing form data...');
     const formData = await req.formData();
+    
+    // Extract and validate form data
     const jobUrl = formData.get('jobUrl') as string;
     const userId = formData.get('userId') as string;
-    const userData = JSON.parse(formData.get('userData') as string);
+    const userDataRaw = formData.get('userData') as string;
     const oldResume = formData.get('oldResume') as File | null;
+    
+    console.log('Form data received:', { 
+      jobUrl, 
+      userId, 
+      hasUserData: !!userDataRaw,
+      hasOldResume: !!oldResume,
+      oldResumeSize: oldResume?.size || 0,
+      oldResumeName: oldResume?.name || 'none'
+    });
+    
+    // Validate required fields
+    if (!jobUrl) {
+      console.error('Missing required field: jobUrl');
+      return NextResponse.json(
+        { error: 'Missing required field', details: 'Job URL is required' },
+        { status: 400 }
+      );
+    }
+    
+    if (!userId) {
+      console.error('Missing required field: userId');
+      return NextResponse.json(
+        { error: 'Missing required field', details: 'User ID is required' },
+        { status: 400 }
+      );
+    }
+    
+    if (!userDataRaw) {
+      console.error('Missing required field: userData');
+      return NextResponse.json(
+        { error: 'Missing required field', details: 'User data is required' },
+        { status: 400 }
+      );
+    }
+    
+    // Parse user data
+    let userData;
+    try {
+      userData = JSON.parse(userDataRaw);
+      console.log('User data parsed successfully:', {
+        name: userData.name,
+        email: userData.email,
+        hasGithubUsername: !!userData.githubUsername
+      });
+    } catch (parseError) {
+      console.error('Error parsing user data:', parseError);
+      return NextResponse.json(
+        { error: 'Invalid user data', details: 'Failed to parse user data JSON' },
+        { status: 400 }
+      );
+    }
 
-    console.log('Processing request for:', { jobUrl, userId, userData });
+    // Check if user exists in the database
+    console.log('Checking if user exists in database...');
+    const { data: existingUser, error: userCheckError } = await supabaseAdmin
+      .from('users')
+      .select('id')
+      .eq('id', userId)
+      .single();
+      
+    if (userCheckError && userCheckError.code !== 'PGRST116') {
+      console.error('Error checking for existing user:', userCheckError);
+      return NextResponse.json(
+        { error: 'Database error', details: `Failed to check for existing user: ${userCheckError.message}` },
+        { status: 500 }
+      );
+    }
+    
+    // If user doesn't exist, create them
+    if (!existingUser) {
+      console.log('User not found, creating new user record...');
+      const { data: newUser, error: userCreateError } = await supabaseAdmin
+        .from('users')
+        .insert({
+          id: userId,
+          email: userData.email,
+          created_at: new Date().toISOString()
+        })
+        .select()
+        .single();
+        
+      if (userCreateError) {
+        console.error('Error creating user:', userCreateError);
+        return NextResponse.json(
+          { error: 'Database error', details: `Failed to create user: ${userCreateError.message}` },
+          { status: 500 }
+        );
+      }
+      
+      console.log('User created successfully:', newUser.id);
+    } else {
+      console.log('User already exists in database');
+    }
 
     // Parse old resume if provided
     let existingWorkExperience = null;
     if (oldResume) {
-      const fullText = await processPDF(oldResume);
-      existingWorkExperience = await extractWorkExperience(fullText);
+      console.log('Processing uploaded resume PDF...');
+      try {
+        const fullText = await processPDF(oldResume);
+        console.log('PDF processed successfully, extracting work experience...');
+        existingWorkExperience = await extractWorkExperience(fullText);
+        console.log('Work experience extracted:', {
+          experienceFound: !!existingWorkExperience,
+          length: existingWorkExperience?.length || 0
+        });
+      } catch (pdfError: any) {
+        console.error('Error processing PDF:', {
+          message: pdfError.message,
+          name: pdfError.name,
+          stack: pdfError.stack?.split('\n').slice(0, 3).join('\n')
+        });
+        // Continue without work experience rather than failing
+        console.log('Continuing without work experience from PDF');
+      }
     }
 
     // Fetch job data
-    console.log('Fetching job data...');
-    const jobData = await fetchJobData(jobUrl);
-    console.log('Job data fetched successfully');
+    console.log('Fetching job data from URL:', jobUrl);
+    let jobData;
+    try {
+      jobData = await fetchJobData(jobUrl);
+      console.log('Job data fetched successfully:', {
+        title: jobData.title,
+        skillsCount: jobData.skills?.length || 0,
+        descriptionLength: jobData.description?.length || 0
+      });
+    } catch (jobError: any) {
+      console.error('Error fetching job data:', {
+        message: jobError.message,
+        name: jobError.name,
+        stack: jobError.stack?.split('\n').slice(0, 3).join('\n')
+      });
+      return NextResponse.json(
+        { error: 'Job data error', details: `Failed to fetch job data: ${jobError.message}` },
+        { status: 500 }
+      );
+    }
 
     // Generate summary and skills based on job data
     console.log('Generating summary...');
-    const summary = await generateSummary(jobData);
-    console.log('Generated summary:', summary);
-
+    let summary;
+    try {
+      summary = await generateSummary(jobData);
+      console.log('Summary generated successfully:', {
+        length: summary?.length || 0,
+        preview: summary?.substring(0, 50) + '...'
+      });
+    } catch (summaryError: any) {
+      console.error('Error generating summary:', {
+        message: summaryError.message,
+        name: summaryError.name,
+        stack: summaryError.stack?.split('\n').slice(0, 3).join('\n')
+      });
+      return NextResponse.json(
+        { error: 'Summary generation error', details: `Failed to generate summary: ${summaryError.message}` },
+        { status: 500 }
+      );
+    }
+    
+    // Generate skills based on job data
     console.log('Generating skills...');
-    const skills = await generateSkills(jobData);
-    console.log('Generated skills:', skills);
+    let skills;
+    try {
+      skills = await generateSkills(jobData);
+      console.log('Skills generated successfully:', {
+        count: skills?.length || 0,
+        skills: skills?.slice(0, 5).join(', ') + (skills?.length > 5 ? '...' : '')
+      });
+    } catch (skillsError: any) {
+      console.error('Error generating skills:', {
+        message: skillsError.message,
+        name: skillsError.name,
+        stack: skillsError.stack?.split('\n').slice(0, 3).join('\n')
+      });
+      return NextResponse.json(
+        { error: 'Skills generation error', details: `Failed to generate skills: ${skillsError.message}` },
+        { status: 500 }
+      );
+    }
 
     // Fetch GitHub data if username provided
     let githubData = null;
+    let projects = [];
+    
     if (userData.githubUsername) {
-      console.log('Fetching GitHub data...');
-      githubData = await fetchGitHubData(userData.githubUsername);
-      console.log('GitHub data fetched successfully');
+      console.log('Fetching GitHub data for username:', userData.githubUsername);
+      try {
+        githubData = await fetchGitHubData(userData.githubUsername);
+        console.log('GitHub data fetched successfully:', {
+          reposCount: githubData?.repositories?.length || 0,
+          languages: githubData?.repositories?.slice(0, 3).map((repo: GitHubRepo) => repo.language).filter(Boolean).join(', ') || 'none'
+        });
+        
+        // Convert GitHub repositories to projects
+        if (githubData?.repositories?.length > 0) {
+          console.log('Converting GitHub repositories to projects...');
+          projects = githubData.repositories.slice(0, 5).map((repo: GitHubRepo) => ({
+            name: repo.name,
+            description: repo.description || '',
+            url: repo.url,
+            highlights: [],
+            keywords: [repo.language].filter(Boolean),
+            language: repo.language,
+            stars: repo.stars
+          }));
+          console.log(`Converted ${projects.length} repositories to projects`);
+        }
+      } catch (githubError: any) {
+        console.error('Error fetching GitHub data:', {
+          message: githubError.message,
+          name: githubError.name,
+          stack: githubError.stack?.split('\n').slice(0, 3).join('\n')
+        });
+        // Continue without GitHub data rather than failing
+        console.log('Continuing without GitHub data');
+      }
+    } else {
+      console.log('No GitHub username provided, skipping GitHub data fetch');
     }
-
-    // Map GitHub repositories to projects
-    const projects = githubData?.repositories?.map((repo: GitHubRepo) => ({
-      name: repo.name,
-      url: repo.url,
-      highlights: [repo.description || `A ${repo.language || 'software'} project`]
-    })) || [];
 
     // Process work experience
     let workExperience: WorkExperience[] = [];
@@ -344,41 +530,83 @@ export async function POST(req: Request) {
       workExperience = (await improveWorkExperience(existingWorkExperience, jobData)) || [];
     }
 
+    console.log('Preparing resume data for Supabase insertion...');
+    const resumeData = {
+      user_id: userId,
+      name: userData.name,
+      email: userData.email,
+      job_data: jobData,
+      summary: summary,
+      generated_content: {},
+      created_at: new Date().toISOString(),
+      phone: '',
+      location: '',
+      url: '',
+      work: workExperience,
+      education: [],
+      skills: skills,
+      projects: projects,
+      github_data: githubData,
+      linkedin_data: null,
+    };
+    
+    console.log('Resume data prepared:', JSON.stringify({
+      user_id: userId,
+      name: userData.name,
+      email: userData.email,
+      // Log only the structure of larger objects to avoid console clutter
+      job_data_keys: Object.keys(jobData || {}),
+      summary_length: summary?.length || 0,
+      work_experience_count: workExperience?.length || 0,
+      skills_count: resumeData.skills.length || 0,
+      projects_count: projects?.length || 0,
+      github_data_keys: Object.keys(githubData || {}),
+    }));
+
     console.log('Saving resume to Supabase...');
-    const { data: resume, error: resumeError } = await supabaseAdmin
-      .from('resumes')
-      .insert({
-        user_id: userId,
-        name: userData.name,
-        email: userData.email,
-        job_data: jobData,
-        summary: summary,
-        generated_content: {},
-        created_at: new Date().toISOString(),
-        phone: '',
-        location: '',
-        url: '',
-        work: workExperience,
-        education: [],
-        skills: skills,
-        projects: projects,
-        github_data: githubData,
-        linkedin_data: null,
-      })
-      .select()
-      .single();
+    try {
+      const { data: resume, error: resumeError } = await supabaseAdmin
+        .from('resumes')
+        .insert(resumeData)
+        .select()
+        .single();
 
-    if (resumeError) {
-      console.error('Supabase resume error:', resumeError);
-      throw resumeError;
+      if (resumeError) {
+        console.error('Supabase resume error details:', {
+          message: resumeError.message,
+          code: resumeError.code,
+          details: resumeError.details,
+          hint: resumeError.hint
+        });
+        throw new Error(`Resume save error: ${resumeError.message || 'Unknown error'}, Code: ${resumeError.code}, Details: ${JSON.stringify(resumeError.details || {})}`);
+      }
+
+      console.log('Resume generated and saved successfully with ID:', resume.id);
+      return NextResponse.json(resume);
+    } catch (insertError: any) {
+      console.error('Insert operation failed:', {
+        message: insertError.message,
+        name: insertError.name,
+        stack: insertError.stack,
+        cause: insertError.cause
+      });
+      throw insertError;
     }
-
-    console.log('Resume generated successfully');
-    return NextResponse.json(resume);
   } catch (error: any) {
-    console.error('Error in resume generation:', error);
+    console.error('Error in resume generation:', {
+      message: error.message,
+      name: error.name,
+      stack: error.stack?.split('\n').slice(0, 5).join('\n'), // First 5 lines of stack trace
+      cause: error.cause
+    });
     return NextResponse.json(
-      { error: 'Failed to generate resume', details: error.message },
+      { 
+        error: 'Failed to generate resume', 
+        message: error.message || 'Unknown error',
+        code: error.code,
+        details: error.details || {},
+        hint: error.hint
+      },
       { status: 500 }
     );
   }
