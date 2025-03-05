@@ -1,73 +1,4 @@
--- Enable UUID extension if not already enabled
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
--- Create tables
-CREATE TABLE IF NOT EXISTS public.users (
-  id TEXT PRIMARY KEY,
-  email TEXT UNIQUE NOT NULL,
-  stripe_customer_id TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS public.resumes (
-  id TEXT PRIMARY KEY,
-  user_id TEXT REFERENCES public.users(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  phone TEXT,
-  location TEXT,
-  url TEXT,
-  summary TEXT,
-  work JSONB,
-  education JSONB,
-  skills JSONB,
-  projects JSONB,
-  github_data JSONB,
-  job_data JSONB,
-  generated_content JSONB,
-  linkedin_data JSONB,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS public.premium_features (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id TEXT REFERENCES public.users(id) ON DELETE CASCADE,
-  resume_id TEXT REFERENCES public.resumes(id) ON DELETE CASCADE,
-  feature_type TEXT,
-  is_active BOOLEAN DEFAULT FALSE,
-  expires_at TIMESTAMP WITH TIME ZONE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS public.ats_scores (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  resume_id TEXT REFERENCES public.resumes(id) ON DELETE CASCADE,
-  score INTEGER,
-  breakdown JSONB,
-  suggestions JSONB,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS public.interview_tips (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  resume_id TEXT REFERENCES public.resumes(id) ON DELETE CASCADE,
-  company_culture JSONB,
-  role_keywords JSONB,
-  talking_points JSONB,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- Enable Row Level Security
-ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.resumes ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.premium_features ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.ats_scores ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.interview_tips ENABLE ROW LEVEL SECURITY;
-
--- Drop existing policies
+-- First, drop all policies that depend on the columns we want to alter
 DROP POLICY IF EXISTS users_select_own ON public.users;
 DROP POLICY IF EXISTS users_update_own ON public.users;
 DROP POLICY IF EXISTS resumes_select_own ON public.resumes;
@@ -100,7 +31,50 @@ DROP POLICY IF EXISTS "Service role can manage all ats scores" ON public.ats_sco
 DROP POLICY IF EXISTS "Users can view interview tips for their resumes" ON public.interview_tips;
 DROP POLICY IF EXISTS "Service role can manage all interview tips" ON public.interview_tips;
 
--- Create policies
+-- Then, drop foreign key constraints
+ALTER TABLE IF EXISTS public.resumes DROP CONSTRAINT IF EXISTS resumes_user_id_fkey;
+ALTER TABLE IF EXISTS public.premium_features DROP CONSTRAINT IF EXISTS premium_features_user_id_fkey;
+ALTER TABLE IF EXISTS public.premium_features DROP CONSTRAINT IF EXISTS premium_features_resume_id_fkey;
+ALTER TABLE IF EXISTS public.ats_scores DROP CONSTRAINT IF EXISTS ats_scores_resume_id_fkey;
+ALTER TABLE IF EXISTS public.interview_tips DROP CONSTRAINT IF EXISTS interview_tips_resume_id_fkey;
+
+-- Update column types
+ALTER TABLE IF EXISTS public.users 
+  ALTER COLUMN id TYPE TEXT;
+
+ALTER TABLE IF EXISTS public.resumes 
+  ALTER COLUMN user_id TYPE TEXT;
+
+ALTER TABLE IF EXISTS public.premium_features 
+  ALTER COLUMN user_id TYPE TEXT,
+  ALTER COLUMN resume_id TYPE TEXT;
+
+ALTER TABLE IF EXISTS public.ats_scores 
+  ALTER COLUMN resume_id TYPE TEXT;
+
+ALTER TABLE IF EXISTS public.interview_tips 
+  ALTER COLUMN resume_id TYPE TEXT;
+
+-- Re-add foreign key constraints
+ALTER TABLE IF EXISTS public.resumes 
+  ADD CONSTRAINT resumes_user_id_fkey 
+  FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+ALTER TABLE IF EXISTS public.premium_features 
+  ADD CONSTRAINT premium_features_user_id_fkey 
+  FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE,
+  ADD CONSTRAINT premium_features_resume_id_fkey 
+  FOREIGN KEY (resume_id) REFERENCES public.resumes(id) ON DELETE CASCADE;
+
+ALTER TABLE IF EXISTS public.ats_scores 
+  ADD CONSTRAINT ats_scores_resume_id_fkey 
+  FOREIGN KEY (resume_id) REFERENCES public.resumes(id) ON DELETE CASCADE;
+
+ALTER TABLE IF EXISTS public.interview_tips 
+  ADD CONSTRAINT interview_tips_resume_id_fkey 
+  FOREIGN KEY (resume_id) REFERENCES public.resumes(id) ON DELETE CASCADE;
+
+-- Recreate policies
 -- Users table policies
 CREATE POLICY users_select_own ON public.users
   FOR SELECT USING (auth.uid() = id);
@@ -174,21 +148,4 @@ CREATE POLICY service_role_all_ats_scores ON public.ats_scores
   FOR ALL USING (auth.jwt() ? 'service_role'::text);
 
 CREATE POLICY service_role_all_interview_tips ON public.interview_tips
-  FOR ALL USING (auth.jwt() ? 'service_role'::text);
-
--- Function to sync auth users to public users
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
-BEGIN
-  INSERT INTO public.users (id, email, created_at)
-  VALUES (NEW.id, NEW.email, NEW.created_at)
-  ON CONFLICT (id) DO NOTHING;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- Create a trigger to call this function when a user is created
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-CREATE TRIGGER on_auth_user_created
-  AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user(); 
+  FOR ALL USING (auth.jwt() ? 'service_role'::text); 
